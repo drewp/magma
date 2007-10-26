@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <title>Supervisor Status</title>
+  <link href="supervisor.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<div style="margin-bottom: 10px">
+  <img alt="supervisor image" height="67" src="supervisor.gif" width="200" />
+  <div style="margin-bottom: 5px;">
+    <small>(c) 2006 Chris McDonough</small>
+  </div>
+  <div style="width: 797px" />
+</div>
+
+<div>
+
+<form action="index.html" method="POST">
+
+<div style="margin-top: 10px;">
+
+<a href="index.html?action=refresh">
+   <input name="refresh" type="button" value=" Refresh " />
+</a>
+
+<a href="index.html?action=restartall">
+   <input name="restartall" type="button" value=" Restart All " />
+</a>
+
+<a href="index.html?action=stopall">
+   <input name="stopall" type="button" value=" Stop All " />
+</a>
+
+</div>
+
+<table border="0" width="800">
+  <th class="tableheader" width="130">State</th>
+  <th class="tableheader" width="200">Description</th>
+  <th class="tableheader" width="159">Name</th>
+  <th class="tableheader" width="297">Action</th>
+  <tbody>
+    <tr>
+      <td>
+           <span class="statusnominal">STOPPED</span>
+      </td>
+      <td>
+           <span>Aug 17 11:42 PM</span>
+      </td>
+      <td><a href="tail.html?processname=gasuse" target="_blank">gasuse</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=gasuse&amp;action=start" name="foo">Start</a>
+	    </td>
+	  <td align="center" width="70">&nbsp;</td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=gasuse&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/gasuse" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusrunning">RUNNING</span>
+      </td>
+      <td>
+           <span>pid 20191, uptime 11:14:56</span>
+      </td>
+      <td><a href="tail.html?processname=jabberd" target="_blank">jabberd</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=jabberd&amp;action=restart" name="foo">Restart</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=jabberd&amp;action=stop" name="foo">Stop</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=jabberd&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/jabberd" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusrunning">RUNNING</span>
+      </td>
+      <td>
+           <span>pid 27392, uptime 7 days, 7:45:26</span>
+      </td>
+      <td><a href="tail.html?processname=magma_8006" target="_blank">magma_8006</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=magma_8006&amp;action=restart" name="foo">Restart</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=magma_8006&amp;action=stop" name="foo">Stop</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=magma_8006&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/magma_8006" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusrunning">RUNNING</span>
+      </td>
+      <td>
+           <span>pid 27391, uptime 7 days, 7:45:27</span>
+      </td>
+      <td><a href="tail.html?processname=maps" target="_blank">maps</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=maps&amp;action=restart" name="foo">Restart</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=maps&amp;action=stop" name="foo">Stop</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=maps&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/maps" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusrunning">RUNNING</span>
+      </td>
+      <td>
+           <span>pid 3938, uptime 2 days, 2:23:26</span>
+      </td>
+      <td><a href="tail.html?processname=nginx" target="_blank">nginx</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=nginx&amp;action=restart" name="foo">Restart</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=nginx&amp;action=stop" name="foo">Stop</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=nginx&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/nginx" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusnominal">STOPPED</span>
+      </td>
+      <td>
+           <span>Aug 14 07:41 PM</span>
+      </td>
+      <td><a href="tail.html?processname=photo" target="_blank">photo</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=photo&amp;action=start" name="foo">Start</a>
+	    </td>
+	  <td align="center" width="70">&nbsp;</td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=photo&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/photo" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusnominal">STOPPED</span>
+      </td>
+      <td>
+           <span>Not started</span>
+      </td>
+      <td><a href="tail.html?processname=picreferer" target="_blank">picreferer</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=picreferer&amp;action=start" name="foo">Start</a>
+	    </td>
+	  <td align="center" width="70">&nbsp;</td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=picreferer&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/picreferer" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusnominal">STOPPED</span>
+      </td>
+      <td>
+           <span>Not started</span>
+      </td>
+      <td><a href="tail.html?processname=rebuild_client" target="_blank">rebuild_client</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=rebuild_client&amp;action=start" name="foo">Start</a>
+	    </td>
+	  <td align="center" width="70">&nbsp;</td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=rebuild_client&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/rebuild_client" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  <tr>
+      <td>
+           <span class="statusrunning">RUNNING</span>
+      </td>
+      <td>
+           <span>pid 27393, uptime 7 days, 7:45:10</span>
+      </td>
+      <td><a href="tail.html?processname=semfile" target="_blank">semfile</a></td>
+      <td>
+        <table>
+          <tr>
+            <td align="center" width="70">
+	      <a href="index.html?processname=semfile&amp;action=restart" name="foo">Restart</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=semfile&amp;action=stop" name="foo">Stop</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="index.html?processname=semfile&amp;action=clearlog" name="foo">Clear Log</a>
+	    </td>
+	  <td align="center" width="70">
+	      <a href="logtail/semfile" name="foo" target="_blank">Tail -f</a>
+	    </td>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</form>
+
+</div>
+
+</body>
+</html>
