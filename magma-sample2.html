@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>magma</title>
+    <script type="text/javascript" src="dojo-0.3.1-ajax/dojo.js"></script>
+    <script language="JavaScript" type="text/javascript">
+      dojo.require("dojo.event.*");
+      dojo.require("dojo.widget.SplitContainer");
+      dojo.require("dojo.widget.ContentPane");
+      dojo.require("dojo.widget.LinkPane");
+    </script>
+    <style>
+      html, body{	
+        width: 100%;	/* make the body expand to fill the visible window */
+	height: 100%;
+	overflow: hidden;	/* erase window level scrollbars */
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+      }
+      .dojoSplitPane{
+        margin: 5px;
+      }
+      iframe {
+        xwidth:100%; xheight: 100%;
+      
+      }
+      img {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div dojoType="SplitContainer"
+	 orientation="horizontal"
+	 sizerWidth="5"
+	 activeSizing="1"
+	 style="width: 100%; height: 100%; background: #eeeeee; padding: 10px;"
+	 >
+      <div dojoType="SplitContainer"
+	   id="rightPane"
+	   orientation="vertical"
+	   sizerWidth="5"
+	   activeSizing="1"
+	   sizeShare="60">
+	<div dojoType="ContentPane" sizeShare="5"
+	     style="overflow: auto;">
+	  zfs status
+	  <dl>
+	    <dt>stor /my</dt>
+	    <dd>
+	      <div>Bandwidth: 15MB read / 5MB write</div>
+	      <div>Space: 363GB: 268.14 used, 83.13 free</div>
+	      <div>snap@2007-08-21 .035GB</div>
+	      <div>snap@2007-08-22 .035GB</div>
+	      <div>snap@2007-08-23 .035GB</div>
+	    </dd>
+	    <dt>unsafe</dt>
+	    <dd>
+	      <div>Space: 500B: 268.14 used, 83.13 free</div>
+	      <div>Bandwidth: 0MB read / 0MB write</div>
+	    </dd>
+	  </dl>
+	</div>
+	<div dojoType="ContentPane" sizeShare="5"
+	     style="overflow: auto;">
+	  dash mem
+	  <img width="200" height="150" src=""/>
+	  <table>
+	    <tr><th>X</th><td>105MB res</td></tr>
+	    <tr><th>zope4</th><td>71</td></tr>
+	    <tr><th>firefox</th><td>70</td></tr>
+	  </table>
+	</div>
+	<div dojoType="ContentPane" sizeShare="5"
+	     style="overflow: auto;">
+	  bang mem
+	</div>
+      </div>
+
+      <div dojoType="SplitContainer"
+	   id="rightPane"
+	   orientation="vertical"
+	   sizerWidth="5"
+	   activeSizing="1"
+	   sizeShare="60">
+	<div dojoType="LinkPane" sizeShare="50" 
+             style="overflow: auto" 
+	     href="supervisor-sample.html">
+	</div>
+	<div dojoType="LinkPane" sizeShare="50" 
+             style="overflow: auto" 
+	     href="supervisor-sample.html">
+	</div>
+
+      </div>
+      <div dojoType="ContentPane" sizeShare="20">
+	I'm another content pane, on the right.
+      </div>
+    </div>
+  </body>
+</html>
