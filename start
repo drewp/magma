@@ -1,0 +1,18 @@
+#!/usr/bin/python
+import os
+from twisted.internet import reactor
+from twisted.python import log
+from twisted.python.util import sibpath
+from nevow.appserver import NevowSite
+from nevow import rend, static, loaders, tags as T, inevow, json
+
+
+os.chdir("/my/site/magma")
+
+class Main(rend.Page):
+    docFactory = loaders.stan(T.img(src="out"))
+    def child_out(self, ctx):
+        return static.File("running/out.png")
+
+reactor.listenTCP(8006, NevowSite(Main()))
+reactor.run()
