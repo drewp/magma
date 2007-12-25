@@ -58,14 +58,24 @@ class Door(IphonePage):
     def child_unlock1m(self, ctx):
         print "unlock now"
         return url.here.up()
+
+class Music(IphonePage):
+    docFactory = loaders.xmlstr("""<div title="Story">
+    <li><a href="">one</a></li>
+    <li>two</li>
+    <h2>10 Alternatives to iTunes for managing your iPod</h2>
+    <p>This overview details the features (with screenshots) of 10 different programs other than iTunes to manage your iPod. Tutorials are included for every program, and theyre all either free or Open Sour
+ce.</p>
+</div>""")
+    items = ['one', 'two']
         
 class Main(IphonePage):
     title = "Home Controls"
-    subMenus = [Heater, Door]
+    subMenus = [Heater, Door, Music]
     def getItems(self, ctx):
         for sub in self.subMenus:
             name = sub.__name__
-            yield T.a(href=name)[name]
+            yield T.a(href=name + "/")[name]
 
     def locateChild(self, ctx, segments):
         print segments
@@ -82,6 +92,7 @@ class Main(IphonePage):
         return rend.Page.locateChild(self, ctx, segments)
     def child_iui(self, ctx):
         return static.File("iui/iui")
+setattr(Main, 'child_facicon.ico', static.File('favicon.ico'))
 
 if __name__ == '__main__':
     log.startLogging(sys.stdout)
