@@ -2,12 +2,13 @@
 <html>
   <head>
     <title>magma</title>
-    <script type="text/javascript" src="dojo-0.3.1-ajax/dojo.js"></script>
+    <script type="text/javascript" src="dojo-0.4.2-ajax/dojo.js"></script>
     <script language="JavaScript" type="text/javascript">
       dojo.require("dojo.event.*");
       dojo.require("dojo.widget.SplitContainer");
       dojo.require("dojo.widget.ContentPane");
       dojo.require("dojo.widget.LinkPane");
+
     </script>
     <style>
       html, body{	
@@ -42,8 +43,10 @@
 	   sizerWidth="5"
 	   activeSizing="1"
 	   sizeShare="60">
-	<div dojoType="ContentPane" sizeShare="5"
-	     style="overflow: auto;">
+	<div dojoType="LinkPane" sizeShare="5"
+	     style="overflow: auto;"
+             href="http://bigasterisk.com/magma/zfsreport/">
+
 	  zfs status
 	  <dl>
 	    <dt>stor /my</dt>
@@ -70,10 +73,38 @@
 	    <tr><th>zope4</th><td>71</td></tr>
 	    <tr><th>firefox</th><td>70</td></tr>
 	  </table>
+
 	</div>
 	<div dojoType="ContentPane" sizeShare="5"
 	     style="overflow: auto;">
-	  bang mem
+	  <table>
+	    <tr><td>bang mem</td><td>bang cpu</td></tr>
+	    <tr>
+	      <td><div style="height: 114px; overflow: hidden">
+		<a href="http://dash/munin/bang">
+		  <img src="http://dash/munin/bang/bang-memory-day.png" 
+		       height="200"/></a></div></td>
+	      <td><div style="height: 114px; overflow: hidden">
+		<a href="http://dash/munin/bang">
+		  <img src="http://dash/munin/bang/bang-cpu-day.png" 
+		       height="200"/></a></div></td>
+	    </tr>
+	  </table>
+
+	  <table>
+	    <tr><td>slash page in</td><td>slash cpu</td></tr>
+	    <tr>
+	      <td><div style="height: 114px; overflow: hidden">
+		<a href="http://dash/munin/slash">
+		  <img src="http://dash/munin/slash/slash-paging_in-day.png" 
+		       height="145"/></a></div></td>
+	       <td><div style="height: 114px; overflow: hidden">
+		 <a href="http://dash/munin/slash">
+		   <img src="http://dash/munin/slash/slash-cpu-day.png" 
+			height="149"/></a></div></td>
+	    </tr>
+	  </table>
+
 	</div>
       </div>
 
@@ -83,19 +114,31 @@
 	   sizerWidth="5"
 	   activeSizing="1"
 	   sizeShare="60">
-	<div dojoType="LinkPane" sizeShare="50" 
+	<div dojoType="LinkPane" sizeShare="50"
              style="overflow: auto" 
-	     href="supervisor-sample.html">
+	     href="http://bigasterisk.com/supervisor/bang/">
 	</div>
 	<div dojoType="LinkPane" sizeShare="50" 
              style="overflow: auto" 
-	     href="supervisor-sample.html">
+	     href="http://bigasterisk.com/supervisor/slash/">
+	</div>
+
+	<div dojoType="LinkPane" sizeShare="10" 
+             style="overflow: auto" href="net">
+	     
 	</div>
 
       </div>
-      <div dojoType="ContentPane" sizeShare="20">
+<!--      <div dojoType="ContentPane" sizeShare="20">
 	I'm another content pane, on the right.
-      </div>
+      </div>-->
     </div>
+
+    <style type="text/css">
+      /* supervisor overrides */
+      th.name { width: 1em !important }
+
+
+    </style>
   </body>
 </html>
