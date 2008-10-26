@@ -1,0 +1,57 @@
+#!/usr/bin/python
+from __future__ import division
+import os, sys, re
+from twisted.internet import reactor
+from twisted.python import log
+from twisted.python.util import sibpath
+from nevow.appserver import NevowSite
+from nevow import rend, static, loaders, tags as T, inevow, json
+import commands
+
+os.chdir("/my/site/magma")
+
+class Main(rend.Page):
+    docFactory = loaders.stan(T.html[T.head[T.style['''
+    * { font-family: sans-serif; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid gray; padding: .2em; text-align: left; }
+    td.num { text-align: right; }
+    span.unit { color: gray; }
+    '''],
+                                            ],
+                                     T.body[T.p["ZFS"],
+                                            T.directive('content')]])
+    def render_content(self, ctx, data):
+        zlist = commands.getoutput("zfs list -H")
+
+        def units(m):
+            num, u = float(m.group(1)), m.group(2)
+            bytes = num * (1 << dict(K=10, M=20, G=30)[u])
+            gb = bytes / (1<<30)
+            return "%.03f" % gb
+        zlist = re.sub(r"([\d\.]+)([MGK])", units, zlist)
+        
+        rows = []
+        for line in zlist.splitlines():
+            name, used, avail, refer, mnt = line.split('\t')
+            rows.append(T.tr[T.td[name],
+                             T.td(class_="num")[used],
+                             T.td(class_="num")[avail],
+                             T.td(class_="num")[refer],
+                             T.td[mnt]])
+        spaceList = T.table[T.tr[T.th['name'],
+                                 T.th['used (G)'],
+                                 T.th['avail (G)'],
+                                 T.th['refer (G)'],
+                                 T.th['mount']],
+                            rows]
+
+        errs = commands.getoutput("zpool status -x")
+        return [spaceList,
+                T.pre[errs]]
+    
+
+
+log.startLogging(sys.stdout)
+reactor.listenTCP(8001, NevowSite(Main()))
+reactor.run()
