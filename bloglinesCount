@@ -1,0 +1,35 @@
+#!/usr/bin/python
+import sys, urllib, re
+sys.path.append("/my/site/magma/munin-plugins")
+import munin
+
+def bloglinesCount(userEmail):
+    """
+    number of new bloglines entries, as the notifier would report
+    them. I don't know how the security works-- it seems that just
+    knowing an email address is enough.
+    """
+
+    url = "http://www.bloglines.com/notifier?user=%s" % userEmail
+    txt = urllib.urlopen(url).read()
+    m = re.search(r"You have (\d+) new Bloglines entries", txt)
+    if m is None:
+        raise ValueError("Couldn't find entry count message: %r..." % txt[:200])
+    return int(m.group(1))
+
+class BloglinesCount(munin.Plugin):
+    def fetch(self):
+        return [
+            ('entries.value', bloglinesCount("drewp@bigasterisk.com")),
+            ]
+    def config(self):
+        return [
+            ("graph_title", "new bloglines entries"),
+            ("graph_vlabel", "entries"),
+            ("entries.label", "entries"),
+            ]
+
+
+if __name__ == '__main__':
+    munin.run(BloglinesCount)
+ 
