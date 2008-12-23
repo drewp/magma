@@ -1,145 +1,95 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>magma</title>
-    <script type="text/javascript" src="dojo-0.4.2-ajax/dojo.js"></script>
-    <script language="JavaScript" type="text/javascript">
-      dojo.require("dojo.event.*");
-      dojo.require("dojo.widget.SplitContainer");
-      dojo.require("dojo.widget.ContentPane");
-      dojo.require("dojo.widget.LinkPane");
 
-    </script>
-    <style>
-      html, body{	
-        width: 100%;	/* make the body expand to fill the visible window */
-	height: 100%;
-	overflow: hidden;	/* erase window level scrollbars */
-	padding: 0 0 0 0;
-	margin: 0 0 0 0;
-      }
-      .dojoSplitPane{
-        margin: 5px;
-      }
-      iframe {
-        xwidth:100%; xheight: 100%;
-      
-      }
-      img {
-        border: 1px solid black;
-      }
+    <style type="text/css">
+      .section {
+        border: 1px solid gray;
+        margin: 3px 0;
+        padding: 6px;
+      } 
     </style>
   </head>
   <body>
-    <div dojoType="SplitContainer"
-	 orientation="horizontal"
-	 sizerWidth="5"
-	 activeSizing="1"
-	 style="width: 100%; height: 100%; background: #eeeeee; padding: 10px;"
-	 >
-      <div dojoType="SplitContainer"
-	   id="rightPane"
-	   orientation="vertical"
-	   sizerWidth="5"
-	   activeSizing="1"
-	   sizeShare="60">
-	<div dojoType="LinkPane" sizeShare="5"
-	     style="overflow: auto;"
-             href="http://bigasterisk.com/magma/zfsreport/">
 
-	  zfs status
-	  <dl>
-	    <dt>stor /my</dt>
-	    <dd>
-	      <div>Bandwidth: 15MB read / 5MB write</div>
-	      <div>Space: 363GB: 268.14 used, 83.13 free</div>
-	      <div>snap@2007-08-21 .035GB</div>
-	      <div>snap@2007-08-22 .035GB</div>
-	      <div>snap@2007-08-23 .035GB</div>
-	    </dd>
-	    <dt>unsafe</dt>
-	    <dd>
-	      <div>Space: 500B: 268.14 used, 83.13 free</div>
-	      <div>Bandwidth: 0MB read / 0MB write</div>
-	    </dd>
-	  </dl>
-	</div>
-	<div dojoType="ContentPane" sizeShare="5"
-	     style="overflow: auto;">
-<a href="temp/tempchart/table.html">temp table</a>
-	  dash mem
-	  <img width="200" height="150" src=""/>
-	  <table>
-	    <tr><th>X</th><td>105MB res</td></tr>
-	    <tr><th>zope4</th><td>71</td></tr>
-	    <tr><th>firefox</th><td>70</td></tr>
-	  </table>
+    <div class="section">
+      <a href="http://bigasterisk.com/magma/add/">add to wiki pages</a>
+    </div>
 
-	</div>
-	<div dojoType="ContentPane" sizeShare="5"
-	     style="overflow: auto;">
-	  <table>
-	    <tr><td>bang mem</td><td>bang cpu</td></tr>
-	    <tr>
-	      <td><div style="height: 114px; overflow: hidden">
-		<a href="http://dash/munin/bang">
-		  <img src="http://dash/munin/bang/bang-memory-day.png" 
-		       height="200"/></a></div></td>
-	      <td><div style="height: 114px; overflow: hidden">
-		<a href="http://dash/munin/bang">
-		  <img src="http://dash/munin/bang/bang-cpu-day.png" 
-		       height="200"/></a></div></td>
-	    </tr>
-	  </table>
+    <div class="section">
+      <div><a href="http://bigasterisk.com/magma/mpd/dash/ctl">music downstairs (dash)</a> / <a href="http://bigasterisk.com/magma/mpd/dash/gadget">gadget</a></div>
+      <div><a href="http://bigasterisk.com/magma/mpd/bang/ctl">music bedroom (bang)</a> / <a href="http://bigasterisk.com/magma/mpd/bang/gadget">gadget</a></div>
+      <div><a href="http://bigasterisk.com/magma/mpd/slash/ctl">music living room (slash)</a> / <a href="http://bigasterisk.com/magma/mpd/slash/gadget">gadget</a></div>
+    </div>
 
-	  <table>
-	    <tr><td>slash page in</td><td>slash cpu</td></tr>
-	    <tr>
-	      <td><div style="height: 114px; overflow: hidden">
-		<a href="http://dash/munin/slash">
-		  <img src="http://dash/munin/slash/slash-paging_in-day.png" 
-		       height="145"/></a></div></td>
-	       <td><div style="height: 114px; overflow: hidden">
-		 <a href="http://dash/munin/slash">
-		   <img src="http://dash/munin/slash/slash-cpu-day.png" 
-			height="149"/></a></div></td>
-	    </tr>
-	  </table>
+    <div class="section">
+      <a href="http://bigasterisk.com/magma/zfsreport/">zfs, embed</a>
+    </div>
+    <div class="section">
+      <a href="temp/tempchart/table.html">temp table</a>
+    </div>
+    <div class="section">
+      <table>
+	<tr><td>bang mem</td><td>bang cpu</td><td>bloglines unread</td></tr>
+	<tr>
+	  <td><div style="height: 114px; overflow: hidden">
+	    <a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	      <img src="http://bigasterisk.com/magma/munin/bang/bang-memory-day.png" 
+		   height="200"/></a></div>
+	  </td>
+	  <td><div style="height: 114px; overflow: hidden">
+	    <a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	      <img src="http://bigasterisk.com/magma/munin/bang/bang-cpu-day.png" 
+		   height="166"/></a></div>
+	  </td>
+	  <td><div style="height: 114px; overflow: hidden">
+	    <a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	      <img src="http://bigasterisk.com/magma/munin/bang/bang-bloglinesCount-week.png" 
+		   height="132"/></a></div>
+	  </td>
+	</tr>
+      </table>
 
-	</div>
-      </div>
+      <table>
+	<tr><td>mailbox</td><td>slash cpu</td></tr>
+	<tr>
+	  <td><div style="height: 114px; overflow: hidden">
+	    <a href="http://bigasterisk.com/magma/munin/slash/slash.html">
+	      <img src="http://bigasterisk.com/magma/munin/slash/slash-inboxCount-week.png" 
+		   height="145"/></a></div>
+	  </td>
+	  <td><div style="height: 114px; overflow: hidden">
+	    <a href="http://bigasterisk.com/magma/munin/slash/slash.html">
+	      <img src="http://bigasterisk.com/magma/munin/slash/slash-cpu-day.png" 
+		   height="149"/></a></div>
+	  </td>
+	</tr>
+      </table>
+    </div>
 
-      <div dojoType="SplitContainer"
-	   id="rightPane"
-	   orientation="vertical"
-	   sizerWidth="5"
-	   activeSizing="1"
-	   sizeShare="60">
-	<div dojoType="LinkPane" sizeShare="50"
-             style="overflow: auto" 
-	     href="http://bigasterisk.com/supervisor/bang/">
-	</div>
-	<div dojoType="LinkPane" sizeShare="50" 
-             style="overflow: auto" 
-	     href="http://bigasterisk.com/supervisor/slash/">
-	</div>
-
-	<div dojoType="LinkPane" sizeShare="10" 
-             style="overflow: auto" href="net">
-	     
-	</div>
-
-      </div>
-<!--      <div dojoType="ContentPane" sizeShare="20">
-	I'm another content pane, on the right.
-      </div>-->
+    <div class="section">
+	<a href="http://bigasterisk.com/supervisor/bang/">supervisor on bang (to embed)</a>
+    </div>
+    <div class="section">
+	<a href="http://bigasterisk.com/supervisor/slash/">supervisor on slash (to embed)</a>
+    </div>
+    <div class="section">
+	<a href="net">net diagram, to embed</a>
+    </div>
+    <div class="section">
+      dash mem sample
+      <img width="200" height="150" src=""/>
+      <table>
+	<tr><th>X</th><td>105MB res</td></tr>
+	<tr><th>zope4</th><td>71</td></tr>
+	<tr><th>firefox</th><td>70</td></tr>
+      </table>
     </div>
 
     <style type="text/css">
       /* supervisor overrides */
       th.name { width: 1em !important }
-
-
     </style>
   </body>
 </html>
