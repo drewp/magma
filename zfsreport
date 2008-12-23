@@ -22,7 +22,7 @@ class Main(rend.Page):
                                      T.body[T.p["ZFS"],
                                             T.directive('content')]])
     def render_content(self, ctx, data):
-        zlist = commands.getoutput("zfs list -H")
+        zlist = commands.getoutput("/usr/local/sbin/zfs list -H")
 
         def units(m):
             num, u = float(m.group(1)), m.group(2)
@@ -46,7 +46,7 @@ class Main(rend.Page):
                                  T.th['mount']],
                             rows]
 
-        errs = commands.getoutput("zpool status -x")
+        errs = commands.getoutput("/usr/local/sbin/zpool status -x")
         return [spaceList,
                 T.pre[errs]]
     
