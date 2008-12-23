@@ -1,0 +1,103 @@
+all you can do is issue commands, where each 'issue' has a
+time+user+command, and each command has any amount of RDF graph that
+goes with it. But there are no other parameters in the commands,
+"count down 5 min" and "count down 10 min" are two commands that have
+to be separately constructed. 
+
+The issued commands are logged, and then everything else happens based
+on what we can infer from the log and the current time. Other systems 
+can log as well.
+
+Multiple english texts might map to the same command, sort of like
+AIML expands each fact into multiple english forms that could be
+asking for the fact. "alarm 10 min" and "count down 10 minutes" might
+be the same command.
+
+Example: countdown
+
+3:29 db is empty
+3:30 issue1 (3:30, drewp, "count down 5 min")
+3:31 nothing happens, since it's not after 3:35
+3:35 need an alarm to go to drewp, since issue1 asked for it
+(based on idle times, also in the log, we decide to send a jabber message)
+3:35 send jabber message, and log that we've successfully carried out the notification for issue1
+
+Example: lights out, with a cancel
+
+11:29 lights are on due to previous log events
+11:30 issue1 (11:30, drewp, "lights out")
+11:30 start a 3 minute fade of the lights
+11:31 issue2 (11:31, kelsi, "cancel lights out")
+11:31 we figure out where the lights were before 11:30 and start a 5 second fade to that level
+11:40 drew asks why the lights are on: they're on because a lights out command was canceled, and before the lights out command the lights were on due to ...
+
+Example: light level adjustment
+
+3:01 light at 0%
+3:02 issue1 (3:02, drew, "light")
+3:02 light at 100%
+3:03 why is the light at 100%? Because drew requested light at 3:02
+3:05 issue2 (3:05, kelsi, "light down 20%")
+3:05 light at 80%
+3:06 why is the light at 80%? Because kelsi requested a 20% reduction from drew's requested light
+3:10 issue3 (3:10, drew, "light to 50%")
+3:10 light at 50%
+3:11 why is the light at 50%? Because drew set it at 3:10
+3:12 issue4 (3:12, drew, "undo")
+3:12 light at 80%
+3:13 why is the light at 80%? Because kelsi requested a 20% reduction from drew's requested light
+3:15 how much power has the light used since 3:00? .06kWh, or .4% of today's expected power, or $0.007 of commercial electricity
+
+Example: podcast
+
+3:01 issue1 (3:01, kelsi, "play new")
+3:01 start playing radio4.mp3
+3:03 why is this playing? because kelsi asked for new radio and this is the oldest unheard podcast that kelsi would like
+3:15 log that radio4.mp3 is done
+
+Example: morning alarm
+
+21:00 timed event: rescan my work calendar. the first meeting at 10:00 means drew needs to be at work by 10:00, which means leave home by 09:40, which means get up by 08:40.
+23:30 alarm? it's set to 08:40 because of a meeting at 10:00
+
+suggested commands list now contains an alarm cancel and a snooze.
+
+
+Example: thermostat heater
+
+
+
+Example: temporary watch on web logs
+
+3:01 for the next week, tell me when new visitors come to bigasterisk.com/foo
+
+
+Example: chasing me down for a notification
+
+some notification systems have a timeout, like we can send a jabber
+message to a presence=away person, but if the presence doesn't return
+quickly enough, we may want to send SMS
+
+
+Example: choosing music
+
+2:30 logged: saw kelsi's phone
+3:01 issue1 (3:01, drew, "play")
+3:01 pick a song that drew and kelsi both like. announce "playing music for drew and kelsi"
+
+Example: daily news
+
+7:00 issue1 (7:00, kelsi, "news")
+7:00 """
+you have 21 new emails; 1 is from ryan. 
+It's rolando's birthday. 
+o/` On the calendar: drew's first meeting at 9:30. thai lunch with samantha at 12:00. 
+o/`coming soon: special family dinner is this saturday. fridge cleanup is in 3 days. apollo's birthday in 2 days.
+o/` overnight messages: lauren says 'hi kelsi'. drew says 'i upgraded photo.bigasterisk.com'.
+An adam carolla show segment is available called "teresa's news with joel mchale".
+"""
+this is also available as an rss feed.
+
+more news items:
+drew: exarkun addressed you on #twisted channel two hours ago
+
