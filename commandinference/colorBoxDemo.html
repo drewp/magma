@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title></title>
+    <style type="text/css">
+      #box {
+	  position: relative;
+	  width: 200px; 
+	  height: 200px;
+	  border: 2px solid black;
+      }
+    </style>
+    <script type="text/javascript" src="http://bigasterisk.com/magma/mpd/dash/MochiKit-custom1.js"></script>
+    <script type="text/javascript">
+      // <![CDATA[
+      function addCommand(uri) {
+        
+	  var d = doXHR("addCommand", {
+              method: "POST", 
+              sendContent: queryString({
+		  uri: uri, 
+		  time: new Date().getTime() / 1000.0,
+		  user: "http://drewp"
+	      })
+	  });
+	  d.addCallback(function (xhr) {
+              var result = evalJSONRequest(xhr);
+	      updateBoxColor();
+	  });
+      }
+      // ]]>
+    </script>
+
+  </head>
+  <body>
+    
+    <div onclick="javascript:addCommand(this.textContent)">http://bigasterisk.com/magma/cmd/boxRed</div>
+
+    Box
+    <div id="box" style="background: red;"/>
+
+  </body>
+</html>

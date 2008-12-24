@@ -1,5 +1,5 @@
 
-class Log(object):
+class CommandLog(object):
     """
     programs can call these methods to query the log, but they can
     also listen to dispatcher events. The sender will be the string
