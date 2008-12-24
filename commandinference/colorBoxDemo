@@ -1,0 +1,42 @@
+#!/usr/bin/python
+import os, sys
+from twisted.internet import reactor
+from twisted.python import log
+from twisted.python.util import sibpath
+from nevow.appserver import NevowSite
+from nevow import rend, static, loaders, tags as T, inevow, json
+
+import db
+
+
+class Main(rend.Page):
+    docFactory = loaders.xmlfile("colorBoxDemo.html")
+
+    def __init__(self, cmdlog):
+        self.cmdlog = cmdlog
+        
+    def child_addCommand(self, ctx):
+        return AddCommand(self.cmdlog)
+
+class AddCommand(rend.Page):
+    def __init__(self, cmdlog):
+        self.cmdlog = cmdlog
+        
+    def renderHTTP(self, ctx):
+        # assert POST
+
+        
+        request = inevow.IRequest(ctx)
+        request.setHeader("Content-Type", "text/javascript")
+
+        print "add", ctx.arg('uri'), ctx.arg('time'), ctx.arg('user')
+
+        return json.serialize({u'ok':u'ok'})
+
+
+commandLog = db.CommandLog()
+
+log.startLogging(sys.stdout)
+
+reactor.listenTCP(9014, NevowSite(Main(commandLog)))
+reactor.run()
