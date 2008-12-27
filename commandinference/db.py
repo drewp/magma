@@ -29,11 +29,18 @@ class CommandLog(object):
     returning new URIs for each issued command, and you can look up
     the user in the graph yourself.    
     """
-    def __init__(self, graph):
+    def __init__(self, graph, writeGraph=None):
         """
         graph is an rdflib graph where we store the added commands.
+
+        All queries are done on graph, but new triples are written to
+        writeGraph, if it is provided. writeGraph should be a subset
+        of graph.
         """
         self.graph = graph
+        self.writeGraph = writeGraph
+        if self.writeGraph is None:
+            self.writeGraph = graph
         
     def addCommand(self, uri, time, user):
         """record a newly issued command
@@ -50,7 +57,7 @@ class CommandLog(object):
 
         user is the URI of the person who issued the command
         """
-        g = self.graph
+        g = self.writeGraph
         issue = self._issueUri(uri, time, user) 
         g.add((issue, RDF.type, CL['IssuedCommand']))
         g.add((issue, CL['command'], uri))
