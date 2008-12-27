@@ -29,6 +29,21 @@ class TestLogAdd(WithGraph, unittest.TestCase):
         self.cl.addCommand(CMD['c1'], dateTime('18:00:00'), USER['drewp'])
         self.assertEqual(len(self.cl), 1)
 
+class TestCommandLogGraphInit(unittest.TestCase):
+    def testUsesSingleGraphForRW(self):
+        g1 = Graph()
+        c = CommandLog(g1)
+        c.addCommand(CMD['c1'], dateTime('18:00:00'), USER['drewp'])
+        self.assert_(len(g1) > 0)
+
+    def testWritesToSeparateGraph(self):
+        g1 = Graph()
+        g2 = Graph()
+        c = CommandLog(g1, g2)
+        c.addCommand(CMD['c1'], dateTime('18:00:00'), USER['drewp'])
+        self.assertEqual(len(g1), 0)
+        self.assert_(len(g2) > 0)
+
 class TestLogCustomQuery(WithGraph, unittest.TestCase):
     def setUp(self):
         super(TestLogCustomQuery, self).setUp()
