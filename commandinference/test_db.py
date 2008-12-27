@@ -55,5 +55,10 @@ class TestLogCustomQuery(WithGraph, unittest.TestCase):
         self.assertEqual(self.cl.lastCommandOfClass(CMD['Bright']),
                          (CMD['c2'], dateTime('18:01:00'), USER['drewp']))
 
+    def testLastCommandNoData(self):
+        self.assertRaises(ValueError,
+                          self.cl.lastCommandOfClass, CMD['Nonexist'])
+        
+
 # todo: times in different zones probably don't sort correctly unless
 # the rdf store knows a lot about dates

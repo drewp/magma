@@ -1,0 +1,14 @@
+@prefix : <http://bigasterisk.com/ns/command/v1#> .
+@prefix cmd: <http://bigasterisk.com/magma/cmd/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cmd:boxRed a cmd:BoxColor; cmd:color "#ff0000" .
+cmd:boxGreen a cmd:BoxColor; cmd:color "#00ff00" .
+cmd:boxBlue a cmd:BoxColor; cmd:color "#0000ff" .
+
+[ a :IssuedCommand;
+    :command cmd:boxRed;
+    dcterms:created "2008-12-27T07:22:01.47Z"^^xsd:dateTime;
+    dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
+  ]

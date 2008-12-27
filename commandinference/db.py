@@ -81,6 +81,7 @@ class CommandLog(object):
                 } ORDER BY DESC(?t) LIMIT 1""",
                          initNs=NS, initBindings={Variable("?cls") : class_}):
             return c, t, u
+        raise ValueError("No commands found of class %r" % class_)
         
     def recentCommands(self, n=10):
         """

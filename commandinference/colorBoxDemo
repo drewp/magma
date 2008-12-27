@@ -1,13 +1,41 @@
 #!/usr/bin/python
-import os, sys
+"""
+standalone twisted web server that shows a UI for changing the color of a box.
+
+todo:
+- make all the uris resolve to docs
+- get the timezones right
+- don't show any URLs, just labels
+- command property inspector
+- switch to persistent store
+- make a cmdline demo that also adds commands
+- addCommand http call should return the new issue uri (or nothing)
+
+"""
+import sys
 from twisted.internet import reactor
 from twisted.python import log
-from twisted.python.util import sibpath
 from nevow.appserver import NevowSite
-from nevow import rend, static, loaders, tags as T, inevow, json
+from nevow import rend, static, loaders, inevow, json, url
+from rdflib.Graph import Graph
+from rdflib import Literal, URIRef, Namespace, StringInputSource
+
+sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
+                sys.version[:3])
+import iso8601
 
 import db
+XS = Namespace("http://www.w3.org/2001/XMLSchema#")
+CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 
+def returnPage(contentType, text):
+    # why is this so hard! maybe i should use plain old t.w.resources?
+    class Ret(rend.Page):
+        def renderHTTP(self, ctx):
+            request = inevow.IRequest(ctx)
+            request.setHeader("Content-Type", contentType)
+            return text
+    return Ret()
 
 class Main(rend.Page):
     docFactory = loaders.xmlfile("colorBoxDemo.html")
@@ -16,25 +44,52 @@ class Main(rend.Page):
         self.cmdlog = cmdlog
         
     def child_addCommand(self, ctx):
-        return AddCommand(self.cmdlog)
-
-class AddCommand(rend.Page):
-    def __init__(self, cmdlog):
-        self.cmdlog = cmdlog
-        
-    def renderHTTP(self, ctx):
-        # assert POST
-
-        
         request = inevow.IRequest(ctx)
-        request.setHeader("Content-Type", "text/javascript")
+        if request.method != "POST":
+            raise ValueError("addCommand only takes POST")
 
-        print "add", ctx.arg('uri'), ctx.arg('time'), ctx.arg('user')
+        # nevow has a better form than this, i hope
+        request.content.seek(0)
+        args = dict(url.unquerify(request.content.read()))
 
-        return json.serialize({u'ok':u'ok'})
+        t = iso8601.tostring(float(args['time'])) # losing timezone here
+        self.cmdlog.addCommand(URIRef(args['uri']),
+                               Literal(t, datatype=XS['dateTime']),
+                               URIRef(args['user']))
 
+        return returnPage("text/javascript",
+                          json.serialize({u'ok' : u'ok'})) # ??
 
-commandLog = db.CommandLog()
+    def child_boxColor(self, ctx):
+        """
+        /boxColor returns a string like '#ff0000' for what color the
+        box currently is
+        """
+        cmd, t, u = self.cmdlog.lastCommandOfClass(CMD['BoxColor'])
+        color = self.cmdlog.graph.value(cmd, CMD['color'])
+        return returnPage("text/plain", color.encode('utf-8'))
+
+    def child_static(self, ctx):
+        return static.File("static")
+
+    def child_history(self, ctx):
+        return returnPage("text/javascript",
+                          json.serialize(list(self.cmdlog.recentCommands(10))))
+
+    def child_store(self, ctx):
+        """
+        since I don't have the negotiation stuff right, use this to
+        see the store in N3:
+        
+        curl -s http://localhost:9014/store | cwm --rdf --n3
+        """
+        return returnPage("application/rdf+xml",
+                          self.cmdlog.graph.serialize(format='xml'))
+        
+g = Graph()
+g.parse("colorBoxSeed.n3", format='n3')
+
+commandLog = db.CommandLog(g)
 
 log.startLogging(sys.stdout)
 
