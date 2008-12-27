@@ -11,35 +11,90 @@
 	  height: 200px;
 	  border: 2px solid black;
       }
+      table.commandHistory {
+	  border-collapse: collapse;
+      }
+      .commandHistory td, .commandHistory th {
+	  border: 1px solid gray;
+      }
+
+      div.button {
+	  background:#CCCCCC;
+	  border:1px outset gray;
+	  cursor:pointer;
+	  margin:3px;
+      }
     </style>
-    <script type="text/javascript" src="http://bigasterisk.com/magma/mpd/dash/MochiKit-custom1.js"></script>
+    <!--
+	<script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.min.js" ></script>  
+    -->
+    <script src="static/jquery-1.2.6.min.js"></script>
     <script type="text/javascript">
       // <![CDATA[
+      jQuery.noConflict();
+      var J = jQuery;
       function addCommand(uri) {
-        
-	  var d = doXHR("addCommand", {
-              method: "POST", 
-              sendContent: queryString({
-		  uri: uri, 
-		  time: new Date().getTime() / 1000.0,
-		  user: "http://drewp"
-	      })
-	  });
-	  d.addCallback(function (xhr) {
-              var result = evalJSONRequest(xhr);
-	      updateBoxColor();
+	  J.post('addCommand', 
+		 {
+		     uri: uri, 
+		     time: new Date().getTime() / 1000.0,
+		     user: "http://drewp"
+		 }, function (data) {
+		     console.log("post", data);
+		     updateBoxColor();
+		     updateHistory();
+		 }, 'json');
+      }
+
+      function updateHistory() {
+	  J.getJSON("history", function (data) {
+	      var rows = J('.commandHistory > tbody');
+	      rows.empty();
+	      J.each(data, function(i, item) {
+		  rows.append(J("<tr>").
+			      append(J("<td>").text(item[0])).
+			      append(J("<td>").text(item[1])).
+			      append(J("<td>").text(item[2])));
+	      });
 	  });
       }
+      jQuery(updateHistory);
+
+      function updateBoxColor() {
+	  J.get('boxColor', function (color) {
+	      J("#box").css('background', color);
+	  });
+      }
+      jQuery(updateBoxColor);
       // ]]>
     </script>
 
   </head>
   <body>
-    
-    <div onclick="javascript:addCommand(this.textContent)">http://bigasterisk.com/magma/cmd/boxRed</div>
+    <h3>Click a command to issue:</h3>
+    <div class="button" onclick="javascript:addCommand(this.textContent)">http://bigasterisk.com/magma/cmd/boxRed</div>
+    <div class="button" onclick="javascript:addCommand(this.textContent)">http://bigasterisk.com/magma/cmd/boxGreen</div>
+    <div class="button" onclick="javascript:addCommand(this.textContent)">http://bigasterisk.com/magma/cmd/boxBlue</div>
 
-    Box
-    <div id="box" style="background: red;"/>
+    <h3>Output box</h3>
+    <div id="box"/>
+    <div class="button" 
+	 onclick="javascript:updateBoxColor()">refresh color</div>
+
+    <h3>Command history</h3>
+    <table class="commandHistory">
+      <thead>
+	<tr><th>Command</th><th>Time</th><th>User</th></tr>
+      </thead>
+      <tbody>
+	<tr><td>boxRed</td><td>2008-12-25 17:54</td><td>drewp</td></tr>
+      </tbody>
+    </table>
+    <div class="button" 
+	 onclick="javascript:updateHistory()">refresh history</div>
+
+    <h3>Data store</h3>
+    <a href="store">as RDF/XML</a>
 
   </body>
 </html>
