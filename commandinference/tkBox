@@ -1,0 +1,19 @@
+#!/usr/bin/python
+"""
+demo of a listener program that watches box color commands
+"""
+import urllib
+import Tkinter as tk
+
+root = tk.Tk()
+
+box = tk.Label(root, width=20, height=10)
+box.pack()
+
+def update():
+    color = urllib.urlopen("http://localhost:9014/boxColor").read()
+    box.config(bg=color)
+    root.after(1000, update)
+update()
+
+root.mainloop()
