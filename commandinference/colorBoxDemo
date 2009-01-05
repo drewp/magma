@@ -12,12 +12,12 @@ todo:
 - addCommand http call should return the new issue uri (or nothing)
 
 """
-import sys
+import sys, atexit
 from twisted.internet import reactor
 from twisted.python import log
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, inevow, json, url
-from rdflib.Graph import Graph
+from rdflib.Graph import Graph, ReadOnlyGraphAggregate
 from rdflib import Literal, URIRef, Namespace, StringInputSource
 
 sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
@@ -86,10 +86,15 @@ class Main(rend.Page):
         return returnPage("application/rdf+xml",
                           self.cmdlog.graph.serialize(format='xml'))
         
-g = Graph()
-g.parse("colorBoxSeed.n3", format='n3')
+seedGraph = Graph()
+seedGraph.parse("colorBoxSeed.n3", format='n3')
 
-commandLog = db.CommandLog(g)
+outGraph = Graph('Sleepycat')
+outGraph.open('db')
+print "db opened with %s triples" % len(outGraph)
+atexit.register(outGraph.close)
+
+commandLog = db.CommandLog(ReadOnlyGraphAggregate([seedGraph, outGraph]), outGraph)
 
 log.startLogging(sys.stdout)
 

@@ -63,6 +63,7 @@ class CommandLog(object):
         g.add((issue, CL['command'], uri))
         g.add((issue, DCTERMS['created'], time))
         g.add((issue, DCTERMS['creator'], user))
+        g.commit()
         
 
     def _issueUri(self, uri, time, user):
