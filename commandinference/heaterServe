@@ -1,0 +1,36 @@
+#!/usr/bin/python
+import sys, atexit
+from twisted.internet import reactor
+from twisted.python import log
+from twisted.internet.utils import getProcessOutput 
+from nevow.appserver import NevowSite
+from nevow import rend, static, loaders
+from rdflib.Graph import ConjunctiveGraph, ReadOnlyGraphAggregate
+from rdflib import Literal, URIRef, Namespace
+
+sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
+                sys.version[:3])
+import iso8601
+
+import db
+from commandpage import CommandSite, returnPage, buildCommandLog
+
+XS = Namespace("http://www.w3.org/2001/XMLSchema#")
+CMD = Namespace("http://bigasterisk.com/magma/cmd/")
+
+class Main(CommandSite, rend.Page):
+    docFactory = loaders.xmlfile("heater.html")
+
+    def child_static(self, ctx):
+        return static.File("static")
+
+    def render_hist(self, ctx, data):
+        return getProcessOutput('/usr/bin/tail',
+                                ('-n', '5', '/my/proj/room/log.parport',))
+
+commandLog = buildCommandLog('heaterCommands.n3')
+
+log.startLogging(sys.stdout)
+
+reactor.listenTCP(9015, NevowSite(Main(commandLog)))
+reactor.run()

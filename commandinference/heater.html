@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title></title>
+    <style type="text/css">
+      #box {
+	  position: relative;
+	  width: 200px; 
+	  height: 200px;
+	  border: 2px solid black;
+      }
+      table.commandHistory {
+	  border-collapse: collapse;
+      }
+      .commandHistory td, .commandHistory th {
+	  border: 1px solid gray;
+      }
+
+      div.button {
+	  background:#CCCCCC;
+	  border:1px outset gray;
+	  cursor:pointer;
+	  margin:3px;
+      }
+    </style>
+    <!--
+	<script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.2.6.min.js" ></script>  
+    -->
+    <script src="static/jquery-1.2.6.min.js"></script>
+    <script type="text/javascript">
+      // <![CDATA[
+      jQuery.noConflict();
+      var J = jQuery;
+      function addCommand(uri) {
+	  J.post('addCommand', 
+		 {
+		     uri: uri, 
+		     time: new Date().getTime() / 1000.0,
+		     user: "http://drewp"
+		 }, function (data) {
+		     console.log("post", data);
+		     updateBoxColor();
+		     updateHistory();
+		 }, 'json');
+      }
+
+      function updateHistory() {
+	  J.getJSON("history", function (data) {
+	      var rows = J('.commandHistory > tbody');
+	      rows.empty();
+	      J.each(data, function(i, item) {
+		  rows.append(J("<tr>").
+			      append(J("<td>").text(item[0])).
+			      append(J("<td>").text(item[1])).
+			      append(J("<td>").text(item[2])));
+	      });
+	  });
+      }
+      jQuery(updateHistory);
+
+      function updateBoxColor() {
+	  J.get('boxColor', function (color) {
+	      J("#box").css('background', color);
+	  });
+      }
+      jQuery(updateBoxColor);
+      // ]]>
+    </script>
+
+  </head>
+  <body>
+    <h3>Use this form from cell phones</h3>
+    <form method="post" action="addCommand">
+      <input type="hidden" name="uri" value="http://bigasterisk.com/magma/cmd/heaterOff"/>
+      <input type="submit" value="off"/>
+    </form>
+
+    <form method="post" action="addCommand">
+      <input type="hidden" name="uri" value="http://bigasterisk.com/magma/cmd/heaterOn20Min"/>
+      <input type="submit" value="on for 20m"/>
+    </form>
+
+    <h3>Click a command to issue:</h3>
+    <div class="button" onclick="javascript:addCommand('http://bigasterisk.com/magma/cmd/heaterOff')">Heater off</div>
+    <div class="button" onclick="javascript:addCommand('http://bigasterisk.com/magma/cmd/heaterOn20Min')">Heater on for 20min</div>
+    <div class="button" onclick="javascript:addCommand('http://bigasterisk.com/magma/cmd/heaterOn1Min')">Heater on for 1min</div>
+
+    <h3>Output</h3>
+    <pre><n:invisible n:render="hist"/></pre>
+    <p>(output log doesn't update yet- reload page to see newest data)</p>
+
+    <h3>Command history</h3>
+    <table class="commandHistory">
+      <thead>
+	<tr><th>Command</th><th>Time</th><th>User</th></tr>
+      </thead>
+      <tbody>
+	<tr><td>...</td><td>...</td><td>...</td></tr>
+      </tbody>
+    </table>
+    <div class="button" 
+	 onclick="javascript:updateHistory()">refresh history</div>
+
+    <h3>Data store</h3>
+    <a href="store">as RDF/XML</a>
+
+  </body>
+</html>

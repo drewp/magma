@@ -1,0 +1,71 @@
+#!/usr/bin/python
+"""
+watch for heater commands and send pin signals to io.solarisParport
+"""
+import sys, time, atexit
+
+sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
+                sys.version[:3])
+from twisted.internet import reactor
+from louie import dispatcher
+from rdflib import Namespace, RDF
+import iso8601
+from commandpage import buildCommandLog, CMD
+from twisted.internet import task
+sys.path.append('/my/proj/room')
+import hubclient
+
+PORT = Namespace("http://bang.bigasterisk.com/parport/parport0#")
+ROOM = Namespace("http://projects.bigasterisk.com/room/")
+
+hubclient.connect()
+
+commandLog = buildCommandLog('heaterCommands.n3')
+
+class Loop(object):
+    def __init__(self):
+        self.lastMsg = None
+        self.lastSent = None
+        
+    def poll(self):
+        try:
+            cmd, t, user = commandLog.lastCommandOfClass(CMD['Heater'])
+            now = time.time()
+            if cmd == CMD['heaterOff']:
+                self.sendHeater(False)
+            elif (cmd, RDF.type, CMD['TimedOn']) in commandLog.graph:
+                mins = float(commandLog.graph.value(cmd, CMD['onForMins']))
+                endTime = iso8601.parse(str(t)) + mins * 60
+                if endTime > now:
+                    self.boringMsg("heater on, %s min left" %
+                                   ((endTime - now) / 60))
+                    self.sendHeater(True)
+                else:
+                    # last cmd expired; we should now look at previous ones
+                    self.sendHeater(False)
+        except Exception, e:
+            print "emergency off: %s" % e
+            self.sendHeater(False)
+            raise
+
+    def boringMsg(self, msg, minInterval=120):
+        """throttled print"""
+        now = time.time()
+        if now - minInterval > self.lastMsg:
+            print msg
+            self.lastMsg = now
+        
+    def sendHeater(self, on):
+        if on != self.lastSent: # this assumes we're the only one
+                                # talking to the heater pin, which
+                                # might not be true
+            print "send pin3", on
+            dispatcher.send((str(PORT['pin3']), str(ROOM['value']), None),
+                            obj=int(on))
+        self.lastSent = on
+
+loop = Loop()
+atexit.register(lambda: loop.sendHeater(False))
+task.LoopingCall(loop.poll).start(2)
+
+reactor.run()
