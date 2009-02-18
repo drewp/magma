@@ -21,6 +21,9 @@ class Running(rend.Page):
 
 class Main(rend.Page):
     docFactory = loaders.xmlfile("magma-sample2.html")
+    # if this is from a phone, use the little menu. the big menu
+    # should also be ext, and have links to all the inner services.
+    
     def child_running(self, ctx):
         return Running()
     def child_net(self, ctx):
