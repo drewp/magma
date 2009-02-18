@@ -67,5 +67,5 @@ class Loop(object):
 loop = Loop()
 atexit.register(lambda: loop.sendHeater(False))
 task.LoopingCall(loop.poll).start(2)
-
+print "watching command log for heater commands"
 reactor.run()
