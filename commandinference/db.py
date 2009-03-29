@@ -78,6 +78,11 @@ class CommandLog(object):
         """
         the most recent (command, time, user) entry where the command
         has the given rdf:type
+
+        in sesame:
+        curl -H "Accept: application/sparql-results+json" "http://bang:8080/openrdf-sesame/repositories/cmd?query=PREFIX%20cl%3A%3Chttp%3A%2F%2Fbigasterisk.com%2Fns%2Fcommand%2Fv1%23%3E%0APREFIX%20rdf%3A%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%3E%0APREFIX%20dcterms%3A%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2F%3E%0APREFIX%20mc%3A%3Chttp%3A%2F%2Fbigasterisk.com%2Fmagma%2Fcmd%2F%3E%0A%0ASELECT%20%3Fc%20%3Ft%20%3Fu%20WHERE%20\{%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Fissue%20a%20cl%3AIssuedCommand%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20cl%3Acommand%20%3Fc%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Fc%20a%20%20mc%3AHeater.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Fissue%20dcterms%3Acreated%20%3Ft%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20dcterms%3Acreator%20%3Fu%20.%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20\}%20ORDER%20BY%20DESC%28%3Ft%29%20LIMIT%201"
+
+        
         """
         for c, t, u in self.graph.query("""
                 SELECT ?c ?t ?u WHERE {
