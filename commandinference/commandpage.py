@@ -1,4 +1,5 @@
 import iso8601, atexit, time
+from twisted.python.util import sibpath
 from rdflib import URIRef, Literal, Namespace
 from rdflib.Graph import ConjunctiveGraph, ReadOnlyGraphAggregate
 from nevow import inevow, url, json, rend
@@ -66,7 +67,7 @@ def buildCommandLog(seedGraphFilename, sleepycatDir="db"):
     seedGraph.parse(seedGraphFilename, format='n3')
 
     outGraph = ConjunctiveGraph('Sleepycat')
-    outGraph.open('db')
+    outGraph.open(sibpath(__file__, 'db'))
     atexit.register(lambda: outGraph.close(commit_pending_transaction=True))
 
     commandLog = db.CommandLog(ReadOnlyGraphAggregate([seedGraph, outGraph]),

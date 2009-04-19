@@ -1,0 +1,14 @@
+@prefix : <http://bigasterisk.com/ns/command/v1#> .
+@prefix cmd: <http://bigasterisk.com/magma/cmd/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+cmd:bedroomRedLightOff a cmd:RedLight; rdfs:label "Bedroom red light off"; cmd:value "off" .
+cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on"; cmd:value "on" .
+
+[ a :IssuedCommand;
+    :command cmd:bedroomRedLightOff;
+    dcterms:created "2009-04-01T12:00:00Z"^^xsd:dateTime;
+    dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
+  ] .
