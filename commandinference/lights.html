@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title></title>
+    <style type="text/css">
+      #box {
+	  position: relative;
+	  width: 200px; 
+	  height: 200px;
+	  border: 2px solid black;
+      }
+      table.commandHistory {
+	  border-collapse: collapse;
+      }
+      .commandHistory td, .commandHistory th {
+	  border: 1px solid gray;
+      }
+
+      div.button {
+	  background:#CCCCCC;
+	  border:1px outset gray;
+	  cursor:pointer;
+	  margin:3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>bedroom light</h3>
+    <form method="post" action="state">
+      <input type="hidden" name="name" value="bedroomred"/>
+      <input type="submit" name="value" value="off"/>
+    </form>
+
+    <form method="post" action="state">
+      <input type="hidden" name="name" value="bedroomred"/>
+      <input type="submit" name="value" value="on"/>
+    </form>
+
+  </body>
+</html>

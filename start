@@ -3,6 +3,8 @@ import os, sys
 from twisted.internet import reactor
 from twisted.python import log
 from twisted.python.util import sibpath
+from twisted.web.client import getPage
+from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json
 
@@ -30,6 +32,21 @@ class Main(rend.Page):
         return static.File("nets.html")
     def child_images(self, ctx):
         return static.File("images")
+
+    @inlineCallbacks
+    def render_lights(self, ctx, data):
+
+        ret = json.parse((yield getPage(
+            "http://bigasterisk.com/magma/light/state?name=bedroomred",
+            headers={'Authorization' :
+                     inevow.IRequest(ctx).getHeader('Authorization')})))
+
+        currently = ret['value']
+        returnValue(T.form(method="POST", action="light/state")[
+            T.input(type="hidden", name="name", value="bedroomred"),
+            T.div["bedroom light, change to ",
+                  T.input(type="submit", name="value",
+                          value="off" if currently=='on' else "on")]])
     
 setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 

@@ -1,0 +1,61 @@
+#!/usr/bin/python
+import sys, atexit, time
+from twisted.internet import reactor
+from twisted.python import log
+from twisted.python.util import sibpath
+from twisted.internet.utils import getProcessOutput 
+from nevow.appserver import NevowSite
+from nevow import rend, static, loaders, inevow, json, url
+from rdflib.Graph import ConjunctiveGraph, ReadOnlyGraphAggregate
+from rdflib import Literal, URIRef, Namespace
+
+sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
+                sys.version[:3])
+import iso8601
+
+import db
+from commandpage import CommandSite, returnPage, buildCommandLog
+
+XS = Namespace("http://www.w3.org/2001/XMLSchema#")
+CMD = Namespace("http://bigasterisk.com/magma/cmd/")
+
+class Main(CommandSite, rend.Page):
+    docFactory = loaders.xmlfile("lights.html")
+
+    def child_static(self, ctx):
+        return static.File("static")
+
+    def child_state(self, ctx):
+        """
+        get state?name=bedroomred -> {'value' : 'off'}
+        post state?name=bedroomred <- value=on
+        """
+        cmdlog = self.cmdlog
+        class Ret(rend.Page):
+            def renderHTTP(self, ctx):
+                name = ctx.arg('name')
+                assert name == 'bedroomred', name
+
+                req = inevow.IRequest(ctx)
+                if req.method == 'GET':
+                    (cmd, t, u) = commandLog.lastCommandOfClass(CMD['RedLight'])
+                    value = commandLog.graph.value(cmd, CMD['value'])
+                    print "last", (cmd, t, u, value)
+                    req.setHeader("Content-Type", "application/json")
+                    return json.serialize({u'value' : unicode(value)})
+                elif req.method == 'POST':
+                    t = iso8601.tostring(time.time()) # losing timezone here
+                    cmdlog.addCommand(CMD['bedroomRedLightOff'] if ctx.arg('value') == 'off' else CMD['bedroomRedLightOn'],
+                                      Literal(t, datatype=XS['dateTime']),
+                                      URIRef('tbd2'))
+                    return url.URL.fromString("http://bigasterisk.com/magma/")
+                else:
+                    raise NotImplementedError
+        return Ret()
+
+commandLog = buildCommandLog(sibpath(__file__, 'lightCommands.n3'))
+
+log.startLogging(sys.stdout)
+
+reactor.listenTCP(9018, NevowSite(Main(commandLog)))
+reactor.run()
