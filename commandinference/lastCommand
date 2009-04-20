@@ -1,0 +1,10 @@
+#!/usr/bin/python
+from cmdline import getCommandLog, prettyCommand, uriFromArg
+import optparse
+
+parser = optparse.OptionParser()
+parser.add_option('-c', help='class uri or abbreviation (not command uri)')
+opts, args = parser.parse_args()
+
+cl = getCommandLog()
+print prettyCommand(cl.lastCommandOfClass(uriFromArg(opts.c)))

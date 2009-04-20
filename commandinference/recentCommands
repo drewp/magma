@@ -1,0 +1,11 @@
+#!/usr/bin/python
+from cmdline import getCommandLog, prettyCommand, uriFromArg
+import optparse
+
+parser = optparse.OptionParser()
+parser.add_option('-n', help='number of commands', type='int', default=10)
+opts, args = parser.parse_args()
+
+cl = getCommandLog()
+for c in cl.recentCommands(n=opts.n):
+    print prettyCommand(c) 

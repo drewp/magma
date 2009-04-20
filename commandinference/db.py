@@ -4,7 +4,8 @@ maybe the Command class will be made there. But also, usually it's
 just the command uri that you need, and that's a regular rdf resource.
 """
 import sys, urllib
-from rdflib import URIRef, RDF, Namespace, Variable
+from rdflib import URIRef, RDF, Namespace, Variable, Literal
+from time import strftime
 
 sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
                 sys.version[:3])
@@ -31,7 +32,7 @@ class CommandLog(object):
     """
     def __init__(self, graph, writeGraph=None):
         """
-        graph is an rdflib graph where we store the added commands.
+        graph is an rdflib Graph2 where we store the added commands.
 
         All queries are done on graph, but new triples are written to
         writeGraph, if it is provided. writeGraph should be a subset
@@ -57,14 +58,21 @@ class CommandLog(object):
 
         user is the URI of the person who issued the command
         """
+        assert isinstance(time, Literal)
+
+        #if not self.graph.contains(uri, RDF.type, command
+        
         g = self.writeGraph
         issue = self._issueUri(uri, time, user) 
-        g.add((issue, RDF.type, CL['IssuedCommand']))
-        g.add((issue, CL['command'], uri))
-        g.add((issue, DCTERMS['created'], time))
-        g.add((issue, DCTERMS['creator'], user))
+        g.add((issue, RDF.type, CL['IssuedCommand']),
+              (issue, CL['command'], uri),
+              (issue, DCTERMS['created'], time),
+              (issue, DCTERMS['creator'], user),
+              context=CL[strftime('commands/%Y/%m')]
+              )
         g.commit()
-        
+
+        # ping listeners here
 
     def _issueUri(self, uri, time, user):
         """namespace has not been sorted out yet, and it might be
@@ -84,7 +92,7 @@ class CommandLog(object):
 
         
         """
-        for c, t, u in self.graph.query("""
+        for row in self.graph.queryd("""
                 SELECT ?c ?t ?u WHERE {
                   ?issue a cl:IssuedCommand;
                          cl:command ?c .
@@ -92,8 +100,8 @@ class CommandLog(object):
                   ?issue dcterms:created ?t;
                          dcterms:creator ?u .
                 } ORDER BY DESC(?t) LIMIT 1""",
-                         initNs=NS, initBindings={Variable("?cls") : class_}):
-            return c, t, u
+                         initBindings={Variable("cls") : class_}):
+            return row['c'], row['t'], row['u']
         raise ValueError("No commands found of class %r" % class_)
         
     def recentCommands(self, n=10):
@@ -105,14 +113,14 @@ class CommandLog(object):
         Why does this take a limit argument AND return an iterator?
         That seems redundant.
         """
-        for c, t, u in self.graph.query("""
+        for row in self.graph.queryd("""
               SELECT ?c ?t ?u WHERE {
                 ?issue a cl:IssuedCommand;
                        cl:command ?c;
                        dcterms:created ?t;
                        dcterms:creator ?u .
-                       } ORDER BY DESC(?t) LIMIT %s""" % n, initNs=NS):
-            yield (c, t, u)
+                       } ORDER BY DESC(?t) LIMIT %s""" % n):
+            yield (row['c'], row['t'], row['u'])
             
         
     def __len__(self):

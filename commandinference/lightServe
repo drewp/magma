@@ -14,7 +14,8 @@ sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
 import iso8601
 
 import db
-from commandpage import CommandSite, returnPage, buildCommandLog
+from commandpage import CommandSite, returnPage
+from dbclient import nowLiteral, getCommandLog
 
 XS = Namespace("http://www.w3.org/2001/XMLSchema#")
 CMD = Namespace("http://bigasterisk.com/magma/cmd/")
@@ -33,27 +34,36 @@ class Main(CommandSite, rend.Page):
         cmdlog = self.cmdlog
         class Ret(rend.Page):
             def renderHTTP(self, ctx):
+
+                # should be calling child_addCommand?
+                
                 name = ctx.arg('name')
                 assert name == 'bedroomred', name
 
                 req = inevow.IRequest(ctx)
                 if req.method == 'GET':
-                    (cmd, t, u) = commandLog.lastCommandOfClass(CMD['RedLight'])
-                    value = commandLog.graph.value(cmd, CMD['value'])
-                    print "last", (cmd, t, u, value)
                     req.setHeader("Content-Type", "application/json")
-                    return json.serialize({u'value' : unicode(value)})
+                    return lastCommandValueJson(cmdlog, cls=CMD['RedLight'])
                 elif req.method == 'POST':
-                    t = iso8601.tostring(time.time()) # losing timezone here
-                    cmdlog.addCommand(CMD['bedroomRedLightOff'] if ctx.arg('value') == 'off' else CMD['bedroomRedLightOn'],
-                                      Literal(t, datatype=XS['dateTime']),
-                                      URIRef('tbd2'))
+                    cmdlog.addCommand(
+                        CMD['bedroomRedLightOff'] if
+                        ctx.arg('value') == 'off' else
+                        CMD['bedroomRedLightOn'],
+                        nowLiteral(),
+                        URIRef('http://bigasterisk.com/magma/user_tbd'))
                     return url.URL.fromString("http://bigasterisk.com/magma/")
                 else:
                     raise NotImplementedError
         return Ret()
 
-commandLog = buildCommandLog(sibpath(__file__, 'lightCommands.n3'))
+def lastCommandValueJson(commandLog, cls):
+    (cmd, t, u) = commandLog.lastCommandOfClass(cls)
+    value = commandLog.graph.value(cmd, CMD['value'])
+    print "last", (cmd, t, u, value)
+    return json.serialize({u'value' : unicode(value)})
+
+
+commandLog = getCommandLog()
 
 log.startLogging(sys.stdout)
 

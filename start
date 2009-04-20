@@ -44,7 +44,7 @@ class Main(rend.Page):
         currently = ret['value']
         returnValue(T.form(method="POST", action="light/state")[
             T.input(type="hidden", name="name", value="bedroomred"),
-            T.div["bedroom light, change to ",
+            T.div["bedroom light ", T.span[currently], ", turn ",
                   T.input(type="submit", name="value",
                           value="off" if currently=='on' else "on")]])
     
