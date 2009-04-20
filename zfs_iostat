@@ -1,0 +1,17 @@
+#!/usr/bin/python -u
+
+# zpool iostat 1 2 | /my/site/magma/zfs_iostat
+# or fix it so it streams output from repeating iostat
+
+import sys
+from zfsparse import toBytes
+for line in sys.stdin:
+    if not line.startswith('stor3'):
+        continue
+    pool, used, avail, readop, writeop, readbyte, writebyte = toBytes(line).split()
+    div = 300000
+    r = int(float(readbyte) // div)
+    w = int(float(writebyte) // div)
+    if r + w > 2:
+        print "R" * r, "W" * w
+        sys.stdout.flush()
