@@ -3,12 +3,27 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-cmd:bedroomRedLightOff a cmd:RedLight; rdfs:label "Bedroom red light off"; cmd:value "off" .
-cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on"; cmd:value "on" .
+ #?!
+cmd:RedLight a cmd:PollMe .
+cmd:DeckLight a cmd:PollMe .
+
+
+cmd:bedroomRedLightOff a cmd:RedLight; rdfs:label "Bedroom red light off"; :value "off" .
+cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on"; :value "on" .
 
 [ a :IssuedCommand;
     :command cmd:bedroomRedLightOff;
+    dcterms:created "2009-04-01T12:00:00Z"^^xsd:dateTime;
+    dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
+  ] .
+
+cmd:deckLightOff a cmd:DeckLight; rdfs:label "Deck lights off"; :value "off" .
+cmd:deckLightOn a cmd:DeckLight; rdfs:label "Deck lights on"; :value "on" .
+
+[ a :IssuedCommand;
+    :command cmd:deckLightOff;
     dcterms:created "2009-04-01T12:00:00Z"^^xsd:dateTime;
     dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
   ] .

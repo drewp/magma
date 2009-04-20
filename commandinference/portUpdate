@@ -13,14 +13,13 @@ from louie import dispatcher
 from rdflib import Namespace, RDF
 import iso8601
 from cmdline import getCommandLog
+from db import CMD, CL, ROOM
 
 from twisted.internet import task
 sys.path.append('/my/proj/room')
 import hubclient
 
 PORT = Namespace("http://bang.bigasterisk.com/parport/parport0#")
-ROOM = Namespace("http://projects.bigasterisk.com/room/")
-CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 
 hubclient.connect()
 
@@ -29,16 +28,38 @@ commandLog = getCommandLog()
 class Loop(object):
     def __init__(self):
         self.lastMsg = None
-        self.lastSent = None
-        
+        self.lastHeater = None
+        self.lastLight = {} # cmdclass : value
+
+        self.pollClasses = [row['cls'] for row in commandLog.graph.queryd(
+            "SELECT ?cls WHERE { ?cls a cmd:PollMe . }")]
+                
     def poll(self):
+        for commandClass in self.pollClasses:
+            cmd, t, user = commandLog.lastCommandOfClass(commandClass)
+            value = commandLog.graph.value(cmd, CL['value'])
+
+            if self.lastLight.get(commandClass) != value:
+                oneShotPin = commandLog.graph.value(cmd, ROOM['oneShot'])
+                if oneShotPin is not None:
+                    self.sendPin(oneShotPin, 1) # it automatically turns off
+                else:
+                    raise NotImplementedError("don't know how to set %s" % cmd)
+                self.lastLight[commandClass] = value
+
+        self.pollHeater()
+
+    def pollHeater(self):
+        # this is a special case mostly because it was written
+        # first. Hopefully it can be folded into the more-general
+        # poller above.
         try:
             cmd, t, user = commandLog.lastCommandOfClass(CMD['Heater'])
             now = time.time()
             if cmd == CMD['heaterOff']:
                 self.sendHeater(False)
-            elif (cmd, RDF.type, CMD['TimedOn']) in commandLog.graph:
-                mins = float(commandLog.graph.value(cmd, CMD['onForMins']))
+            elif commandLog.graph.contains((cmd, RDF.type, CMD['TimedOn'])):
+                mins = float(commandLog.graph.value(cmd, CL['onForMins']))
                 endTime = iso8601.parse(str(t)) + mins * 60
                 if endTime > now:
                     self.boringMsg("heater on, %s min left" %
@@ -58,18 +79,21 @@ class Loop(object):
         if now - minInterval > self.lastMsg:
             print msg
             self.lastMsg = now
+
+    def sendPin(self, pinUri, value):
+        print "send %s (%s) = %s" % (pinUri, commandLog.graph.label(pinUri),
+                                     value)
+        dispatcher.send((str(pinUri), str(ROOM['value']), None), obj=value)
         
     def sendHeater(self, on):
-        if on != self.lastSent: # this assumes we're the only one
+        if on != self.lastHeater: # this assumes we're the only one
                                 # talking to the heater pin, which
                                 # might not be true
-            print "send pin3", on
-            dispatcher.send((str(PORT['pin3']), str(ROOM['value']), None),
-                            obj=int(on))
-        self.lastSent = on
+            self.sendPin(PORT['pin3'], int(on))
+        self.lastHeater = on
 
 loop = Loop()
 atexit.register(lambda: loop.sendHeater(False))
 task.LoopingCall(loop.poll).start(2)
-print "watching command log for heater commands"
+print "watching command log for new commands"
 reactor.run()

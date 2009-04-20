@@ -10,12 +10,12 @@ cmd:heaterOff a cmd:Heater;
 cmd:heaterOn20Min a cmd:Heater; 
   rdfs:label "Heater on for 20min";
   a cmd:TimedOn;
-  cmd:onForMins "20" .
+  :onForMins "20" .
 
 cmd:heaterOn1Min a cmd:Heater; 
   rdfs:label "Heater on for 1min";
   a cmd:TimedOn;
-  cmd:onForMins "1" .
+  :onForMins "1" .
 
 
 [ a :IssuedCommand;
