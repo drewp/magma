@@ -13,7 +13,10 @@ import iso8601
 
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
-NS = dict(cl=CL, dcterms=DCTERMS)
+XS = Namespace("http://www.w3.org/2001/XMLSchema#")
+CMD = Namespace("http://bigasterisk.com/magma/cmd/")
+ROOM = Namespace("http://projects.bigasterisk.com/room/")
+NS = dict(cl=CL, cmd=CMD, dcterms=DCTERMS)
 
 class CommandLog(object):
     """
@@ -68,6 +71,7 @@ class CommandLog(object):
               (issue, CL['command'], uri),
               (issue, DCTERMS['created'], time),
               (issue, DCTERMS['creator'], user),
+              # separate into smaller contexts for backup and sync purposes
               context=CL[strftime('commands/%Y/%m')]
               )
         g.commit()

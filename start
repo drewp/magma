@@ -36,17 +36,23 @@ class Main(rend.Page):
     @inlineCallbacks
     def render_lights(self, ctx, data):
 
-        ret = json.parse((yield getPage(
-            "http://bigasterisk.com/magma/light/state?name=bedroomred",
-            headers={'Authorization' :
-                     inevow.IRequest(ctx).getHeader('Authorization')})))
+        @inlineCallbacks
+        def line(queryName, label):
+            ret = json.parse((yield getPage(
+                "http://bigasterisk.com/magma/light/state?name=%s" % queryName,
+                headers={'Authorization' :
+                         inevow.IRequest(ctx).getHeader('Authorization')})))
 
-        currently = ret['value']
-        returnValue(T.form(method="POST", action="light/state")[
-            T.input(type="hidden", name="name", value="bedroomred"),
-            T.div["bedroom light ", T.span[currently], ", turn ",
-                  T.input(type="submit", name="value",
-                          value="off" if currently=='on' else "on")]])
+            currently = ret['value']
+            returnValue(T.form(method="POST", action="light/state")[
+                T.input(type="hidden", name="name", value=queryName),
+                T.div[label, " ", T.span[currently], ", turn ",
+                      T.input(type="submit", name="value",
+                              value="off" if currently=='on' else "on")]])
+
+        # deferredlist!
+        returnValue([(yield line("bedroomred", "bedroom light")),
+                     (yield line("deck", "deck lights"))])
     
 setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 

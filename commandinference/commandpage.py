@@ -1,11 +1,10 @@
-import iso8601, atexit, time
-from twisted.python.util import sibpath
-from rdflib import URIRef, Literal, Namespace
-from rdflib.Graph import ConjunctiveGraph, ReadOnlyGraphAggregate
+import sys
+sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
+                sys.version[:3])
+import iso8601, time
+from rdflib import URIRef, Literal
 from nevow import inevow, url, json, rend
-import db
-XS = Namespace("http://www.w3.org/2001/XMLSchema#")
-CMD = Namespace("http://bigasterisk.com/magma/cmd/")
+from db import XS
 
 def returnPage(contentType, text):
     # why is this so hard! maybe i should use plain old t.w.resources?
@@ -31,8 +30,10 @@ class CommandSite(object): # mixin for rend.Page
         request.content.seek(0)
         args = dict(url.unquerify(request.content.read()))
 
-        t = iso8601.tostring(float(args.get('time', time.time()))) # losing timezone here
-        user = URIRef(args.get('user', 'tbd'))
+        t = iso8601.tostring(float(args.get('time', time.time())),
+                             # using current timezone, even for passed-in value
+                             (time.timezone, time.altzone)[time.daylight]) 
+        user = URIRef(args.get('user', 'http://bigasterisk.com/magma/user_tbd'))
         self.cmdlog.addCommand(URIRef(args['uri']),
                                Literal(t, datatype=XS['dateTime']),
                                user)

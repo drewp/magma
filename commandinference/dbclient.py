@@ -6,10 +6,9 @@ sys.path.append("/my/site/photo")
 sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
                 sys.version[:3])
 from remotesparql import RemoteSparql
-from rdflib import Literal, Namespace
+from rdflib import Literal
 import iso8601, time
-from db import CommandLog, NS
-XS = Namespace("http://www.w3.org/2001/XMLSchema#")
+from db import CommandLog, NS, XS
 
 def buildCommandLog(seedGraphFilename, sleepycatDir="db"):
     """load an n3 file with command definitions and initial

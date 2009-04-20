@@ -1,24 +1,14 @@
 #!/usr/bin/python
-import sys, atexit, time
+import sys
 from twisted.internet import reactor
 from twisted.python import log
-from twisted.python.util import sibpath
-from twisted.internet.utils import getProcessOutput 
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, inevow, json, url
-from rdflib.Graph import ConjunctiveGraph, ReadOnlyGraphAggregate
-from rdflib import Literal, URIRef, Namespace
+from rdflib import Literal, URIRef, Variable
 
-sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
-                sys.version[:3])
-import iso8601
-
-import db
-from commandpage import CommandSite, returnPage
+from commandpage import CommandSite
 from dbclient import nowLiteral, getCommandLog
-
-XS = Namespace("http://www.w3.org/2001/XMLSchema#")
-CMD = Namespace("http://bigasterisk.com/magma/cmd/")
+from db import CMD, CL
 
 class Main(CommandSite, rend.Page):
     docFactory = loaders.xmlfile("lights.html")
@@ -38,17 +28,26 @@ class Main(CommandSite, rend.Page):
                 # should be calling child_addCommand?
                 
                 name = ctx.arg('name')
-                assert name == 'bedroomred', name
+
+                cls = {'bedroomred' : CMD['RedLight'],
+                       'deck' : CMD['DeckLight']}[name]
 
                 req = inevow.IRequest(ctx)
                 if req.method == 'GET':
                     req.setHeader("Content-Type", "application/json")
-                    return lastCommandValueJson(cmdlog, cls=CMD['RedLight'])
+                    return lastCommandValueJson(cmdlog, cls=cls)
                 elif req.method == 'POST':
+
+                    cmds = cmdlog.graph.queryd(
+                        "SELECT ?cmd WHERE { ?cmd a ?cls ; cl:value ?value }",
+                        initBindings={Variable("cls") : cls,
+                                      Variable("value") :
+                                      Literal(ctx.arg('value'))})
+                    if len(cmds) != 1:
+                        raise ValueError("found %s commands that turn %s %s: %s" %
+                                         (len(cmds), cls, ctx.arg('value'), cmds))
                     cmdlog.addCommand(
-                        CMD['bedroomRedLightOff'] if
-                        ctx.arg('value') == 'off' else
-                        CMD['bedroomRedLightOn'],
+                        cmds[0]['cmd'],
                         nowLiteral(),
                         URIRef('http://bigasterisk.com/magma/user_tbd'))
                     return url.URL.fromString("http://bigasterisk.com/magma/")
@@ -58,7 +57,7 @@ class Main(CommandSite, rend.Page):
 
 def lastCommandValueJson(commandLog, cls):
     (cmd, t, u) = commandLog.lastCommandOfClass(cls)
-    value = commandLog.graph.value(cmd, CMD['value'])
+    value = commandLog.graph.value(cmd, CL['value'])
     print "last", (cmd, t, u, value)
     return json.serialize({u'value' : unicode(value)})
 

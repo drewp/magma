@@ -1,0 +1,2 @@
+#!/bin/sh
+curl "http://bang:8080/openrdf-sesame/repositories/cmd/statements" > backup/db-`date +%Y-%m`.trig
