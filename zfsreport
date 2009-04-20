@@ -7,6 +7,7 @@ from twisted.python.util import sibpath
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json
 import commands
+from zfsparse import toGigabytes
 
 os.chdir("/my/site/magma")
 
@@ -24,12 +25,7 @@ class Main(rend.Page):
     def render_content(self, ctx, data):
         zlist = commands.getoutput("/usr/local/sbin/zfs list -H")
 
-        def units(m):
-            num, u = float(m.group(1)), m.group(2)
-            bytes = num * (1 << dict(K=10, M=20, G=30)[u])
-            gb = bytes / (1<<30)
-            return "%.03f" % gb
-        zlist = re.sub(r"([\d\.]+)([MGK])", units, zlist)
+        zlist = toGigabytes(zlist)
         
         rows = []
         for line in zlist.splitlines():
