@@ -58,18 +58,3 @@ class CommandSite(object): # mixin for rend.Page
         return returnPage("application/rdf+xml",
                           self.cmdlog.graph.serialize(format='xml'))
 
-
-def buildCommandLog(seedGraphFilename, sleepycatDir="db"):
-    """load an n3 file with command definitions and initial
-    conditions, plus a sleepycat db, and make a db.CommandLog
-    configured to write new commands to the sleepycat graph"""
-    seedGraph = ConjunctiveGraph()
-    seedGraph.parse(seedGraphFilename, format='n3')
-
-    outGraph = ConjunctiveGraph('Sleepycat')
-    outGraph.open(sibpath(__file__, 'db'))
-    atexit.register(lambda: outGraph.close(commit_pending_transaction=True))
-
-    commandLog = db.CommandLog(ReadOnlyGraphAggregate([seedGraph, outGraph]),
-                               writeGraph=outGraph)
-    return commandLog

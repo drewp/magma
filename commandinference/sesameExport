@@ -1,0 +1,2 @@
+#!/bin/sh
+curl "http://bang:8080/openrdf-workbench/repositories/cmd/export?Accept=application%2Fx-trig"
