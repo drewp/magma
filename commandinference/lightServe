@@ -72,6 +72,16 @@ class Main(CommandSite, rend.Page, WithOpenid):
                     raise NotImplementedError
         return Ret()
 
+def getForwardedIdentity(req):
+    """openid could set identity, but i want to pass that id between
+    servers. maybe this is dumb; each server ought to be able to get
+    its own openid proof"""
+    h = req.getHeader('x-identity-forward')
+    if h is None or not h.startswith('secret-8-'):
+        raise ValueError("no identity found")
+    req.setHeader('x-identity-forward', h)
+    return h.split('-', 2)[-1]
+
 def lastCommandValueJson(commandLog, cls):
     (cmd, t, u) = commandLog.lastCommandOfClass(cls)
     value = commandLog.graph.value(cmd, CL['value'])
