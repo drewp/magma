@@ -2,4 +2,4 @@
 cwm lightCommands.n3 --ntriples | curl -T - -H "Content-Type: text/plain" "http://bang:8080/openrdf-sesame/repositories/cmd/statements?context=%3Chttp%3A%2F%2Fbigasterisk.com%2Fmagma%2Fsource%2FlightCommands%3E" | more
 cwm heaterCommands.n3 --ntriples | curl -T - -H "Content-Type: text/plain" "http://bang:8080/openrdf-sesame/repositories/cmd/statements?context=%3Chttp%3A%2F%2Fbigasterisk.com%2Fmagma%2Fsource%2FheaterCommands%3E" | more
 cwm /my/proj/room/devices.n3 --ntriples | curl -T - -H "Content-Type: text/plain" "http://bang:8080/openrdf-sesame/repositories/cmd/statements?context=%3Chttp%3A%2F%2Fbigasterisk.com%2Fmagma%2Fsource%2Fdevices%3E" | more
-
+cwm auth.n3 --ntriples | curl -T - -H "Content-Type: text/plain" "http://bang:8080/openrdf-sesame/repositories/cmd/statements?context=%3Chttp%3A%2F%2Fbigasterisk.com%2Fmagma%2Fsource%2Fauth%3E" | more

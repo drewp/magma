@@ -94,6 +94,9 @@ class Loop(object):
 
 loop = Loop()
 atexit.register(lambda: loop.sendHeater(False))
+
+# it would be nice to slow this way down, once db.py sends us pings
+# when commands are added
 task.LoopingCall(loop.poll).start(2)
 print "watching command log for new commands"
 reactor.run()

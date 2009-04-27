@@ -13,6 +13,8 @@
     </style>
   </head>
   <body>
+    <p>Hello <n:invisible n:render="user"/></p>
+
     <div class="section">
       <div><a href="http://bigasterisk.com/magma/add/">add to wiki pages</a></div>
       <div><a href="http://bigasterisk.com/wiki/">wiki home</a>, <a href="http://bigasterisk.com/wiki/ShoppingList">shop</a></div>
@@ -40,7 +42,7 @@
     <div class="section">
       <a href="temp/tempchart/table.html">temp table</a>
     </div>
-    <div class="section">
+    <div class="section" n:render="showMunin">
       <table>
 	<tr><td>bang mem</td><td>bang cpu</td><td>bloglines unread</td></tr>
 	<tr>
@@ -97,9 +99,10 @@
 	<tr><th>firefox</th><td>70</td></tr>
       </table>
     </div>
-
-<table><tr><td>
-
+    
+    <table n:render="showTwitters">
+	<tr>
+	  <td>
 <script type="text/javascript" src="http://kentbrewster.com/js/identica-badge.js">
 {
    "user":"drewp",
@@ -117,7 +120,9 @@
 }
 </script>
 
-</td></tr></table>
+	  </td>
+	</tr>
+    </table>
     <style type="text/css">
       /* supervisor overrides */
       th.name { width: 1em !important }

@@ -5,14 +5,32 @@ from twisted.python import log
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, inevow, json, url
 from rdflib import Literal, URIRef, Variable
+sys.path.append("/my/proj/exchangeMeeting")
+from nevowopenid import WithOpenid
 
 from commandpage import CommandSite
 from dbclient import nowLiteral, getCommandLog
 from db import CMD, CL
 
-class Main(CommandSite, rend.Page):
+class Main(CommandSite, rend.Page, WithOpenid):
     docFactory = loaders.xmlfile("lights.html")
 
+    def locateChild(self, ctx, segments):
+        try:
+            self.identity = getForwardedIdentity(inevow.IRequest(ctx))
+            return rend.Page.locateChild(self, ctx, segments)
+        except ValueError:
+            return WithOpenid.locateChild(self, ctx, segments)        
+
+    def verifyIdentity(self):
+        if not self.cmdlog.graph.contains((URIRef(self.identity),
+                                           CL.perm, CL.allowed)): 
+            raise ValueError("not authorized")
+
+    def fullUrl(self, ctx):
+        request = inevow.IRequest(ctx)
+        return 'http://bigasterisk.com/magma/light' + request.path
+    
     def child_static(self, ctx):
         return static.File("static")
 
@@ -22,8 +40,11 @@ class Main(CommandSite, rend.Page):
         post state?name=bedroomred <- value=on
         """
         cmdlog = self.cmdlog
+        user = URIRef(self.identity)
         class Ret(rend.Page):
             def renderHTTP(self, ctx):
+                req = inevow.IRequest(ctx)
+
 
                 # should be calling child_addCommand?
                 
@@ -32,7 +53,6 @@ class Main(CommandSite, rend.Page):
                 cls = {'bedroomred' : CMD['RedLight'],
                        'deck' : CMD['DeckLight']}[name]
 
-                req = inevow.IRequest(ctx)
                 if req.method == 'GET':
                     req.setHeader("Content-Type", "application/json")
                     return lastCommandValueJson(cmdlog, cls=cls)
@@ -46,10 +66,7 @@ class Main(CommandSite, rend.Page):
                     if len(cmds) != 1:
                         raise ValueError("found %s commands that turn %s %s: %s" %
                                          (len(cmds), cls, ctx.arg('value'), cmds))
-                    cmdlog.addCommand(
-                        cmds[0]['cmd'],
-                        nowLiteral(),
-                        URIRef('http://bigasterisk.com/magma/user_tbd'))
+                    cmdlog.addCommand(cmds[0]['cmd'], nowLiteral(), user)
                     return url.URL.fromString("http://bigasterisk.com/magma/")
                 else:
                     raise NotImplementedError
