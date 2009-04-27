@@ -7,10 +7,17 @@ from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json
-
+sys.path.append("/my/proj/exchangeMeeting")
+from nevowopenid import WithOpenid
+from rdflib.Graph import Graph
+from rdflib import URIRef
 
 """
 need ajaxy supervisor interface
+
+this should use openid, with an extra list of magic query params that
+also fire the same identity=drewp code that openid can finish
+with. then we bookmark the magic urls in our phones
 
 """
 
@@ -21,10 +28,25 @@ class Running(rend.Page):
     def child_out(self, ctx):
         return static.File("running/out.png")
 
-class Main(rend.Page):
-    docFactory = loaders.xmlfile("magma-sample2.html")
-    # if this is from a phone, use the little menu. the big menu
-    # should also be ext, and have links to all the inner services.
+class Main(rend.Page, WithOpenid):
+    def __init__(self, graph):
+        self.graph = graph
+    def child_(self, ctx):
+        import homepage
+        reload(homepage)
+        p = homepage.HomePage()
+        p.identity = self.identity
+        return p
+
+    def verifyIdentity(self):
+        if (URIRef(self.identity),
+            URIRef("http://bigasterisk.com/ns/command/v1#perm"),
+            URIRef("http://bigasterisk.com/ns/command/v1#allowed")) not in self.graph:            
+            raise ValueError("not authorized")
+
+    def fullUrl(self, ctx):
+        request = inevow.IRequest(ctx)
+        return 'http://bigasterisk.com/magma' + request.path
     
     def child_running(self, ctx):
         return Running()
@@ -33,30 +55,12 @@ class Main(rend.Page):
     def child_images(self, ctx):
         return static.File("images")
 
-    @inlineCallbacks
-    def render_lights(self, ctx, data):
-
-        @inlineCallbacks
-        def line(queryName, label):
-            ret = json.parse((yield getPage(
-                "http://bigasterisk.com/magma/light/state?name=%s" % queryName,
-                headers={'Authorization' :
-                         inevow.IRequest(ctx).getHeader('Authorization')})))
-
-            currently = ret['value']
-            returnValue(T.form(method="POST", action="light/state")[
-                T.input(type="hidden", name="name", value=queryName),
-                T.div[label, " ", T.span[currently], ", turn ",
-                      T.input(type="submit", name="value",
-                              value="off" if currently=='on' else "on")]])
-
-        # deferredlist!
-        returnValue([(yield line("bedroomred", "bedroom light")),
-                     (yield line("deck", "deck lights"))])
-    
 setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 
 log.startLogging(sys.stdout)
 
-reactor.listenTCP(8006, NevowSite(Main()))
+graph = Graph()
+graph.parse("/my/site/magma/commandinference/auth.n3", format="n3")
+
+reactor.listenTCP(8006, NevowSite(Main(graph)))
 reactor.run()
