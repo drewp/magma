@@ -20,9 +20,13 @@ CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
     
 class HomePage(rend.Page):
     docFactory = loaders.xmlfile("magma-sample2.html")
-    def __init__(self, graph, identity):
-        self.graph = graph
-        self.user = self.graph.subjects(CMD.openid, URIRef(identity)).next()
+    def __init__(self, cmdlog, identity):
+        """identity is an openid"""
+        self.cmdlog = cmdlog
+        self.graph = cmdlog.graph
+        self.user = self.graph.queryd(
+            "SELECT ?user WHERE { ?user cl:openid ?id }",
+            initBindings={Variable("id") : URIRef(identity)})[0]['user']
         rend.Page.__init__(self)
 
     def locateChild(self, ctx, segments):
@@ -43,16 +47,15 @@ class HomePage(rend.Page):
         return self.user
 
     def render_commands(self, ctx, data):
-        for uri, label in self.graph.query("""
+        for row in self.graph.queryd("""
          SELECT ?uri ?label WHERE {
-           ?user cmd:seesCommand ?uri .
+           ?user cl:seesCommand ?uri .
            ?uri rdfs:label ?label .
          } ORDER BY ?label
-        """, initNs=dict(cmd=CMD, rdfs=RDFS.RDFSNS),
-             initBindings={Variable("user") : self.user}):
+        """, initBindings={Variable("user") : self.user}):
             yield T.form(method="post", action="addCommand")[
-                T.input(type='hidden', name='uri', value=uri),
-                T.input(type='submit', value=label),
+                T.input(type='hidden', name='uri', value=row['uri']),
+                T.input(type='submit', value=row['label']),
                 ]
 
     def child_addCommand(self, ctx):
@@ -65,16 +68,33 @@ class HomePage(rend.Page):
         request.content.seek(0)
         args = dict(url.unquerify(request.content.read()))
 
-        t = iso8601.tostring(float(args.get('time')),
+        t = iso8601.tostring(time.time(),
                              # using current timezone, even for passed-in value
                              (time.timezone, time.altzone)[time.daylight]) 
-        self.cmdlog.addCommand(URIRef(args['uri']),
+        cmd = self.cmdlog.addCommand(URIRef(args['uri']),
                                Literal(t, datatype=XS['dateTime']),
                                self.user)
 
-        return url.URL.fromString('http://bigasterisk.com/magma/heater/')# TODO#returnPage("text/javascript",
-                       #   json.serialize({u'ok' : u'ok'})) # ??
+        # accept: json for AJAX
 
+        return url.here.parent().add('added', cmd)
+
+    def render_addedCommand(self, ctx, data):
+        if not ctx.arg('added'):
+            return ''
+        cmd = URIRef(ctx.arg('added'))
+
+        rows = self.graph.queryd("""
+          SELECT ?label ?time WHERE {
+            ?issue dcterms:created ?time;
+                   cl:command [
+                     rdfs:label ?label
+                   ]
+          }""", initBindings={Variable("issue") : cmd})
+        
+        return T.div(class_='ranCommand')['Ran command %s at %s' %
+                                          (rows[0]['label'], rows[0]['time'])]
+        
     @inlineCallbacks
     def render_lights(self, ctx, data):
 

@@ -40,14 +40,20 @@ class Running(rend.Page):
         return static.File("running/out.png")
 
 class Main(rend.Page, WithOpenid):
-    def __init__(self, graph):
-        self.graph = graph
+    def __init__(self, cmdlog):
+        self.cmdlog = cmdlog
     def child_(self, ctx):
         import homepage
         reload(homepage)
-        p = homepage.HomePage(self.graph, self.identity)
+        p = homepage.HomePage(self.cmdlog, self.identity)
         return p
 
+    def child_addCommand(self, ctx):
+        import homepage
+        reload(homepage)
+        p = homepage.HomePage(self.cmdlog, self.identity)
+        return p.child_addCommand(ctx)
+    
     def getOpenidIdentity(self, ctx):
         req = inevow.IRequest(ctx)
         if req.path == '/signin':
@@ -63,13 +69,12 @@ class Main(rend.Page, WithOpenid):
         right in it, which we then authorize as an identity and
         proceed as if it was an openid login.
         """
-        rows = list(self.graph.query(
-            "SELECT ?id WHERE { ?pers cmd:openid ?id ; cmd:directLoginCode ?code }",
-            initNs=dict(cmd=CMD),
+        rows = list(self.cmdlog.graph.queryd(
+          "SELECT ?id WHERE { ?pers cl:openid ?id ; cl:directLoginCode ?code }",
             initBindings={Variable('code') : Literal(code)}))
         if not rows:
             raise ValueError("no login known for URL code")
-        return rows[0][0]
+        return rows[0]['id']
     
     def child_signin(self, ctx):
         # signin page action happens above; this is only a redirect at the end
@@ -97,12 +102,12 @@ setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 
 log.startLogging(sys.stdout)
 
-graph = Graph()
-for f in ['auth.n3', 'datapoint.n3']:
-    graph.parse("commandinference/%s" % f, format="n3")
+#graph = Graph()
+#for f in ['auth.n3', 'datapoint.n3']:
+#    graph.parse("commandinference/%s" % f, format="n3")
 
 
 cmdlog = getCommandLog()
 
-reactor.listenTCP(8006, NevowSite(Main(graph)))
+reactor.listenTCP(8006, NevowSite(Main(cmdlog)))
 reactor.run()

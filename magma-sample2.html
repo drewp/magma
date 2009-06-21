@@ -10,13 +10,19 @@
         margin: 3px 0;
         padding: 6px;
       } 
+      .ranCommand {
+	  margin: 10px;
+	  padding: 10px;
+	  background: yellow;
+      }
     </style>
   </head>
   <body>
     <p>Hello <n:invisible n:render="user"/></p>
 
-    <n:invisible n:render="commands"/>
+    <n:invisible n:render="addedCommand"/>
 
+    <n:invisible n:render="commands"/>
 
     <div class="section">
       <div><a href="http://bigasterisk.com/magma/add/">add to wiki pages</a></div>
