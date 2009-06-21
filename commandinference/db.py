@@ -4,7 +4,7 @@ maybe the Command class will be made there. But also, usually it's
 just the command uri that you need, and that's a regular rdf resource.
 """
 import sys, urllib
-from rdflib import URIRef, RDF, Namespace, Variable, Literal
+from rdflib import URIRef, RDF, Namespace, Variable, Literal, RDFS
 from time import strftime
 
 sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
@@ -16,7 +16,7 @@ CL = Namespace("http://bigasterisk.com/ns/command/v1#")
 XS = Namespace("http://www.w3.org/2001/XMLSchema#")
 CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 ROOM = Namespace("http://projects.bigasterisk.com/room/")
-NS = dict(cl=CL, cmd=CMD, dcterms=DCTERMS)
+NS = dict(cl=CL, cmd=CMD, dcterms=DCTERMS, rdfs=RDFS.RDFSNS)
 
 class CommandLog(object):
     """
@@ -47,7 +47,7 @@ class CommandLog(object):
             self.writeGraph = graph
         
     def addCommand(self, uri, time, user):
-        """record a newly issued command
+        """record a newly issued command. returns uri of issue
 
         uri is the command, which may be reused. Since we don't try to
         snapshot all the details of the command or anything, it might
@@ -77,6 +77,7 @@ class CommandLog(object):
         g.commit()
 
         # ping listeners here
+        return issue
 
     def _issueUri(self, uri, time, user):
         """namespace has not been sorted out yet, and it might be
