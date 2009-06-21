@@ -8,9 +8,10 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json
 sys.path.append("/my/proj/exchangeMeeting")
-from nevowopenid import WithOpenid
+from nevowopenid import WithOpenid, getSessionDict
 from rdflib.Graph import Graph
-from rdflib import URIRef
+from rdflib import URIRef, Literal, Namespace, Variable
+from dbclient import nowLiteral, getCommandLog
 
 """
 need ajaxy supervisor interface
@@ -20,6 +21,8 @@ also fire the same identity=drewp code that openid can finish
 with. then we bookmark the magic urls in our phones
 
 """
+
+CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
 
 os.chdir("/my/site/magma")
 
@@ -34,15 +37,42 @@ class Main(rend.Page, WithOpenid):
     def child_(self, ctx):
         import homepage
         reload(homepage)
-        p = homepage.HomePage()
-        p.identity = self.identity
+        p = homepage.HomePage(self.graph, self.identity)
         return p
 
+    def getOpenidIdentity(self, ctx):
+        req = inevow.IRequest(ctx)
+        if req.path == '/signin':
+            ident = self.identityFromDirectSignin(ctx.arg('d'))
+            getSessionDict(ctx)['identity'] = ident
+            return ident
+            
+        return WithOpenid.getOpenidIdentity(self, ctx)
+
+    def identityFromDirectSignin(self, code):
+        """a mode for treo cell phones that can't remember
+        cookies. They use an https URL with a 'direct login code'
+        right in it, which we then authorize as an identity and
+        proceed as if it was an openid login.
+        """
+        rows = list(self.graph.query(
+            "SELECT ?id WHERE { ?pers cmd:openid ?id ; cmd:directLoginCode ?code }",
+            initNs=dict(cmd=CMD),
+            initBindings={Variable('code') : Literal(code)}))
+        if not rows:
+            raise ValueError("no login known for URL code")
+        return rows[0][0]
+    
+    def child_signin(self, ctx):
+        # signin page action happens above; this is only a redirect at the end
+        inevow.IRequest(ctx).redirect('http://bigasterisk.com/magma/')
+        return ''
+
     def verifyIdentity(self):
-        if (URIRef(self.identity),
-            URIRef("http://bigasterisk.com/ns/command/v1#perm"),
-            URIRef("http://bigasterisk.com/ns/command/v1#allowed")) not in self.graph:            
-            raise ValueError("not authorized")
+        return # everyone's ok, they just won't get many commands
+        # junk:
+        #if (URIRef(self.identity), CMD.perm, CMD.allowed) not in self.graph:
+        #    raise ValueError("not authorized")
 
     def fullUrl(self, ctx):
         request = inevow.IRequest(ctx)
@@ -60,7 +90,11 @@ setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 log.startLogging(sys.stdout)
 
 graph = Graph()
-graph.parse("/my/site/magma/commandinference/auth.n3", format="n3")
+for f in ['auth.n3', 'datapoint.n3']:
+    graph.parse("/my/site/magma/commandinference/%s" % f, format="n3")
+
+
+cmdlog = getCommandLog()
 
 reactor.listenTCP(8006, NevowSite(Main(graph)))
 reactor.run()
