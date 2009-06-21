@@ -21,6 +21,11 @@ class CommandSite(object): # mixin for rend.Page
         self.cmdlog = cmdlog
         
     def child_addCommand(self, ctx):
+
+
+        # this is obsoleted by a magma/addCommand handler
+
+        
         request = inevow.IRequest(ctx)
         if request.method != "POST":
             # there's a correct http status for this

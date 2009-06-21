@@ -1,0 +1,12 @@
+#!/usr/bin/python
+"""
+record datapoints:
+- baby events
+- bike to work (with 4 times)
+- gasuse fillup
+
+Some datapoints have other metadata, so it's not enough just to record
+when a record command was issued. Also, datapoints might come in from
+other sources, such as google calendar.
+"""
+
