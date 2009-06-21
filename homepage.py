@@ -1,3 +1,4 @@
+import sys
 from nevow import rend, loaders
 from pprint import pprint
 from twisted.internet import reactor
@@ -8,7 +9,7 @@ from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json, url
 from rdflib import URIRef, Namespace, Variable, RDFS, Literal
-from commandpage.db import XS
+from commandinference.db import XS
 import iso8601, time
 
 CMD = Namespace("http://bigasterisk.com/ns/command/v1#")

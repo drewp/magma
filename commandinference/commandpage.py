@@ -4,7 +4,7 @@ sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
 import iso8601, time
 from rdflib import URIRef, Literal
 from nevow import inevow, url, json, rend
-from db import XS
+from commandinference.db import XS
 
 def returnPage(contentType, text):
     # why is this so hard! maybe i should use plain old t.w.resources?

@@ -1,5 +1,14 @@
 #!/usr/bin/python
 import os, sys
+sys.path.extend(["/my/proj/exchangeMeeting",
+                 "/home/drewp/projects/nevowopenid",
+                 "/my/site/photo",
+                 "/home/drewp/projects/photo",
+                 '/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
+                 sys.version[:3],
+                 '/usr/lib/python%s/dist-packages/oldxml/_xmlplus/utils' %
+                 sys.version[:3],
+                 ])
 from twisted.internet import reactor
 from twisted.python import log
 from twisted.python.util import sibpath
@@ -7,11 +16,10 @@ from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json
-sys.path.append("/my/proj/exchangeMeeting")
 from nevowopenid import WithOpenid, getSessionDict
 from rdflib.Graph import Graph
 from rdflib import URIRef, Literal, Namespace, Variable
-from dbclient import nowLiteral, getCommandLog
+from commandinference.dbclient import nowLiteral, getCommandLog
 
 """
 need ajaxy supervisor interface
@@ -24,7 +32,7 @@ with. then we bookmark the magic urls in our phones
 
 CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
 
-os.chdir("/my/site/magma")
+#os.chdir("/my/site/magma")
 
 class Running(rend.Page):
     docFactory = loaders.stan(T.img(src="out"))
@@ -91,7 +99,7 @@ log.startLogging(sys.stdout)
 
 graph = Graph()
 for f in ['auth.n3', 'datapoint.n3']:
-    graph.parse("/my/site/magma/commandinference/%s" % f, format="n3")
+    graph.parse("commandinference/%s" % f, format="n3")
 
 
 cmdlog = getCommandLog()
