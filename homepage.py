@@ -41,7 +41,6 @@ class HomePage(rend.Page):
 
     def renderHTTP(self, ctx):
         req = inevow.IRequest(ctx)
-        pprint(req.__dict__)
 
         ua = req.getHeader('user-agent')
         # e.g. 'Mozilla/4.0 (compatible; MSIE 6.0; Windows 98; PalmSource/hspr-H102; Blazer/4.0) 16;320x320'
@@ -83,7 +82,11 @@ class HomePage(rend.Page):
 
         # accept: json for AJAX
 
-        return url.here.parent().add('added', cmd)
+        # this kind of stuff was not working on the url.here redirect:
+        #request.received_headers['host'] = 'bigasterisk.com'
+        #request.prepath = ['magma']
+        #request.setHost('bigasterisk.com', 80)
+        return url.URL.fromString('http://bigasterisk.com/magma').add('added', cmd)
 
     def render_addedCommand(self, ctx, data):
         if not ctx.arg('added'):
