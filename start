@@ -33,6 +33,7 @@ class Running(rend.Page):
 class Main(rend.Page, WithOpenid):
     def __init__(self, cmdlog):
         self.cmdlog = cmdlog
+        
     def child_(self, ctx):
         import homepage
         reload(homepage)
@@ -96,7 +97,7 @@ class Main(rend.Page, WithOpenid):
     def child_images(self, ctx):
         return static.File("images")
     def child_www(self, ctx):
-        return static.File('../room/www')
+        return static.File('/my/proj/room/www')
 
 setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 

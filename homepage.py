@@ -14,9 +14,6 @@ import iso8601, time
 
 import stripchart
 reload(stripchart)
-Chart = stripchart.Chart
-Events = stripchart.Events
-
 
 CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
 
@@ -139,13 +136,13 @@ class HomePage(rend.Page):
     def child_babyKick(self, ctx):
         return BabyKick(self.graph)
 
-class BabyKick(Chart):
+class BabyKick(stripchart.Chart):
     title = "Baby kicks"
     def __init__(self, graph):
         self.graph = graph
         
     def getData(self, ctx):
-        d = {'label':'kick', 'state' : T.raw('&#11030;')}
+        d = {'label':'kick', 'marker' : T.raw('&#11030;')}
         rows = []
         for row in self.graph.queryd("""
           SELECT DISTINCT ?t WHERE {
@@ -155,6 +152,6 @@ class BabyKick(Chart):
           } ORDER BY ?t"""):
             t = iso8601.parse(row['t'])
             rows.append((t, None, d))
-        
-        return Events(rows)
+        print "found rows", rows
+        return stripchart.Events(rows)
     
