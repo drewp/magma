@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!buildout_bin/py
 """
 record datapoints:
 - baby events
@@ -10,3 +10,44 @@ when a record command was issued. Also, datapoints might come in from
 other sources, such as google calendar.
 """
 
+import sys, os, web
+from genshi.template import TemplateLoader
+from commandinference.dbclient import getCommandLog
+from rdflib import URIRef
+
+loader = TemplateLoader(["commandinference"],
+                        auto_reload=True)
+
+class index:
+    def GET(self):
+        i = web.input('issue')
+        cmd = graph.queryd("SELECT ?cmd WHERE { ?issue cl:command ?cmd }",
+                           initBindings={"issue" : URIRef(i.issue)})
+        cmd = cmd[0]['cmd']
+
+
+        params = graph.queryd("SELECT ?label WHERE { ?cmd cl:param [ rdfs:label ?label ] }", initBindings={"cmd" : cmd})
+        
+        tmpl = loader.load('datapointServe.html')
+        stream = tmpl.generate(label=graph.label(cmd),
+                               params=params
+                               )
+
+        web.header('Content-Type', 'text/html; charset=utf-8', unique=True)
+        return ''.join(o.encode('utf-8') for o in stream.serialize('html'))
+
+urls = (
+  '/', 'index'
+)
+app = web.application(urls, globals())
+
+## def commandUi(graph, issue):
+##     cmd = commandFromIssue
+##     fields = fields on command
+##     if not fields:
+
+commandLog = getCommandLog()
+graph = commandLog.graph
+
+sys.argv.append("9021")
+app.run()
