@@ -1,14 +1,5 @@
-#!/usr/bin/python
+#!buildout_bin/py
 import os, sys
-sys.path.extend(["/my/proj/exchangeMeeting",
-                 "/home/drewp/projects/nevowopenid",
-                 "/my/site/photo",
-                 "/home/drewp/projects/photo",
-                 '/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
-                 sys.version[:3],
-                 '/usr/lib/python%s/dist-packages/oldxml/_xmlplus/utils' %
-                 sys.version[:3],
-                 ])
 from twisted.internet import reactor
 from twisted.python import log
 from twisted.python.util import sibpath
@@ -48,11 +39,18 @@ class Main(rend.Page, WithOpenid):
         p = homepage.HomePage(self.cmdlog, self.identity)
         return p
 
+    # these are dumb; just for reload
     def child_addCommand(self, ctx):
         import homepage
         reload(homepage)
         p = homepage.HomePage(self.cmdlog, self.identity)
         return p.child_addCommand(ctx)
+
+    def child_babyKick(self, ctx):
+        import homepage
+        reload(homepage)
+        p = homepage.HomePage(self.cmdlog, self.identity)
+        return p.child_babyKick(ctx)
     
     def getOpenidIdentity(self, ctx):
         req = inevow.IRequest(ctx)
@@ -97,6 +95,8 @@ class Main(rend.Page, WithOpenid):
         return static.File("nets.html")
     def child_images(self, ctx):
         return static.File("images")
+    def child_www(self, ctx):
+        return static.File('../room/www')
 
 setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 

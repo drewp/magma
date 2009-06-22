@@ -1,4 +1,4 @@
-import sys
+import sys, time
 from nevow import rend, loaders
 from pprint import pprint
 from twisted.internet import reactor
@@ -11,6 +11,12 @@ from nevow import rend, static, loaders, tags as T, inevow, json, url
 from rdflib import URIRef, Namespace, Variable, RDFS, Literal
 from commandinference.db import XS
 import iso8601, time
+
+import stripchart
+reload(stripchart)
+Chart = stripchart.Chart
+Events = stripchart.Events
+
 
 CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
 
@@ -126,3 +132,26 @@ class HomePage(rend.Page):
         if self.user == URIRef('http://bigasterisk.com/foaf.rdf#drewp') and not self.blazer:
             return ctx.tag
         return ''
+
+    def child_babyKick(self, ctx):
+        return BabyKick(self.graph)
+
+class BabyKick(Chart):
+    title = "Baby kicks"
+    def __init__(self, graph):
+        self.graph = graph
+        
+    def getData(self, ctx):
+        d = {'label':'kick', 'state' : T.raw('&#11030;')}
+        rows = []
+        for row in self.graph.queryd("""
+          SELECT DISTINCT ?t WHERE {
+            [ cl:command cmd:BabyKick;
+              dcterms:created ?t ;
+              a cl:IssuedCommand ]
+          } ORDER BY ?t"""):
+            t = iso8601.parse(row['t'])
+            rows.append((t, None, d))
+        
+        return Events(rows)
+    
