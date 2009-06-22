@@ -5,8 +5,19 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
-cmd:BabyKick a :Command, :DatapointCommand; rdfs:label "record baby kick" .
+cmd:BabyKick a :Command, :DatapointCommand; 
+  rdfs:label "record baby kick";
+  :ui <http://localhost:page/>
+.
+
+cmd:Fillup a :Command, :DatapointCommand;
+  rdfs:label "fillup";
+  :param 
+ [ rdfs:label "station" ],
+ [ rdfs:label "gallons" ]
+ .
+
 cmd:HelloWorld a :Command; rdfs:label "hello world" .
 
 <http://kelsi.bigasterisk.com/foaf.rdf#kelsi> :seesCommand cmd:BabyKick .
-<http://bigasterisk.com/foaf.rdf#drewp> :seesCommand cmd:HelloWorld .
+<http://bigasterisk.com/foaf.rdf#drewp> :seesCommand cmd:HelloWorld, cmd:Fillup .
