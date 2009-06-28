@@ -20,6 +20,11 @@ CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
 
     # if this is from a phone, use the little menu. the big menu
     # should also be ext, and have links to all the inner services.
+
+def userFromOpenid(graph, identity):
+    return graph.queryd(
+        "SELECT ?user WHERE { ?user cl:openid ?id }",
+        initBindings={Variable("id") : URIRef(identity)})[0]['user']
     
 class HomePage(rend.Page):
     docFactory = loaders.xmlfile("magma-sample2.html")
@@ -27,9 +32,7 @@ class HomePage(rend.Page):
         """identity is an openid"""
         self.cmdlog = cmdlog
         self.graph = cmdlog.graph
-        self.user = self.graph.queryd(
-            "SELECT ?user WHERE { ?user cl:openid ?id }",
-            initBindings={Variable("id") : URIRef(identity)})[0]['user']
+        self.user = userFromOpenid(self.graph, identity)
         rend.Page.__init__(self)
 
     def locateChild(self, ctx, segments):
