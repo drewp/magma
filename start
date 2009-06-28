@@ -52,6 +52,14 @@ class Main(rend.Page, WithOpenid):
         reload(homepage)
         p = homepage.HomePage(self.cmdlog, self.identity)
         return p.child_babyKick(ctx)
+
+    def child_microblogUpdate(self, ctx):
+        import microblog, homepage
+        reload(microblog)
+        return microblog.postAll(self.cmdlog.graph,
+                                 homepage.userFromOpenid(self.cmdlog.graph,
+                                                         self.identity),
+                                 ctx.arg('msg'))
     
     def getOpenidIdentity(self, ctx):
         req = inevow.IRequest(ctx)
