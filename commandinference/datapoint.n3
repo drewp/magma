@@ -20,4 +20,11 @@ cmd:Fillup a :Command, :DatapointCommand;
 cmd:HelloWorld a :Command; rdfs:label "hello world" .
 
 <http://kelsi.bigasterisk.com/foaf.rdf#kelsi> :seesCommand cmd:BabyKick .
-<http://bigasterisk.com/foaf.rdf#drewp> :seesCommand cmd:HelloWorld, cmd:Fillup .
+<http://bigasterisk.com/foaf.rdf#drewp> :seesCommand 
+  cmd:HelloWorld, 
+  cmd:Fillup,
+  cmd:bedroomRedLightOn,
+  cmd:bedroomRedLightOff,
+  cmd:deckLightOn,
+  cmd:deckLightOff
+.
