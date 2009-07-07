@@ -9,6 +9,7 @@ from time import strftime
 
 sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
                 sys.version[:3])
+sys.path.append('/usr/lib/python2.6/dist-packages/oldxml/_xmlplus/utils')
 import iso8601
 
 DCTERMS = Namespace("http://purl.org/dc/terms/")
@@ -35,18 +36,26 @@ class CommandLog(object):
     returning new URIs for each issued command, and you can look up
     the user in the graph yourself.    
     """
-    def __init__(self, graph, writeGraph=None):
+    def __init__(self, graph, writeGraph=None, newCommandPing=None):
         """
         graph is an rdflib Graph2 where we store the added commands.
+
+        Your graph needs cl and dcterms prefixes already defined.
 
         All queries are done on graph, but new triples are written to
         writeGraph, if it is provided. writeGraph should be a subset
         of graph.
+
+        newCommandPing will be called with
+        (signal=commandClassUri, content=issueUri)
+        and we don't wait for a response. We call separately for each
+        class the command is a type of.
         """
         self.graph = graph
         self.writeGraph = writeGraph
         if self.writeGraph is None:
             self.writeGraph = graph
+        self.newCommandPing = newCommandPing
         
     def addCommand(self, uri, time, user):
         """record a newly issued command. returns uri of issue
@@ -76,9 +85,13 @@ class CommandLog(object):
               # separate into smaller contexts for backup and sync purposes
               context=CL[strftime('commands/%Y/%m')]
               )
-        g.commit()
 
-        # ping listeners here
+        if self.newCommandPing:
+            for row in self.graph.queryd(
+                "SELECT DISTINCT ?cls WHERE { ?cmd a ?cls }",
+                initBindings={Variable('?cmd') : uri}):
+                self.newCommandPing(signal=row['cls'].encode('ascii'),
+                                    content=issue.encode('ascii'))
         return issue
 
     def _issueUri(self, uri, time, user):
@@ -107,7 +120,7 @@ class CommandLog(object):
                   ?issue dcterms:created ?t;
                          dcterms:creator ?u .
                 } ORDER BY DESC(?t) LIMIT 1""",
-                         initBindings={Variable("cls") : class_}):
+                         initBindings={Variable("?cls") : class_}):
             return row['c'], row['t'], row['u']
         raise ValueError("No commands found of class %r" % class_)
         
@@ -131,7 +144,7 @@ class CommandLog(object):
             
         
     def __len__(self):
-        issues = self.graph.subjects(RDF.type, CL['IssuedCommand'])
+        issues = self.graph.queryd("SELECT ?s WHERE { ?s a cl:IssuedCommand }")
         # this should be fixed in rdflib- iterators can have len,
         # which could easily be cheaper to compute
         return len(list(issues)) 
