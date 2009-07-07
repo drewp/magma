@@ -89,7 +89,7 @@ class CommandLog(object):
         if self.newCommandPing:
             for row in self.graph.queryd(
                 "SELECT DISTINCT ?cls WHERE { ?cmd a ?cls }",
-                initBindings={Variable('?cmd') : uri}):
+                initBindings={Variable('cmd') : uri}):
                 self.newCommandPing(signal=row['cls'].encode('ascii'),
                                     content=issue.encode('ascii'))
         return issue
@@ -120,7 +120,7 @@ class CommandLog(object):
                   ?issue dcterms:created ?t;
                          dcterms:creator ?u .
                 } ORDER BY DESC(?t) LIMIT 1""",
-                         initBindings={Variable("?cls") : class_}):
+                         initBindings={Variable("cls") : class_}):
             return row['c'], row['t'], row['u']
         raise ValueError("No commands found of class %r" % class_)
         
