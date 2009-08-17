@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+"""
+Every few minutes, we request a friends_timeline and make an http POST
+for each of the new status records. You can point the POST at whatever
+tool you'd like to be notified of twitter updates.
+
+This is a non-hosted clone of http://www.twitterhooks.com/ with no UI
+and only support for friends' updates (so far). It's also like
+http://software.complete.org/software/wiki/twidge/ but it doesn't do
+any data munging or reformatting.
+
+twitterwatch.conf looks like this:
+{
+  "twitter_user" : "user",
+  "twitter_password_rot13" : "cnffjbeq",
+  "post_to" : "http://example.com/endpoint",
+  "minutes_between_polls" : 30
+}
+"""
+import restclient, simplejson, twitter, time, logging
+
+logging.basicConfig()
+log = logging.getLogger()
+
+conf = simplejson.load(open("twitterwatch.conf"))
+twitter = twitter.Api(username=conf['twitter_user'],
+                      password=conf['twitter_password_rot13'].decode('rot13'))
+out = restclient.Resource(conf['post_to'])
+
+since_id = None
+while True:
+    for status in twitter.GetFriendsTimeline(since_id=since_id):
+        try:
+            out.post(path='',
+                     payload=status.AsJsonString(),
+                     headers={'Content-Type' : 'text/json',
+                              'User-Agent' : 'twitterwatch'})
+        except restclient.errors.RequestError, e:
+            log.error("POST of status %s failed: %s - ignoring" %
+                      (status.id, e))
+        since_id = max(since_id, status.id)
+        
+    time.sleep(conf['minutes_between_polls'] * 60)
