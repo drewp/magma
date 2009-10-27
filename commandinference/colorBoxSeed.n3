@@ -11,4 +11,4 @@ cmd:boxBlue a cmd:BoxColor; cmd:color "#0000ff" .
     :command cmd:boxRed;
     dcterms:created "2008-12-27T07:22:01.47Z"^^xsd:dateTime;
     dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
-  ]
+  ].

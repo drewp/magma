@@ -1,11 +1,12 @@
 """
 for all clients of the db
 """
+import sys
+sys.path.append("/my/site/photo")
 from remotesparql import RemoteSparql
 from rdflib import Literal
 import iso8601, time
 from commandinference.db import CommandLog, NS, XS
-from mqclient import Send
 from twisted.python.util import sibpath
 
 def buildCommandLog(seedGraphFilename, sleepycatDir="db"):
@@ -26,11 +27,9 @@ def buildCommandLog(seedGraphFilename, sleepycatDir="db"):
 
 
 def getCommandLog():
-    graph = RemoteSparql("http://plus:8080/openrdf-sesame/repositories", "cmd", initNs=NS)
-    mqSender = Send(sibpath(__file__, "amqp0-8.xml"))
+    graph = RemoteSparql("http://bang:8080/openrdf-sesame/repositories", "cmd", initNs=NS)
     def ping(signal, content):
         print "sendping", (signal, content)
-        return mqSender.send(key=signal, body=content)
     cl = CommandLog(graph, newCommandPing=ping)
     return cl
 
