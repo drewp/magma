@@ -56,18 +56,6 @@ class Main(rend.Page, WithOpenid):
                     ])
         return OpenidLogin()
 
-    # these are dumb; just for reload
-    def child_addCommand(self, ctx):
-        import homepage
-        reload(homepage)
-        p = homepage.HomePage(self.cmdlog, self.identity)
-        return p.child_addCommand(ctx)
-
-    def child_babyKick(self, ctx):
-        import homepage
-        reload(homepage)
-        p = homepage.HomePage(self.cmdlog, self.identity)
-        return p.child_babyKick(ctx)
 
     def child_microblogUpdate(self, ctx):
         import microblog, homepage
@@ -104,7 +92,7 @@ class Main(rend.Page, WithOpenid):
         inevow.IRequest(ctx).redirect('http://bigasterisk.com/magma/')
         return ''
 
-    def verifyIdentity(self):
+    def verifyIdentity(self, ctx):
         return # everyone's ok, they just won't get many commands
         # junk:
         #if (URIRef(self.identity), CMD.perm, CMD.allowed) not in self.graph:
@@ -122,6 +110,20 @@ class Main(rend.Page, WithOpenid):
         return static.File("images")
     def child_www(self, ctx):
         return static.File('/my/proj/room/www')
+    def child_tango(self, ctx):
+        return static.File('/usr/share/icons/Tango/32x32')
+
+for cmd in ['addCommand', 'babyKick', 'babyTable', 'garage']:
+    # too scared to touch locateChild on the openid page
+
+    def newchild(self, ctx, cmd=cmd):
+        import homepage
+        reload(homepage)
+        p = homepage.HomePage(self.cmdlog, self.identity)
+        return getattr(p, 'child_%s' % cmd)(ctx)
+
+    setattr(Main, 'child_%s' % cmd, newchild)
+    
 
 setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 

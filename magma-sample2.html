@@ -5,25 +5,58 @@
     <title>magma</title>
 
     <style type="text/css">
-      .section {
-        border: 1px solid gray;
-        margin: 3px 0;
-        padding: 6px;
-      } 
-      .ranCommand {
-	  margin: 10px;
-	  padding: 10px;
-	  background: yellow;
-      }
+/* <![CDATA[ */
+
+// hi
+
+body {
+       color: white;
+       background: black;
+       }
+.section {
+           border: 1px solid gray;
+           margin: 3px 0;
+           padding: 6px;
+           } 
+.ranCommand {
+              margin: 10px;
+              padding: 10px;
+              background: yellow;
+              }
+.commands button {
+                   }
+
+.commands table tr { height: 64px; }
+.commands table td { width: 64px; }
+button  {
+          width: 64px;
+          height: 64px;
+cursor:pointer;
+          }
+button div.label {
+                   font-size: 70%;
+                   }
+button.current { 
+  opacity: 1;
+  background: #faa;
+                 } 
+button.recommend { 
+  opacity: .7;
+  background: #fff;
+ }
+/* ]]> */
     </style>
-  </head>
+<meta name="viewport" content="width=240; initial-scale=1.0; user-scalable=yes"/>
+
+</head>
   <body>
     <p>Hello <n:invisible n:render="user"/></p>
 
     <n:invisible n:render="addedCommand"/>
 
+<div class="commands">
     <n:invisible n:render="commands"/>
-
+</div>
     <form method="post" action="microblogUpdate">
       <input type="text" name="msg"/> <input type="submit" value="Post to microblogs"/>
       <!-- query the user to see what ublogs they have, so we could list them 
@@ -32,7 +65,8 @@
 
     <div class="section">
       <div><a href="http://bigasterisk.com/bathroomLight/">bathroom light</a></div>
-      <div><a href="http://bigasterisk.com/magma/babyKick/">baby kick chart</a></div>
+      <div><a href="http://bigasterisk.com/magma/babyTable/">baby event table</a></div>
+      <div><a href="http://bigasterisk.com/magma/babyKick/">baby event chart</a></div>
       <div><a href="http://bigasterisk.com/nagios/index.html">nagios service monitor</a></div>
       <div><a href="http://bigasterisk.com/magma/add/">add to wiki pages</a></div>
       <div><a href="http://bigasterisk.com/wiki/">wiki home</a>, <a href="http://bigasterisk.com/wiki/ShoppingList">shop</a></div>
@@ -117,7 +151,7 @@
 	<tr><th>firefox</th><td>70</td></tr>
       </table>
     </div>
-    
+<!--    
     <table n:render="showTwitters">
 	<tr>
 	  <td>
@@ -141,6 +175,7 @@
 	  </td>
 	</tr>
     </table>
+    -->
     <style type="text/css">
       /* supervisor overrides */
       th.name { width: 1em !important }

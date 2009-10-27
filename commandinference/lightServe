@@ -8,9 +8,12 @@ from rdflib import Literal, URIRef, Variable
 sys.path.append("/my/proj/exchangeMeeting")
 from nevowopenid import WithOpenid
 
+sys.path.append("..")
+sys.path.append('/usr/lib/python2.6/dist-packages/oldxml/_xmlplus/utils')
+
 from commandpage import CommandSite
-from dbclient import nowLiteral, getCommandLog
-from db import CMD, CL
+from commandinference.dbclient import nowLiteral, getCommandLog
+from commandinference.db import CMD, CL
 
 class Main(CommandSite, rend.Page, WithOpenid):
     docFactory = loaders.xmlfile("lights.html")

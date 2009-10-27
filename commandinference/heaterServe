@@ -8,14 +8,14 @@ from nevow import rend, static, loaders
 from rdflib.Graph import ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib import Literal, URIRef, Namespace
 
-sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
-                sys.version[:3])
+sys.path.append("..")
+sys.path.append('/usr/lib/python2.6/dist-packages/oldxml/_xmlplus/utils')
 import iso8601
 
-import db
+from commandinference import db
 from commandpage import CommandSite
-from db import XS, CMD
-from dbclient import getCommandLog
+from commandinference.db import XS, CMD
+from commandinference.dbclient import getCommandLog
 
 class Main(CommandSite, rend.Page):
     docFactory = loaders.xmlfile("heater.html")

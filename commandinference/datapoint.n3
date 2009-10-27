@@ -10,6 +10,15 @@ cmd:BabyKick a :Command, :DatapointCommand;
   :ui <http://localhost:page/>
 .
 
+cmd:BabyStart a :Command, :DatapointCommand, :BabyStartStop; 
+  rdfs:label "record baby start";
+  :iconPath "tango/emotes/stock_smiley-5.png"
+.
+cmd:BabyStop a :Command, :DatapointCommand, :BabyStartStop; 
+  rdfs:label "record baby stop";
+  :iconPath "tango/emotes/stock_smiley-1.png"
+.
+
 cmd:Fillup a :Command, :DatapointCommand;
   rdfs:label "fillup";
   :param 
@@ -19,12 +28,22 @@ cmd:Fillup a :Command, :DatapointCommand;
 
 cmd:HelloWorld a :Command; rdfs:label "hello world" .
 
-<http://kelsi.bigasterisk.com/foaf.rdf#kelsi> :seesCommand cmd:BabyKick .
+<http://kelsi.bigasterisk.com/foaf.rdf#kelsi> :seesCommand 
+  cmd:BabyKick,
+  cmd:BabyStart,
+  cmd:BabyStop,
+  cmd:heaterOff,
+  cmd:heaterOn20Min
+ .
 <http://bigasterisk.com/foaf.rdf#drewp> :seesCommand 
   cmd:HelloWorld, 
   cmd:Fillup,
   cmd:bedroomRedLightOn,
   cmd:bedroomRedLightOff,
   cmd:deckLightOn,
-  cmd:deckLightOff
+  cmd:deckLightOff,
+  cmd:BabyStart,
+  cmd:BabyStop,
+  cmd:heaterOff,
+  cmd:heaterOn20Min
 .

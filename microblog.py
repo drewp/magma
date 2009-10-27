@@ -1,5 +1,6 @@
 import sys
 from rdflib import Variable, Namespace, URIRef
+# easy_install 'python-twitter', and don't have the one called 'twitter' around
 import xmpp, twitter
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:n="http://nevow.com/ns/nevow/0.1">
+  <head>
+    <title>Garage door</title>
+
+    <meta name="viewport" content="width=300; initial-scale=1.0; user-scalable=yes"/>
+
+    <style type="text/css">
+      * { margin: 0; padding: 0 }
+      #ticket { 
+	  position: absolute;
+	  top: 425px;
+      }
+      #activate {
+	  background:url(../images/activate-bg.jpg) -50px -258px;
+	  border:0 none;
+	  height:69px;
+	  left:50px;
+	  position:absolute;
+	  top:258px;
+	  width:190px;
+      }
+      #limit {
+	  position: absolute;
+	  left: 10px;
+	  top:32px;
+	  width: 286px;
+	  height: 374px;
+	  background: url(../images/activate-bg.jpg);
+      }
+      #cover {
+	  position: absolute;
+	  left: 0px;
+	  top: 134px;
+	  width: 286px;
+	  height: 222px;
+	  background: url(../images/activate-fg.png) 0px -131px;
+	  opacity: .7;  
+      } 
+      #autoraise {
+	  height:170px;
+	  position:absolute;
+	  width:286px;
+      }
+      tt {
+	  background: #ff0;
+      } 
+    </style>
+
+    <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7/themes/smoothness/jquery-ui.css" rel="Stylesheet" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> 
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js"></script>
+
+    <script type="text/javascript">
+      // <![CDATA[
+      $(function() {
+
+	  function getTicket() {
+	      $.ajax({
+		  url: "ticket",
+		  type: "POST",
+		  dataType: "text",
+		  success: function (data, textStatus) {
+		      $("#ticket").val(data);
+		      $("#status").text("acquired ticket");
+		  }
+	      });
+	      // set timer to reset the page around when the ticket would expire
+	  }
+	  
+	  var prevPosition = null;
+	  $("#cover").draggable({ 
+	      containment: 'parent',
+	      drag: function(event, ui) {
+		  if (ui.position.top <= 20 && prevPosition > 20) {
+		      getTicket();
+		  }
+		  prevPosition = ui.position.top;
+	      }
+	  });
+	  $("#autoraise").click(function() {
+	      getTicket();
+	      $("#cover").animate({top:0}, 400);
+	  });
+      });
+      // ]]>
+    </script>
+
+  </head>
+  <body>
+    <h3>Garage door <tt id="status"><n:invisible n:render="lastCmd"/></tt></h3>
+    <form method="post" action="">
+      <input type="text" id="ticket" name="ticket" value=""/>
+
+      <div id="limit">
+	<div id="autoraise"></div>
+	<button type="submit" id="activate" name="activate"></button>
+	
+	<div id="cover"></div>
+      </div>
+    </form>
+  </body>
+</html>

@@ -19,7 +19,8 @@ CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 ROOM = Namespace("http://projects.bigasterisk.com/room/")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 MB = Namespace("http://bigasterisk.com/ns/microblog/")
-NS = dict(cl=CL, cmd=CMD, dcterms=DCTERMS, rdfs=RDFS.RDFSNS, foaf=FOAF, mb=MB)
+NS = dict(cl=CL, cmd=CMD, dcterms=DCTERMS, rdfs=RDFS.RDFSNS, foaf=FOAF, mb=MB,
+          xs=XS)
 
 class CommandLog(object):
     """

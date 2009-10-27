@@ -6,22 +6,18 @@ also watch commands for the remote-controlled lights
 """
 import sys, time, atexit
 
-sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
-                sys.version[:3])
+sys.path.append('/usr/lib/python2.6/dist-packages/oldxml/_xmlplus/utils')
+sys.path.append('..') # for commandinference
 from twisted.internet import reactor
-from louie import dispatcher
 from rdflib import Namespace, RDF
-import iso8601
+import iso8601, restkit
 from cmdline import getCommandLog
-from db import CMD, CL, ROOM
+from commandinference.db import CMD, CL, ROOM
 
 from twisted.internet import task
-sys.path.append('/my/proj/room')
-import hubclient
 
 PORT = Namespace("http://bang.bigasterisk.com/parport/parport0#")
 
-hubclient.connect()
 
 commandLog = getCommandLog()
 
@@ -35,17 +31,19 @@ class Loop(object):
             "SELECT ?cls WHERE { ?cls a cmd:PollMe . }")]
                 
     def poll(self):
-        for commandClass in self.pollClasses:
-            cmd, t, user = commandLog.lastCommandOfClass(commandClass)
-            value = commandLog.graph.value(cmd, CL['value'])
+        if 0:
+            for commandClass in self.pollClasses:
+                cmd, t, user = commandLog.lastCommandOfClass(commandClass)
+                value = commandLog.graph.value(cmd, CL['value'])
 
-            if self.lastLight.get(commandClass) != value:
-                oneShotPin = commandLog.graph.value(cmd, ROOM['oneShot'])
-                if oneShotPin is not None:
-                    self.sendPin(oneShotPin, 1) # it automatically turns off
-                else:
-                    raise NotImplementedError("don't know how to set %s" % cmd)
-                self.lastLight[commandClass] = value
+                if self.lastLight.get(commandClass) != value:
+                    oneShotPin = commandLog.graph.value(cmd, ROOM['oneShot'])
+                    if oneShotPin is not None:
+                        raise NotImplementedError("pulse")
+                        self.sendPin(oneShotPin, 1) # it automatically turns off
+                    else:
+                        raise NotImplementedError("don't know how to set %s" % cmd)
+                    self.lastLight[commandClass] = value
 
         self.pollHeater()
 
@@ -80,16 +78,18 @@ class Loop(object):
             print msg
             self.lastMsg = now
 
-    def sendPin(self, pinUri, value):
-        print "send %s (%s) = %s" % (pinUri, commandLog.graph.label(pinUri),
-                                     value)
-        dispatcher.send((str(pinUri), str(ROOM['value']), None), obj=value)
+    def sendPin(self, addr, value):
+        """addr is the bit position, starting at 0 LSB"""
+        print "send %s = %s" % (addr, value)
+        restkit.Resource("http://bang:9032/").post(
+            "pin/%s" % (addr + 2),
+            value=str(bool(value)).lower())
         
     def sendHeater(self, on):
         if on != self.lastHeater: # this assumes we're the only one
                                 # talking to the heater pin, which
                                 # might not be true
-            self.sendPin(PORT['pin3'], int(on))
+            self.sendPin(3, int(on))
         self.lastHeater = on
 
 loop = Loop()
