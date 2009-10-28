@@ -56,10 +56,11 @@ class HomePage(rend.Page):
     def render_commands(self, ctx, data):
         trs = [T.tr['']]
         for row in self.graph.queryd("""
-         SELECT ?uri ?label ?icon WHERE {
+         SELECT ?uri ?label ?icon ?linksTo WHERE {
            ?user cl:seesCommand ?uri .
            ?uri rdfs:label ?label .
            OPTIONAL { ?uri cl:iconPath ?icon }
+           OPTIONAL { ?uri cl:linksTo ?linksTo }
          } ORDER BY ?label
         """, initBindings={Variable("user") : self.user}):
 
@@ -79,8 +80,14 @@ class HomePage(rend.Page):
                 else:
                     buttonClass += " recommend"
 
+            if row.get('linksTo'):
+                form = T.form(method="get", action=row['linksTo'])
+                button = button + "..."
+            else:
+                form = T.form(method="post", action="addCommand")
+
             trs[-1].children.append(T.td[
-                T.form(method="post", action="addCommand")[
+                "\n", form[
                   T.input(type='hidden', name='uri', value=row['uri']),
                   T.button(class_=buttonClass)[T.div[button]],
                 ]])
