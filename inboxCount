@@ -1,8 +1,5 @@
 #!/usr/bin/python
 import sys, mailbox
-sys.path.append("/my/site/magma/munin-plugins")
-import munin
-
 
 def inboxCount(path="/my/mail/drewp"):
     mb = mailbox.Maildir(path, factory=None)
@@ -12,19 +9,8 @@ def inboxCount(path="/my/mail/drewp"):
             count += 1
     return count
 
-class Inbox(munin.Plugin):
-    def fetch(self):
-        return [
-            ('inbox.value', inboxCount()),
-            ]
-    def config(self):
-        return [
-            ("graph_title", "maildir inbox"),
-            ("graph_vlabel", "messages"),
-            ("inbox.label", "inbox"),
-            ]
-
-
 if __name__ == '__main__':
-    munin.run(Inbox)
+    # system.msg.inbox_messages.drewp
+    print inboxCount()
+
  
