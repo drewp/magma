@@ -1,4 +1,8 @@
 #!/usr/bin/python
+"""
+web site for adding heater commands and viewing recent commands. portUpdate watches for heater
+commands and turns them into parport instructions
+"""
 import sys, atexit
 from twisted.internet import reactor
 from twisted.python import log
