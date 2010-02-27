@@ -63,7 +63,7 @@ class HomePage(rend.Page):
          } ORDER BY ?label
         """, initBindings={Variable("user") : self.user}):
 
-            if len(trs[-1].children) >= 1 + 4:
+            if len(trs[-1].children) >= 1 + 3:
                 trs.append(T.tr[''])
                 
             button = row['label']
@@ -87,8 +87,8 @@ class HomePage(rend.Page):
 
             trs[-1].children.append(T.td[
                 "\n", form[
-                  T.input(type='hidden', name='uri', value=row['uri']),
-                  T.button(class_=buttonClass)[T.div[button]],
+                    T.input(type='hidden', name='uri', value=row['uri']),
+                    T.button(class_=buttonClass)[button],
                 ]])
         return T.table[trs]
 
@@ -328,6 +328,8 @@ class SecureButton(rend.Page):
             Literal(t, datatype=XS['dateTime']),
             self.user)
 
+        # the garage door also requires that bit 6 stay low, to avoid
+        # false opens during bootup, when all pins go high for a while
         return getPage("http://slash:9014/otherBit?bit=7",
                        method="POST", headers={'Use-Agent' : 'magma'})
 

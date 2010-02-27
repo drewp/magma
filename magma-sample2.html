@@ -3,138 +3,256 @@
       xmlns:n="http://nevow.com/ns/nevow/0.1">
   <head>
     <title>magma</title>
+    <link rel="Stylesheet" type="text/css" href="/nagios/stylesheets/status.css" />
+
+    <meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
 
     <style type="text/css">
-/* <![CDATA[ */
+      /* <![CDATA[ */
 
-// hi
+      // hi
 
-body {
-       color: white;
-       background: black;
-       }
-.section {
-           border: 1px solid gray;
-           margin: 3px 0;
-           padding: 6px;
-           } 
-.ranCommand {
-              margin: 10px;
-              padding: 10px;
-              background: yellow;
-              }
-.commands button {
-                   }
+      * {
+      margin: 0;
+      padding: 0;
+      }
 
-.commands table tr { height: 64px; }
-.commands table td { width: 64px; }
-button  {
-          width: 64px;
-          height: 64px;
-cursor:pointer;
-          }
-button div.label {
-                   font-size: 70%;
-                   }
-button.current { 
-  opacity: 1;
-  background: #faa;
-                 } 
-button.recommend { 
-  opacity: .7;
-  background: #fff;
- }
-/* ]]> */
+      html > body {
+	  background: gray;
+	  margin: 0 !important;
+
+      }
+      body > div {
+	  position: absolute;
+	  top: 0;
+	  left: 0;
+	  width: 320px;
+	  overflow:hidden;
+	  background: black;
+color: gray;
+font-family: sans;
+      }
+      .section {
+          border: 1px solid gray;
+          margin: 3px 0;
+          padding: 3px 0;
+      } 
+      .ranCommand {
+          margin: 10px;
+          padding: 10px;
+          background: yellow;
+      }
+      .commands  {
+	  margin-bottom: 8px;
+      }
+
+      .commands table tr { height: 48px; }
+      .commands table td { width: 102px; height: 48px; }
+      .commands button  {
+          width: 102px;
+          height: 48px;
+	  cursor:pointer;
+	  position: absolute;
+	  margin-top: -18px !important;
+      }
+      button div.label {
+          font-size: 70%;
+      }
+      button.current { 
+	  opacity: 1;
+	  background: #faa;
+      } 
+      button.recommend { 
+	  opacity: .7;
+	  background: #fff;
+      }
+
+      .wifi {
+	  font-family: sans-serif;
+      }
+      .wifi table {
+	  border-collapse: collapse;
+	  font-size: 80%;
+      }
+      .wifi td {
+	  padding-right: 30px;
+      }
+      .wifi th {
+	  text-align: left;
+      }
+      .wifi .signal {
+	  background: #ffc;
+      }
+      .wifi .nosignal {
+	  color:#aaa;
+      }
+      .imgFrame {
+	  position: relative;
+	  border: 1px solid blue;
+	  width: 104px;
+	  height: 80px;
+	  overflow: hidden;
+	  float: left;
+      }
+      .imgFrame img {
+	  position: relative;
+      }
+      a {
+	  text-decoration: none;
+	  color: #00f;
+      }
+      a img {
+	  border: 0;
+      }
+      .graph {
+	  float: left; width: 158px; height: 75px; overflow: hidden;
+      }
+      .graph.munin img {
+	  position: relative; left: -23px; top: -8px; width: 190px;
+      }
+
+      .links a {
+	  background:#333333 none repeat scroll 0 0;
+	  border:1px outset gray;
+	  color:#6D6CE4;
+	  line-height:32px;
+	  padding:4px;
+	  text-decoration:none;
+      }
+      .col2 {
+	  -webkit-column-width: 104px;
+	  -moz-column-width: 104px;
+      }
+
+      /* ]]> */
     </style>
-<meta name="viewport" content="width=240; initial-scale=1.0; user-scalable=yes"/>
+    <meta name="viewport" content="width=240; initial-scale=1.0; user-scalable=yes"/>
 
-</head>
-  <body>
-    <p>Hello <n:invisible n:render="user"/></p>
+  </head>
+  <body bgcolor="gray">
+    <div>
 
-    <n:invisible n:render="addedCommand"/>
+      <n:invisible n:render="addedCommand"/>
 
-<div class="commands">
-    <n:invisible n:render="commands"/>
-</div>
-    <form method="post" action="microblogUpdate">
-      <input type="text" name="msg"/> <input type="submit" value="Post to microblogs"/>
-      <!-- query the user to see what ublogs they have, so we could list them 
-	   in advance -->
-    </form>
-
-    <div class="section">
-      <div><a href="http://bigasterisk.com/ari/openidAccess">openid access control for ari blog</a></div>
-      <div><a href="http://bigasterisk.com/map/">gps map</a></div>
-      <div><a href="http://bigasterisk.com/sfd/">SFD</a></div>
-
-      <div><a href="http://bigasterisk.com/bathroomLight/">bathroom light</a></div>
-      <div><a href="http://bigasterisk.com/magma/babyTable/">baby event table</a></div>
-      <div><a href="http://bigasterisk.com/magma/babyKick/">baby event chart</a></div>
-      <div><a href="http://bigasterisk.com/nagios/index.html">nagios service monitor</a></div>
-      <div><a href="http://bigasterisk.com/magma/add/">add to wiki pages</a></div>
-      <div><a href="http://bigasterisk.com/wiki/">wiki home</a>, <a href="http://bigasterisk.com/wiki/ShoppingList">shop</a></div>
-      <div><a href="http://drewp.quickwitretort.com/add/weblog">add to blog</a></div>
-      <div><a href="http://bigasterisk.com/exchangeMeeting/all">exchangemeeting</a></div>
+      <div class="imgFrame">
+	<a href="/cam.html"><img style="left: -85px; width: 250px">
+	  <n:attr name="src">/cam/livingRoom.jpg?t=0</n:attr>
+	</img></a>
+      </div>
+      <div class="imgFrame">
+	<a href="/cam.html"><img style="top: -17px; width: 106px">
+	  <n:attr name="src">/cam/drewDesk.jpg?t=0</n:attr>
+	</img></a>
+      </div>
+      <div class="imgFrame">
+	<a href="/cam.html"><img style="top: -11px; width: 123px;">
+	  <n:attr name="src">/cam/ari/?action=snapshot&amp;n=0</n:attr>
+	</img></a>
+      </div>
+      <div style="clear:both;"/>
       
-    <!--<n:invisible n:render="lights"/>-->
+      <div class="commands">
+	<n:invisible n:render="commands"/>
+      </div>
 
-      <div><a href="http://whatsplayingnext.com/upcoming">whatsplayingnext</a></div>
-      <div><a href="http://bigasterisk.com/freeway">freeway</a></div>
+      <form method="post" action="microblogUpdate">
+	<input type="text" name="msg" style="width:310px"/> <span id="blogChars"/> <input type="submit" value="Post to microblogs"/>
+	<!-- query the user to see what ublogs they have, so we could list them 
+	     in advance -->
+      </form>
+
+      <div class="section links col2">
+	<div><a href="http://bigasterisk.com/cam.html"><img src="tango/devices/camera.png"/>house cameras</a></div>
+	<div><a href="http://bigasterisk.com/ari/openidAccess"><img src="tango/apps/system-users.png"/>openid access control for ari blog</a></div>
+
+	<div><a href="http://bigasterisk.com/map/"><img src="tango/apps/browser.png"/>gps map</a></div>
+	<div><a href="http://bigasterisk.com/sfd/">SFD</a></div>
+
+	<div><a href="http://bigasterisk.com/gasuse/submitFillUp">gasuse submit</a></div>
+
+	<div><a href="http://bigasterisk.com/bathroomLight/"><img src="tango/status/info.png"/>bathroom light</a></div>
+	<div><a href="http://drewp.quickwitretort.com/add/weblog">add to blog</a></div>
+	<div><a href="http://bigasterisk.com/exchangeMeeting/all">exchangemeeting</a></div>
+	
+	<!--<n:invisible n:render="lights"/>-->
+
+	<div><a href="http://whatsplayingnext.com/upcoming">whatsplayingnext</a></div>
+	<div><a href="http://bigasterisk.com/freeway">freeway</a></div>
+
+
+
+      </div>
+
+    <div class="section links">
+<img src="tango/mimetypes/sound.png"/>
+      <div><a href="http://bigasterisk.com/music/dash/ctl">music drew's desk (dash)</a> / <a href="http://bigasterisk.com/music/dash/gadget">gadget</a></div>
+      <div><a href="http://bigasterisk.com/music/bang/ctl">music bedroom (bang)</a> / <a href="http://bigasterisk.com/music/bang/gadget">gadget</a></div>
+      <div><a href="http://bigasterisk.com/music/slash/ctl">music living room (slash)</a> / <a href="http://bigasterisk.com/music/slash/gadget">gadget</a></div>
+      <div><a href="http://bigasterisk.com/music/score/ctl">music ari's room (score)</a> / <a href="http://bigasterisk.com/music/score/gadget">gadget</a></div>
+      <div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
     </div>
 
-    <div class="section">
-      <div><a href="http://bigasterisk.com/magma/mpd/dash/ctl">music downstairs (dash)</a> / <a href="http://bigasterisk.com/magma/mpd/dash/gadget">gadget</a></div>
-      <div><a href="http://bigasterisk.com/magma/mpd/bang/ctl">music bedroom (bang)</a> / <a href="http://bigasterisk.com/magma/mpd/bang/gadget">gadget</a></div>
-      <div><a href="http://bigasterisk.com/magma/mpd/slash/ctl">music living room (slash)</a> / <a href="http://bigasterisk.com/magma/mpd/slash/gadget">gadget</a></div>
-    </div>
-
-    <div class="section">
-      <a href="http://bigasterisk.com/magma/zfsreport/">zfs, embed</a>
-    </div>
     <div class="section">
       <a href="heater/">heater control</a>
     </div>
-    <div class="section">
-      <a href="temp/tempchart/table.html">temp table</a>
-    </div>
-    <div class="section" n:render="showMunin">
-      <table>
-	<tr><td>bang mem</td><td>bang cpu</td><td>bloglines unread</td></tr>
-	<tr>
-	  <td><div style="height: 114px; overflow: hidden">
-	    <a href="http://bigasterisk.com/magma/munin/bang/bang.html">
-	      <img src="http://bigasterisk.com/magma/munin/bang/bang-memory-day.png" 
-		   height="200"/></a></div>
-	  </td>
-	  <td><div style="height: 114px; overflow: hidden">
-	    <a href="http://bigasterisk.com/magma/munin/bang/bang.html">
-	      <img src="http://bigasterisk.com/magma/munin/bang/bang-cpu-day.png" 
-		   height="166"/></a></div>
-	  </td>
-	  <td><div style="height: 114px; overflow: hidden">
-	    <a href="http://bigasterisk.com/magma/munin/bang/bang.html">
-	      <img src="http://bigasterisk.com/magma/munin/bang/bang-bloglinesCount-week.png" 
-		   height="132"/></a></div>
-	  </td>
-	</tr>
-      </table>
 
-      <table>
-	<tr><td>mailbox</td><td>slash cpu</td></tr>
-	<tr>
-	  <td><div style="height: 114px; overflow: hidden">
-	    <a href="http://bigasterisk.com/magma/munin/slash/slash.html">
-	      <img src="http://bigasterisk.com/magma/munin/slash/slash-inboxCount-week.png" 
-		   height="145"/></a></div>
-	  </td>
-	  <td><div style="height: 114px; overflow: hidden">
-	    <a href="http://bigasterisk.com/magma/munin/slash/slash.html">
-	      <img src="http://bigasterisk.com/magma/munin/slash/slash-cpu-day.png" 
-		   height="149"/></a></div>
-	  </td>
-	</tr>
-      </table>
+    <div class="section">
+      <div><a href="http://bigasterisk.com/nagios/index.html">nagios service monitor</a></div>
+      <div class="services">nagios services...</div>
+    </div>
+    <div class="section">
+      <h2>wifi bigasterisk3</h2>
+      <div id="wifi1" class="wifi">devices...</div>
+      <h2>wifi bigasterisk4</h2>
+      <div id="wifi2" class="wifi">devices...</div>
+    </div>
+    <div class="section">
+      <img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=145&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=system.house.temp.sens3&amp;target=system.house.temp.sens4&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5" width="320" height="145"/>
+      <div><a href="temp/tempchart/table.html">other temp tables</a></div>
+    </div>
+
+    <div class="section" n:render="showMunin">
+
+      <div>bang mem/cpu</div>
+      
+      <div class="graph munin">
+	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	  <img src="http://bigasterisk.com/magma/munin/bang/bang-memory-day.png"/>
+	</a>
+      </div>
+      
+      <div class="graph munin">
+	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	  <img src="http://bigasterisk.com/magma/munin/bang/bang-cpu-day.png"/>
+	</a>
+      </div>
+      <div style="clear:both"/>
+
+      <div>bloglines, inbox</div>
+
+      <div class="graph">
+	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	  <img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;_salt=1263280935.3&amp;target=system.msg.new_bloglines_entries.drewp&amp;from=-60days&amp;hideLegend=true&amp;fontSize=7" width="158" height="75"/>
+	</a>
+      </div>
+
+      <div class="graph">
+	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
+	  <img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;_salt=1257838286.848&amp;target=system.msg.inbox_messages.drewp&amp;from=-5days&amp;areaMode=all&amp;template=alphas&amp;hideLegend=true&amp;fontSize=7"
+	       width="158" height="75"/>
+	</a>
+      </div>
+
+      <div style="clear:both"/>
+
+      <div>slash cpu</div>
+      <div class="graph munin">
+	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
+	  <img src="http://bigasterisk.com/magma/munin/slash/slash-cpu-day.png"/>
+	</a>
+      </div>
+      <div style="clear:both"/>
+
     </div>
 
     <div class="section">
@@ -146,15 +264,11 @@ button.recommend {
     <div class="section">
 	<a href="net">net diagram, to embed</a>
     </div>
-    <div class="section">
-      dash mem sample
-      <img width="200" height="150" src=""/>
-      <table>
-	<tr><th>X</th><td>105MB res</td></tr>
-	<tr><th>zope4</th><td>71</td></tr>
-	<tr><th>firefox</th><td>70</td></tr>
-      </table>
-    </div>
+
+    <n:invisible n:render="loginBar"/>
+
+
+<n:comment>
 <!--    
     <table n:render="showTwitters">
 	<tr>
@@ -180,9 +294,99 @@ button.recommend {
 	</tr>
     </table>
     -->
+</n:comment>
+
+
     <style type="text/css">
       /* supervisor overrides */
       th.name { width: 1em !important }
+
+      table.status { border: 1px solid gray; border-collapse: collapse; }
     </style>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="tomato_config.js"></script>
+    <script type="text/javascript">
+      // <![CDATA[
+
+      $(function () {
+	  $(".services").load("http://bigasterisk.com/nagios/cgi-bin/status.cgi?host=all&servicestatustypes=28 table.status");
+
+	  function renderTomato(tomatoResult, target) {
+	      var arplist, wlnoise, dhcpd_static, wldev, dhcpd_lease;
+	      eval(tomatoResult);
+
+	      var aboutIp = {};
+	      var byMac = {};
+
+	      $.each(arplist, function (i, r) {
+		  var ip=r[0];
+		  if (aboutIp[ip] == undefined) { aboutIp[ip] = {}; }
+		  aboutIp[ip]['mac'] = r[1];
+		  byMac[r[1]] = aboutIp[ip];
+		  aboutIp[ip]['interface'] = r[2];
+
+	      });
+	      $.each(dhcpd_lease, function (i, r) {
+		  var ip=r[1];
+		  if (aboutIp[ip] == undefined) { aboutIp[ip] = {}; }
+		  aboutIp[ip]['name'] = r[0];
+		  aboutIp[ip]['mac'] = r[2];
+		  byMac[r[2]] = aboutIp[ip];
+		  aboutIp[ip]['lease'] = r[3];
+	      });
+	      $.each(wldev, function (i, r) {
+		  var dev=r[0], mac=r[1], rssi=r[2];
+		  if (byMac[mac] == undefined) {
+		      aboutIp[mac] = {'mac' : mac, 'dev' : dev, 'rssi' : rssi};
+		  } else {
+		      byMac[mac]['dev'] = dev;
+		      byMac[mac]['rssi'] = rssi;
+		  }
+	      });
+
+	      function str(t, suff) {
+		  return (t == undefined) ? '' : 
+		      (t + ((suff == undefined) ? '' : (' ' + suff)));
+	      }
+	      function nameCell(name, mac) {
+		  if (name && name != "*") {
+		      return name;
+		  }
+		  return knownMacAddr[mac] ? knownMacAddr[mac] : "";
+	      }
+
+	      $(target).html("<table><tr><th>MAC address</th><th>IP address</th><th>Name</th><th>RSSI</th><th>Lease</th></tr></table>");
+	      var table = $(target).find('table');
+
+	      $.each(aboutIp, function (ip, rest) {
+		  if (ignoreIpAddr(ip)) {
+		      return;
+		  }
+
+		  $('<tr><td>'+str(rest['mac'])+
+			       '</td><td>'+str(ip)+
+			       '</td><td>'+nameCell(rest['name'], rest['mac'])+
+			       '</td><td>'+str(rest['rssi'], 'dBm')+
+			       '</td><td>'+str(rest['lease'])+
+		    '</td></tr>').appendTo(table).addClass(rest['rssi'] ? "signal" : "nosignal");
+	      })
+	  }
+
+	  $.getScript(tomatoUrl[0], 
+	       function (data, textStatus) { renderTomato(data, "#wifi1") });
+	  $.getScript(tomatoUrl[1], 
+	       function (data, textStatus) { renderTomato(data, "#wifi2") });
+
+
+	  $("input[name=msg]").keyup(function () {
+	      var chars = $("form[action=microblogUpdate] input[type=text]").val().length;
+	      $("#blogChars").text("("+chars+")");
+	  });
+
+      });
+      // ]]>
+    </script>
+  </div>    
   </body>
 </html>

@@ -75,6 +75,7 @@ for cmd in ['addCommand', 'babyKick', 'babyTable', 'garage']:
     
 
 setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
+setattr(Main, "child_tomato_config.js", static.File("/my/site/magma/tomato_config.js"))
 
 log.startLogging(sys.stdout)
 
