@@ -23,18 +23,13 @@ CL = Namespace("http://bigasterisk.com/ns/command/v1#")
     # if this is from a phone, use the little menu. the big menu
     # should also be ext, and have links to all the inner services.
 
-def userFromOpenid(graph, identity):
-    return graph.queryd(
-        "SELECT ?user WHERE { ?user cl:openid ?id }",
-        initBindings={Variable("id") : URIRef(identity)})[0]['user']
-    
 class HomePage(rend.Page):
     docFactory = loaders.xmlfile("magma-sample2.html")
     def __init__(self, cmdlog, identity):
         """identity is an openid"""
         self.cmdlog = cmdlog
         self.graph = cmdlog.graph
-        self.user = userFromOpenid(self.graph, identity)
+        self.user = identity
         rend.Page.__init__(self)
 
     def locateChild(self, ctx, segments):
@@ -50,8 +45,12 @@ class HomePage(rend.Page):
         
         return rend.Page.renderHTTP(self, ctx)
 
-    def render_user(self, ctx, data):
-        return self.user
+
+    def render_loginBar(self, ctx, data):
+        return getPage("http://bang:9023/_loginBar", headers={
+            "Cookie" : inevow.IRequest(ctx).getHeader("cookie")}
+                       ).addCallback(T.raw)
+        
 
     def render_commands(self, ctx, data):
         trs = [T.tr['']]
