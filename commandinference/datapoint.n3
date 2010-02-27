@@ -30,23 +30,17 @@ cmd:HelloWorld a :Command; rdfs:label "hello world" .
 
 cmd:garageDoor a :Command; rdfs:label "Garage"; :linksTo <http://bigasterisk.com/magma/garage/> .
 
-<http://kelsi.bigasterisk.com/foaf.rdf#kelsi> :seesCommand 
-  cmd:BabyKick,
-  cmd:BabyStart,
-  cmd:BabyStop,
+<http://bigasterisk.com/kelsi/foaf.rdf#kelsi> :seesCommand 
   cmd:heaterOff,
   cmd:heaterOn20Min,
   cmd:garageDoor
  .
 <http://bigasterisk.com/foaf.rdf#drewp> :seesCommand 
   cmd:HelloWorld, 
-  cmd:Fillup,
   cmd:bedroomRedLightOn,
   cmd:bedroomRedLightOff,
   cmd:deckLightOn,
   cmd:deckLightOff,
-  cmd:BabyStart,
-  cmd:BabyStop,
   cmd:heaterOff,
   cmd:heaterOn20Min,
   cmd:garageDoor
