@@ -165,6 +165,9 @@ class HomePage(rend.Page):
             return ctx.tag
         return ''
 
+    def render_currentMilli(self, ctx, data):
+        return int(time.time() * 1000)
+
     def child_babyKick(self, ctx):
         return BabyKick(self.graph)
 

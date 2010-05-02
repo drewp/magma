@@ -105,7 +105,12 @@ font-family: sans;
 	  border: 0;
       }
       .graph {
-	  float: left; width: 158px; height: 75px; overflow: hidden;
+	  float: left; width: 158px; height: 95px; overflow: hidden;
+      }
+      .graph h1 {
+        font-size: 10px;
+        height: 22px;
+	margin: 0;
       }
       .graph.munin img {
 	  position: relative; left: -23px; top: -8px; width: 190px;
@@ -124,6 +129,7 @@ font-family: sans;
 	  -moz-column-width: 104px;
       }
 
+
       /* ]]> */
     </style>
     <meta name="viewport" content="width=240; initial-scale=1.0; user-scalable=yes"/>
@@ -135,18 +141,38 @@ font-family: sans;
       <n:invisible n:render="addedCommand"/>
 
       <div class="imgFrame">
-	<a href="/cam.html"><img style="left: -85px; width: 250px">
-	  <n:attr name="src">/cam/livingRoom.jpg?t=0</n:attr>
+	<a href="/cam/"><img style="left: -85px; width: 250px">
+	  <n:attr name="src">/cam/livingRoom.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
 	</img></a>
       </div>
       <div class="imgFrame">
-	<a href="/cam.html"><img style="top: -17px; width: 106px">
-	  <n:attr name="src">/cam/drewDesk.jpg?t=0</n:attr>
+	<a href="/cam/"><img style="top: -17px; width: 106px">
+	  <n:attr name="src">/cam/drewDesk.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
+	</img></a>
+      </div>
+
+
+      <div class="imgFrame">
+	<a href="/cam/"><img style="top: -17px; width: 106px">
+	  <n:attr name="src">/cam/sideYard.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
+	</img></a>
+      </div>
+
+      <div class="imgFrame">
+	<a href="/cam/"><img style="top: 0px; width: 106px">
+	  <n:attr name="src">/cam/garage.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
 	</img></a>
       </div>
       <div class="imgFrame">
-	<a href="/cam.html"><img style="top: -11px; width: 123px;">
-	  <n:attr name="src">/cam/ari/?action=snapshot&amp;n=0</n:attr>
+	<a href="/cam/"><img style="left: -24px; width: 139px">
+	  <n:attr name="src">/cam/frontDoor.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
+	</img></a>
+      </div>
+
+
+      <div class="imgFrame">
+	<a href="/cam/"><img style="top: 0px; width: 123px;">
+	  <n:attr name="src">/cam/ari.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
 	</img></a>
       </div>
       <div style="clear:both;"/>
@@ -162,7 +188,8 @@ font-family: sans;
       </form>
 
       <div class="section links col2">
-	<div><a href="http://bigasterisk.com/cam.html"><img src="tango/devices/camera.png"/>house cameras</a></div>
+	<div><a href="http://bigasterisk.com/diary/">diarybot viewer</a></div>
+	<div><a href="http://bigasterisk.com/cam/"><img src="tango/devices/camera.png"/>house cameras</a></div>
 	<div><a href="http://bigasterisk.com/ari/openidAccess"><img src="tango/apps/system-users.png"/>openid access control for ari blog</a></div>
 
 	<div><a href="http://bigasterisk.com/map/"><img src="tango/apps/browser.png"/>gps map</a></div>
@@ -207,50 +234,65 @@ font-family: sans;
       <div id="wifi2" class="wifi">devices...</div>
     </div>
     <div class="section">
-      <img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=145&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=system.house.temp.sens3&amp;target=system.house.temp.sens4&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5" width="320" height="145"/>
+      <img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=200&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=system.house.temp.sens3&amp;target=system.house.temp.sens4&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=80" width="320" height="200"/>
       <div><a href="temp/tempchart/table.html">other temp tables</a></div>
     </div>
 
     <div class="section" n:render="showMunin">
 
-      <div>bang mem/cpu</div>
-      
       <div class="graph munin">
+	<h1>bang mem</h1>
 	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
 	  <img src="http://bigasterisk.com/magma/munin/bang/bang-memory-day.png"/>
 	</a>
       </div>
       
       <div class="graph munin">
+	<h1>cpu</h1>
 	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
 	  <img src="http://bigasterisk.com/magma/munin/bang/bang-cpu-day.png"/>
 	</a>
       </div>
       <div style="clear:both"/>
 
-      <div>bloglines, inbox</div>
-
-      <div class="graph">
-	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
-	  <img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;_salt=1263280935.3&amp;target=system.msg.new_bloglines_entries.drewp&amp;from=-60days&amp;hideLegend=true&amp;fontSize=7" width="158" height="75"/>
+      <div class="graph munin">
+	<h1>slash mem</h1>
+	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
+	  <img src="http://bigasterisk.com/magma/munin/slash/slash-memory-day.png"/>
 	</a>
       </div>
 
-      <div class="graph">
+      <div class="graph munin">
+	<h1>cpu</h1>
 	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
-	  <img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;_salt=1257838286.848&amp;target=system.msg.inbox_messages.drewp&amp;from=-5days&amp;areaMode=all&amp;template=alphas&amp;hideLegend=true&amp;fontSize=7"
-	       width="158" height="75"/>
+	  <img src="http://bigasterisk.com/magma/munin/slash/slash-cpu-day.png"/>
 	</a>
       </div>
 
       <div style="clear:both"/>
 
-      <div>slash cpu</div>
-      <div class="graph munin">
-	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
-	  <img src="http://bigasterisk.com/magma/munin/slash/slash-cpu-day.png"/>
-	</a>
+      <div class="graph">
+	<h1>bloglines</h1>
+	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.msg.new_bloglines_entries.drewp&amp;from=-60days&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
       </div>
+
+      <div class="graph">
+	<h1>inbox</h1>
+	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.msg.inbox_messages.drewp&amp;from=-60days&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
+      </div>
+
+      <div style="clear:both"/>
+
+      <div class="graph">
+	<h1>grid jobs</h1>
+	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.grid.jobs&amp;from=-10hours&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
+      </div>
+
+      <div class="graph">
+	<h1>eon load</h1>
+	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.host.eon.load&amp;from=-10hours&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
+      </div>
+
       <div style="clear:both"/>
 
     </div>
