@@ -1,7 +1,9 @@
 import sys
 from rdflib import Variable, Namespace, URIRef
+from getpass import getpass
 # easy_install 'python-twitter', and don't have the one called 'twitter' around
-import xmpp, twitter
+import xmpp, twitter, jsonlib
+import restkit
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 MB = Namespace("http://bigasterisk.com/ns/microblog/")
@@ -27,18 +29,18 @@ def _getUserPass(graph, openid, accountType):
     rows = list(graph.queryd("""
       SELECT DISTINCT ?user ?password WHERE {
         ?id foaf:holdsAccount [
-          a ?atype;
-          foaf:accountName ?user;
+          a ?atype ;
+          foaf:accountName ?user ;
           mb:password ?password
         ]
       }""", initBindings={Variable("id") : openid,
                           Variable("atype") : accountType}))
     if len(rows) != 1:
-        raise ValueError("didn't find single user/password for %s "
-                         "for %s" % (accountType, openid))
+        raise ValueError("found %s user/password pairs for %s "
+                         "for %s" % (len(rows), accountType, openid))
     return rows[0]
 
-def postIdentica(graph, openid, msg):
+def postIdenticaXmpp(graph, openid, msg):
     """
     uses openid's own jabberID and mb:jabberPassword to send to
     update@identi.ca (hopefully they are expecting messages from you)
@@ -46,6 +48,9 @@ def postIdentica(graph, openid, msg):
     maybe there is a more standard way to POST an update to identica
     using your identica user/pass, or even openid (where we would be
     the providing party as well)
+
+    alternate:
+    http://bitbucket.org/waltercruz/feed2mb/src/tip/feed2mb/feed2mb/microblog.py
     """
     senderId = graph.value(openid, FOAF.jabberID)
     if senderId is None:
@@ -57,6 +62,53 @@ def postIdentica(graph, openid, msg):
     senderServer = senderId.split('@')[1]
     sender = XmppSender(senderId, senderServer, senderPassword)
     sender.sendMessage("update@identi.ca", msg)
+
+def postIdenticaOauth():
+    """ not working yet. last tried on 2010-05 """
+    from restkit import OAuthFilter, request
+    import restkit.oauth2 
+
+    consumer = restkit.oauth2.Consumer(key="",
+      secret="")
+
+    request_token_url = "http://identi.ca/api/oauth/request_token"
+
+    auth = OAuthFilter(('*', consumer))
+
+    if 1:
+        # The request.
+        resp = request(request_token_url, filters=[auth])
+        print resp.__dict__
+        print resp.body
+    else:
+        oauth_token=""
+        oauth_token_secret=""
+        tok = restkit.oauth2.Token(oauth_token, oauth_token_secret)
+
+    resp = restkit.request(
+        "http://identi.ca/api/statuses/friends_timeline.json",
+        filters=[OAuthFilter(('*', consumer, tok))],
+        method="GET")
+    print resp.body
+    print resp
+
+    resp = restkit.request("http://identi.ca/api/statuses/update.json",
+                    filters=[OAuthFilter(('*', consumer, tok))],
+                    method="POST",
+                    body=jsonlib.dumps({'status' : 'first oauth update'}))
+
+    print resp.body
+    print resp
+
+def postIdenticaPassword(graph, openid, msg):
+    login = _getUserPass(graph, openid, MB.IdenticaAccount)
+    api = restkit.Resource("http://identi.ca/api",
+                           filters=[restkit.BasicAuth(login['user'],
+                                                      login['password'])])
+    resp = api.post("statuses/update.json", status=msg)
+    return jsonlib.read(resp.body)
+
+postIdentica = postIdenticaPassword
 
 def postTwitter(graph, openid, msg):
     """
@@ -81,6 +133,10 @@ if __name__ == '__main__':
     from remotesparql import RemoteSparql
     graph = RemoteSparql('http://plus:8080/openrdf-sesame/repositories', 'cmd',
                          dict(foaf=FOAF, mb=MB))
+    drewp = URIRef("http://bigasterisk.com/foaf.rdf#drewp")
+    if 0:
 
-    postIdentica(graph, URIRef("http://bigasterisk.com/foaf.rdf#drewp"), 'test')
-    postTwitter(graph, URIRef("http://bigasterisk.com/foaf.rdf#drewp"), 'test')
+        postIdentica(graph, drewp, 'test')
+        postTwitter(graph, drewp, 'test')
+    else:
+        print postIdenticaPassword(graph, drewp, "(testing new post library)")
