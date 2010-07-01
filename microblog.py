@@ -63,13 +63,13 @@ def postIdenticaXmpp(graph, openid, msg):
     sender = XmppSender(senderId, senderServer, senderPassword)
     sender.sendMessage("update@identi.ca", msg)
 
+
 def postIdenticaOauth():
     """ not working yet. last tried on 2010-05 """
     from restkit import OAuthFilter, request
     import restkit.oauth2 
 
-    consumer = restkit.oauth2.Consumer(key="",
-      secret="")
+    consumer = restkit.oauth2.Consumer(key=oauthKey, secret=oauthSecret)
 
     request_token_url = "http://identi.ca/api/oauth/request_token"
 
@@ -81,8 +81,6 @@ def postIdenticaOauth():
         print resp.__dict__
         print resp.body
     else:
-        oauth_token=""
-        oauth_token_secret=""
         tok = restkit.oauth2.Token(oauth_token, oauth_token_secret)
 
     resp = restkit.request(
@@ -131,7 +129,7 @@ def postAll(graph, openid, msg):
 if __name__ == '__main__':
     sys.path.append('../photo')
     from remotesparql import RemoteSparql
-    graph = RemoteSparql('http://plus:8080/openrdf-sesame/repositories', 'cmd',
+    graph = RemoteSparql('http://bang:8080/openrdf-sesame/repositories', 'cmd',
                          dict(foaf=FOAF, mb=MB))
     drewp = URIRef("http://bigasterisk.com/foaf.rdf#drewp")
     if 0:
