@@ -12,7 +12,8 @@ from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json, url
 from rdflib import URIRef, Namespace, Variable, RDFS, Literal
 from commandinference.db import XS
-import iso8601, time
+import time
+from xml.utils import iso8601
 
 import stripchart
 reload(stripchart)

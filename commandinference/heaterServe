@@ -13,8 +13,7 @@ from rdflib.Graph import ConjunctiveGraph, ReadOnlyGraphAggregate
 from rdflib import Literal, URIRef, Namespace
 
 sys.path.append("..")
-sys.path.append('/usr/lib/python2.6/dist-packages/oldxml/_xmlplus/utils')
-import iso8601
+from xml.utils import iso8601
 
 from commandinference import db
 from commandpage import CommandSite

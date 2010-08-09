@@ -7,10 +7,7 @@ import sys, urllib
 from rdflib import URIRef, RDF, Namespace, Variable, Literal, RDFS
 from time import strftime
 
-sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
-                sys.version[:3])
-sys.path.append('/usr/lib/python2.6/dist-packages/oldxml/_xmlplus/utils')
-import iso8601
+from xml.utils import iso8601
 
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")

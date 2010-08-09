@@ -6,11 +6,11 @@ also watch commands for the remote-controlled lights
 """
 import sys, time, atexit
 
-sys.path.append('/usr/lib/python2.6/dist-packages/oldxml/_xmlplus/utils')
 sys.path.append('..') # for commandinference
 from twisted.internet import reactor
 from rdflib import Namespace, RDF
-import iso8601, restkit
+import restkit
+from xml.utils import iso8601
 from cmdline import getCommandLog
 from commandinference.db import CMD, CL, ROOM
 

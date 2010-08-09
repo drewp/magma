@@ -5,7 +5,8 @@ import sys
 sys.path.append("/my/site/photo")
 from remotesparql import RemoteSparql
 from rdflib import Literal
-import iso8601, time
+import time 
+from xml.utils import iso8601
 from commandinference.db import CommandLog, NS, XS
 from twisted.python.util import sibpath
 
