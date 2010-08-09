@@ -113,7 +113,7 @@ font-family: sans;
 	margin: 0;
       }
       .graph.munin img {
-	  position: relative; left: -23px; top: -8px; width: 190px;
+	  position: relative; left: -23px; top: -8px; width: 180px;
       }
 
       .links a {
@@ -141,38 +141,38 @@ font-family: sans;
       <n:invisible n:render="addedCommand"/>
 
       <div class="imgFrame">
-	<a href="/cam/"><img style="left: -85px; width: 250px">
-	  <n:attr name="src">/cam/livingRoom.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
+	<a href="/cam/livingRoom"><img style="left: -85px; width: 250px">
+	  <n:attr name="src">/cam/livingRoom.jpg</n:attr>
 	</img></a>
       </div>
       <div class="imgFrame">
-	<a href="/cam/"><img style="top: -17px; width: 106px">
-	  <n:attr name="src">/cam/drewDesk.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
-	</img></a>
-      </div>
-
-
-      <div class="imgFrame">
-	<a href="/cam/"><img style="top: -17px; width: 106px">
-	  <n:attr name="src">/cam/sideYard.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
-	</img></a>
-      </div>
-
-      <div class="imgFrame">
-	<a href="/cam/"><img style="top: 0px; width: 106px">
-	  <n:attr name="src">/cam/garage.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
-	</img></a>
-      </div>
-      <div class="imgFrame">
-	<a href="/cam/"><img style="left: -24px; width: 139px">
-	  <n:attr name="src">/cam/frontDoor.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
+	<a href="/cam/drewDesk"><img style="top: -17px; width: 106px">
+	  <n:attr name="src">/cam/drewDesk.jpg</n:attr>
 	</img></a>
       </div>
 
 
       <div class="imgFrame">
-	<a href="/cam/"><img style="top: 0px; width: 123px;">
-	  <n:attr name="src">/cam/ari.jpg?t=<n:invisible n:render="currentMilli"/></n:attr>
+	<a href="/cam/sideYard"><img style="top: -17px; width: 106px">
+	  <n:attr name="src">/cam/sideYard.jpg</n:attr>
+	</img></a>
+      </div>
+
+      <div class="imgFrame">
+	<a href="/cam/garage"><img style="top: 0px; width: 106px">
+	  <n:attr name="src">/cam/garage.jpg</n:attr>
+	</img></a>
+      </div>
+      <div class="imgFrame">
+	<a href="/cam/frontDoor"><img style="left: -24px; width: 139px">
+	  <n:attr name="src">/cam/frontDoor.jpg</n:attr>
+	</img></a>
+      </div>
+
+
+      <div class="imgFrame">
+	<a href="/cam/ari"><img style="top: 0px; width: 123px;">
+	  <n:attr name="src">/cam/ari.jpg</n:attr>
 	</img></a>
       </div>
       <div style="clear:both;"/>
@@ -189,7 +189,7 @@ font-family: sans;
 
       <div class="section links col2">
 	<div><a href="http://bigasterisk.com/diary/">diarybot viewer</a></div>
-	<div><a href="http://bigasterisk.com/cam/"><img src="tango/devices/camera.png"/>house cameras</a></div>
+	<!--<div><a href="http://bigasterisk.com/cam/"><img src="tango/devices/camera.png"/>house cameras</a></div>-->
 	<div><a href="http://bigasterisk.com/ari/openidAccess"><img src="tango/apps/system-users.png"/>openid access control for ari blog</a></div>
 
 	<div><a href="http://bigasterisk.com/map/"><img src="tango/apps/browser.png"/>gps map</a></div>
@@ -198,7 +198,6 @@ font-family: sans;
 	<div><a href="http://bigasterisk.com/gasuse/submitFillUp">gasuse submit</a></div>
 
 	<div><a href="http://bigasterisk.com/bathroomLight/"><img src="tango/status/info.png"/>bathroom light</a></div>
-	<div><a href="http://drewp.quickwitretort.com/add/weblog">add to blog</a></div>
 	<div><a href="http://bigasterisk.com/exchangeMeeting/all">exchangemeeting</a></div>
 	
 	<!--<n:invisible n:render="lights"/>-->
@@ -210,14 +209,14 @@ font-family: sans;
 
       </div>
 
-    <div class="section links">
-<img src="tango/mimetypes/sound.png"/>
-      <div><a href="http://bigasterisk.com/music/dash/ctl">music drew's desk (dash)</a> / <a href="http://bigasterisk.com/music/dash/gadget">gadget</a></div>
-      <div><a href="http://bigasterisk.com/music/bang/ctl">music bedroom (bang)</a> / <a href="http://bigasterisk.com/music/bang/gadget">gadget</a></div>
-      <div><a href="http://bigasterisk.com/music/slash/ctl">music living room (slash)</a> / <a href="http://bigasterisk.com/music/slash/gadget">gadget</a></div>
-      <div><a href="http://bigasterisk.com/music/score/ctl">music ari's room (score)</a> / <a href="http://bigasterisk.com/music/score/gadget">gadget</a></div>
-      <div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
-    </div>
+      <div class="section links">
+	<img src="tango/mimetypes/sound.png"/>
+	<div><a href="http://bigasterisk.com/music/dash/ctl">drew's desk (dash)</a> / <a href="http://bigasterisk.com/music/dash/gadget">gadget</a> / <a href="http://bigasterisk.com/music/dash/theory/">theory</a></div>
+	<div><a href="http://bigasterisk.com/music/bang/ctl">bedroom (bang)</a> / <a href="http://bigasterisk.com/music/bang/gadget">gadget</a> / <a href="http://bigasterisk.com/music/bang/theory/">theory</a></div>
+	<div><a href="http://bigasterisk.com/music/slash/ctl">living room (slash)</a> / <a href="http://bigasterisk.com/music/slash/gadget">gadget</a> / <a href="http://bigasterisk.com/music/slash/theory/">theory</a></div>
+	<div><a href="http://bigasterisk.com/music/score/ctl">ari's room (score)</a> / <a href="http://bigasterisk.com/music/score/gadget">gadget</a> / <a href="http://bigasterisk.com/music/score/theory/">theory</a></div>
+	<div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
+      </div>
 
     <div class="section">
       <a href="heater/">heater control</a>
@@ -228,13 +227,15 @@ font-family: sans;
       <div class="services">nagios services...</div>
     </div>
     <div class="section">
-      <h2>wifi bigasterisk3</h2>
+      <h2><a href="http://bigasterisk.com/tomato1/status-devices.asp">wifi bigasterisk3</a></h2>
       <div id="wifi1" class="wifi">devices...</div>
-      <h2>wifi bigasterisk4</h2>
+      <h2><a href="http://bigasterisk.com/tomato2/status-devices.asp">wifi bigasterisk4</a></h2>
       <div id="wifi2" class="wifi">devices...</div>
     </div>
     <div class="section">
-      <img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=200&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=system.house.temp.sens3&amp;target=system.house.temp.sens4&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=80" width="320" height="200"/>
+      <a href="http://graphite.bigasterisk.com/render/?width=720&amp;height=400&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=keepLastValue(system.house.temp.sens3)&amp;target=system.house.temp.sens4&amp;target=system.house.temp.ariroom&amp;from=-100hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90">
+	<img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=200&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=keepLastValue(system.house.temp.sens3)&amp;target=system.house.temp.sens4&amp;target=system.house.temp.ariroom&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90" width="320" height="200"/>
+      </a>
       <div><a href="temp/tempchart/table.html">other temp tables</a></div>
     </div>
 
@@ -243,14 +244,14 @@ font-family: sans;
       <div class="graph munin">
 	<h1>bang mem</h1>
 	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
-	  <img src="http://bigasterisk.com/magma/munin/bang/bang-memory-day.png"/>
+	  <img src="http://bigasterisk.com/magma/munin/bang/bang/memory-day.png"/>
 	</a>
       </div>
       
       <div class="graph munin">
 	<h1>cpu</h1>
 	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
-	  <img src="http://bigasterisk.com/magma/munin/bang/bang-cpu-day.png"/>
+	  <img src="http://bigasterisk.com/magma/munin/bang/bang/cpu-day.png"/>
 	</a>
       </div>
       <div style="clear:both"/>
@@ -258,14 +259,14 @@ font-family: sans;
       <div class="graph munin">
 	<h1>slash mem</h1>
 	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
-	  <img src="http://bigasterisk.com/magma/munin/slash/slash-memory-day.png"/>
+	  <img src="http://bigasterisk.com/magma/munin/slash/slash/memory-day.png"/>
 	</a>
       </div>
 
       <div class="graph munin">
 	<h1>cpu</h1>
 	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
-	  <img src="http://bigasterisk.com/magma/munin/slash/slash-cpu-day.png"/>
+	  <img src="http://bigasterisk.com/magma/munin/slash/slash/cpu-day.png"/>
 	</a>
       </div>
 
@@ -284,8 +285,8 @@ font-family: sans;
       <div style="clear:both"/>
 
       <div class="graph">
-	<h1>grid jobs</h1>
-	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.grid.jobs&amp;from=-10hours&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
+	<h1>space for rent</h1>
+	<img src="" width="158" height="75"/>
       </div>
 
       <div class="graph">
@@ -295,6 +296,13 @@ font-family: sans;
 
       <div style="clear:both"/>
 
+
+      <div class="graph" style="height: 150px">
+	<h1>phone batteries</h1>
+<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=400&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-56hours&amp;yMin=0&amp;fontSize=12&amp;lineWidth=6"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-8hours&amp;yMin=0&amp;fontSize=7&amp;lineWidth=3" width="158" height="125"/></a>
+      </div>
+
+      <div style="clear:both"/>
     </div>
     
     <div class="section">
