@@ -1,7 +1,6 @@
 import sys
-sys.path.append('/usr/lib/python%s/site-packages/oldxml/_xmlplus/utils' %
-                sys.version[:3])
-import iso8601, time
+from xml.utils import iso8601
+import time
 from rdflib import URIRef, Literal
 from nevow import inevow, url, json, rend
 from commandinference.db import XS
