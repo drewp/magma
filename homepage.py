@@ -46,6 +46,11 @@ class HomePage(rend.Page):
         
         return rend.Page.renderHTTP(self, ctx)
 
+    def render_notPhone(self, ctx, data):
+        ua = inevow.IRequest(ctx).getHeader('User-Agent')
+        if 'webOS' in ua:
+            return ''
+        return ctx.tag
 
     def render_loginBar(self, ctx, data):
         return getPage("http://bang:9023/_loginBar", headers={
@@ -334,8 +339,8 @@ class SecureButton(rend.Page):
 
         # the garage door also requires that bit 6 stay low, to avoid
         # false opens during bootup, when all pins go high for a while
-        return getPage("http://slash:9014/otherBit?bit=7",
-                       method="POST", headers={'Use-Agent' : 'magma'})
+        return getPage("http://slash:9014/otherBit?bit=7&pulse=1",
+                       method="PUT", headers={'Use-Agent' : 'magma'})
 
 
     def getTicket(self):

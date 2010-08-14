@@ -1,14 +1,15 @@
 """
 for all clients of the db
 """
-import sys
+import sys, logging
 sys.path.append("/my/site/photo")
 from remotesparql import RemoteSparql
 from rdflib import Literal
-import time 
+import time, jsonlib, restkit
 from xml.utils import iso8601
 from commandinference.db import CommandLog, NS, XS
 from twisted.python.util import sibpath
+log = logging.getLogger()
 
 def buildCommandLog(seedGraphFilename, sleepycatDir="db"):
     """load an n3 file with command definitions and initial
@@ -29,9 +30,8 @@ def buildCommandLog(seedGraphFilename, sleepycatDir="db"):
 
 def getCommandLog():
     graph = RemoteSparql("http://bang:8080/openrdf-sesame/repositories", "cmd", initNs=NS)
-    def ping(signal, content):
-        print "sendping", (signal, content)
-    cl = CommandLog(graph, newCommandPing=ping)
+    
+    cl = CommandLog(graph)
     return cl
 
 def nowLiteral():
