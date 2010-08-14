@@ -2,12 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:n="http://nevow.com/ns/nevow/0.1">
   <head>
+
+    <meta name="viewport" content="width=240; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
+
     <title>magma</title>
     <link rel="Stylesheet" type="text/css" href="/nagios/stylesheets/status.css" />
 
-    <meta name="viewport" content="width=320; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
-
-    <style type="text/css">
+    <style type="text/css" media="all">
       /* <![CDATA[ */
 
       // hi
@@ -18,7 +19,7 @@
       }
 
       html > body {
-	  background: gray;
+	  background: black;
 	  margin: 0 !important;
 
       }
@@ -26,16 +27,18 @@
 	  position: absolute;
 	  top: 0;
 	  left: 0;
-	  width: 320px;
 	  overflow:hidden;
 	  background: black;
-color: gray;
-font-family: sans;
+	  color: gray;
+	  font-family: sans;
+
+	  width: 320px;
       }
       .section {
           border: 1px solid gray;
           margin: 3px 0;
           padding: 3px 0;
+	  overflow: hidden;
       } 
       .ranCommand {
           margin: 10px;
@@ -74,14 +77,18 @@ font-family: sans;
 	  border-collapse: collapse;
 	  font-size: 80%;
       }
+      .wifi td, .wifi th {
+	  border: 1px solid #9a9a9a;
+      }
       .wifi td {
-	  padding-right: 30px;
+	  padding-right: 8px;
       }
       .wifi th {
 	  text-align: left;
       }
       .wifi .signal {
-	  background: #ffc;
+	  background:#76733F;
+	  color:#FFFFFF;
       }
       .wifi .nosignal {
 	  color:#aaa;
@@ -117,12 +124,15 @@ font-family: sans;
       }
 
       .links a {
-	  background:#333333 none repeat scroll 0 0;
+	  background:none repeat scroll 0 0 #333333;
 	  border:1px outset gray;
 	  color:#6D6CE4;
-	  line-height:32px;
-	  padding:4px;
+	  display:inline-block;
+	  margin:3px 0 3px 2px;
+	  padding:9px 3px;
 	  text-decoration:none;
+-moz-border-radius: 10px;
+-webkit-border-radius: 10px;
       }
       .col2 {
 	  -webkit-column-width: 104px;
@@ -132,12 +142,35 @@ font-family: sans;
 
       /* ]]> */
     </style>
-    <meta name="viewport" content="width=240; initial-scale=1.0; user-scalable=yes"/>
+
+
+<style type="text/css" media="screen" n:render="notPhone">
+  /* <![CDATA[ */
+body > div {    
+    -moz-column-count:2;
+    -moz-column-gap:20px;
+    -moz-column-width:320px;
+    width: 660px;
+}
+
+/* ]]> */
+</style>
+
+    <style type="text/css" media="handheld">
+   /* <![CDATA[ */
+    body > div {    
+	width: 320px;
+    }  
+    /* ]]> */
+</style>
+
+    <meta name="viewport" content="width=240; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
 
   </head>
   <body bgcolor="gray">
     <div>
 
+<div class="section">
       <n:invisible n:render="addedCommand"/>
 
       <div class="imgFrame">
@@ -186,7 +219,7 @@ font-family: sans;
 	<!-- query the user to see what ublogs they have, so we could list them 
 	     in advance -->
       </form>
-
+</div>
       <div class="section links col2">
 	<div><a href="http://bigasterisk.com/diary/">diarybot viewer</a></div>
 	<!--<div><a href="http://bigasterisk.com/cam/"><img src="tango/devices/camera.png"/>house cameras</a></div>-->

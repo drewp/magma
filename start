@@ -85,7 +85,6 @@ log.startLogging(sys.stdout)
 
 
 cmdlog = getCommandLog()
-cmdlog.newCommandPing(signal='hi', content='world')
 
 reactor.listenTCP(8006, NevowSite(Main(cmdlog)))
 reactor.run()

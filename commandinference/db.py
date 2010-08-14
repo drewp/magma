@@ -3,7 +3,7 @@ where's the Command object? Lots of times these are passed to js, so
 maybe the Command class will be made there. But also, usually it's
 just the command uri that you need, and that's a regular rdf resource.
 """
-import sys, urllib
+import sys, urllib, jsonlib, restkit, logging
 from rdflib import URIRef, RDF, Namespace, Variable, Literal, RDFS
 from time import strftime
 
@@ -18,6 +18,7 @@ FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 MB = Namespace("http://bigasterisk.com/ns/microblog/")
 NS = dict(cl=CL, cmd=CMD, dcterms=DCTERMS, rdfs=RDFS.RDFSNS, foaf=FOAF, mb=MB,
           xs=XS)
+log = logging.getLogger()
 
 class CommandLog(object):
     """
@@ -34,7 +35,7 @@ class CommandLog(object):
     returning new URIs for each issued command, and you can look up
     the user in the graph yourself.    
     """
-    def __init__(self, graph, writeGraph=None, newCommandPing=None):
+    def __init__(self, graph, writeGraph=None):
         """
         graph is an rdflib Graph2 where we store the added commands.
 
@@ -44,19 +45,15 @@ class CommandLog(object):
         writeGraph, if it is provided. writeGraph should be a subset
         of graph.
 
-        newCommandPing will be called with
-        (signal=commandClassUri, content=issueUri)
-        and we don't wait for a response. We call separately for each
-        class the command is a type of.
+       
         """
         self.graph = graph
         self.writeGraph = writeGraph
         if self.writeGraph is None:
             self.writeGraph = graph
-        self.newCommandPing = newCommandPing
         
     def addCommand(self, uri, time, user):
-        """record a newly issued command. returns uri of issue
+        """record a newly issued command. returns uri of issue. Sends pings.
 
         uri is the command, which may be reused. Since we don't try to
         snapshot all the details of the command or anything, it might
@@ -83,14 +80,34 @@ class CommandLog(object):
               # separate into smaller contexts for backup and sync purposes
               context=CL[strftime('commands/%Y/%m')]
               )
-
-        if self.newCommandPing:
-            for row in self.graph.queryd(
-                "SELECT DISTINCT ?cls WHERE { ?cmd a ?cls }",
-                initBindings={Variable('cmd') : uri}):
-                self.newCommandPing(signal=row['cls'].encode('ascii'),
-                                    content=issue.encode('ascii'))
+        self.ping(issue, uri, time, user)
         return issue
+
+    def ping(self, issue, command, created, creator):
+        """
+        note: we might send multiple pings if a command was of more than one class
+        """
+        for row in self.graph.queryd(
+            "SELECT DISTINCT ?cls WHERE { ?cmd a ?cls }",
+            initBindings={Variable('cmd') : command}):
+            payload = jsonlib.write({
+                'issue' : issue,
+                'commandClass' : row['cls'],
+                'command' : command,
+                'created' : created,
+                'creator' : creator,
+                })
+
+            # workaround for PSHB hub, take this out when the hub is doing subscriptions
+            try:
+                restkit.request(method="POST", url="http://bang:9055/newCommand",
+                                body=payload,
+                                headers={"Content-Type" : "application/json"})
+            except Exception, e:
+                log.error(e)
+
+            restkit.request(method="POST", url="http://bang:9030/dispatch/newCommand",
+                            body=payload, headers={"Content-Type" : "application/json"})
 
     def _issueUri(self, uri, time, user):
         """namespace has not been sorted out yet, and it might be
