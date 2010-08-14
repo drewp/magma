@@ -1,0 +1,102 @@
+@prefix : <http://bigasterisk.com/ns/command/v1#> .
+@prefix cmd: <http://bigasterisk.com/magma/cmd/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+cmd:BabyKick a :Command, :DatapointCommand; 
+  rdfs:label "record baby kick";
+  :ui <http://localhost:page/>
+.
+
+cmd:BabyStart a :Command, :DatapointCommand, :BabyStartStop; 
+  rdfs:label "record baby start";
+  :iconPath "tango/emotes/stock_smiley-5.png"
+.
+cmd:BabyStop a :Command, :DatapointCommand, :BabyStartStop; 
+  rdfs:label "record baby stop";
+  :iconPath "tango/emotes/stock_smiley-1.png"
+.
+
+cmd:Fillup a :Command, :DatapointCommand;
+  rdfs:label "fillup";
+  :param 
+ [ rdfs:label "station" ],
+ [ rdfs:label "gallons" ]
+ .
+
+cmd:garageDoor a :Command; rdfs:label "Garage"; :linksTo <http://bigasterisk.com/magma/garage/> .
+
+cmd:heaterOff a cmd:Heater; 
+  rdfs:label "Heater off" .
+
+cmd:heaterOn20Min a cmd:Heater; 
+  rdfs:label "Heater on for 20min";
+  a cmd:TimedOn;
+  :onForMins "20" .
+
+cmd:heaterOn1Min a cmd:Heater; 
+  rdfs:label "Heater on for 1min";
+  a cmd:TimedOn;
+  :onForMins "1" .
+
+
+cmd:PollMe rdfs:comment "activates portUpdate polling. todo: the condition ought to be 'does portupdate need to keep this output port in sync'" .
+
+cmd:RedLight a cmd:PollMe .
+cmd:DeckLight a cmd:PollMe .
+cmd:FrontLight a cmd:PollMe .
+
+# data 4 off, data 6 on
+cmd:bedroomRedLightOff a cmd:RedLight; rdfs:label "Bedroom red light off"; :value "off" .
+cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on"; :value "on" .
+
+cmd:frontLightOff a cmd:FrontLight; rdfs:label "Front yard light off"; :value "off" .
+cmd:frontLightOn a cmd:FrontLight; rdfs:label "Front yard light on"; :value "on" .
+
+cmd:deckLightOff a cmd:DeckLight; rdfs:label "Deck lights off"; :value "off" .
+cmd:deckLightOn a cmd:DeckLight; rdfs:label "Deck lights on"; :value "on" .
+
+[ a :IssuedCommand;
+    :command cmd:heaterOff;
+    dcterms:created "2009-01-05T11:33:49.38Z"^^xsd:dateTime;
+    dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
+  ] .
+
+[ a :IssuedCommand;
+    :command cmd:bedroomRedLightOff;
+    dcterms:created "2009-04-01T12:00:00Z"^^xsd:dateTime;
+    dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
+  ] .
+
+[ a :IssuedCommand;
+    :command cmd:deckLightOff;
+    dcterms:created "2009-04-01T12:00:00Z"^^xsd:dateTime;
+    dcterms:creator <http://bigasterisk.com/foaf.rdf#drewp>
+  ] .
+
+
+
+<http://bigasterisk.com/kelsi/foaf.rdf#kelsi> :seesCommand 
+  cmd:heaterOff,
+  cmd:heaterOn20Min,
+  cmd:garageDoor,
+  cmd:deckLightOn,
+  cmd:deckLightOff,
+  cmd:bedroomRedLightOn,
+  cmd:bedroomRedLightOff,
+  cmd:frontLightOn,
+  cmd:frontLightOff
+ .
+<http://bigasterisk.com/foaf.rdf#drewp> :seesCommand 
+  cmd:bedroomRedLightOn,
+  cmd:bedroomRedLightOff,
+  cmd:deckLightOn,
+  cmd:deckLightOff,
+  cmd:heaterOff,
+  cmd:heaterOn20Min,
+  cmd:garageDoor,
+  cmd:frontLightOn,
+  cmd:frontLightOff
+.

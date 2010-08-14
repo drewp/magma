@@ -1,4 +1,7 @@
 #!/usr/bin/python
+
+raise NotImplementedError("use portUpdate now, i'm pretty sure")
+
 import sys
 from twisted.internet import reactor
 from twisted.python import log
