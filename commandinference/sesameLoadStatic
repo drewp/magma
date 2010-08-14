@@ -1,9 +1,0 @@
-#!/bin/zsh
-
-REPO="http://bang:8080/openrdf-sesame/repositories/cmd/statements?context=%3Chttp%3A%2F%2Fbigasterisk.com%2Fmagma%2Fsource%2F"
-
-cwm lightCommands.n3 --ntriples  	| curl -T - -H "Content-Type: text/plain" $REPO"lightCommands%3E" | more
-cwm heaterCommands.n3 --ntriples 	| curl -T - -H "Content-Type: text/plain" $REPO"heaterCommands%3E" | more
-cwm auth.n3 --ntriples           	| curl -T - -H "Content-Type: text/plain" $REPO"auth%3E" | more
-cwm datapoint.n3 --ntriples           	| curl -T - -H "Content-Type: text/plain" $REPO"datapoint%3E" | more
-cwm /my/proj/room/devices.n3 --ntriples | curl -T - -H "Content-Type: text/plain" $REPO"devices%3E" | more
