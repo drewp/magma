@@ -10,7 +10,7 @@ import sys, time, atexit, logging, traceback, urllib, jsonlib
 
 sys.path.append('..') # for commandinference
 from twisted.internet import reactor
-from rdflib import Namespace, RDF, URIRef
+from rdflib import RDF, URIRef
 import restkit
 from xml.utils import iso8601
 from cmdline import getCommandLog
@@ -22,17 +22,8 @@ from nevow import rend, inevow
 from nevow.appserver import NevowSite
 
 log = logging.getLogger()
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logging.getLogger('restkit.client').setLevel(logging.WARN)
-PORT = Namespace("http://bang.bigasterisk.com/parport/parport0#")
-
-def bitForUri(u):
-    """this is a workaround for some messed-up modeling"""
-    prefix = "http://bang.bigasterisk.com/parport/parport0#pin"
-    if u.startswith(prefix):
-        bit = int(u.split('pin')[-1])
-        return bit
-    raise NotImplementedError(u)
 
 commandLog = getCommandLog()
 
@@ -55,7 +46,6 @@ class Loop(object):
         self.pollHeater()
 
     def onCommand(self, commandClass, cmd):
-
         if commandClass == URIRef("http://bigasterisk.com/magma/cmd/Heater"):
             # legacy handler
             self.pollHeater()
@@ -66,7 +56,8 @@ class Loop(object):
         
         value = commandLog.graph.value(cmd, CL['value'])
         if value is None:
-            raise ValueError("command %s has no cl:value to set the light to" % cmd)
+            raise ValueError(
+                "command %s has no cl:value to set the light to" % cmd)
 
         if self.lastLight.get(commandClass) == value:
             return
@@ -141,24 +132,19 @@ class Loop(object):
             self.lastMsg = now
 
     def sendBit(self, pinUri, value):
-        log.info("send %s = %s" % (pinUri, value))
-
         putUrl = commandLog.graph.value(pinUri, ROOM['putUrl'])
+        log.info("set %s by putting %s to %s" % (pinUri, value, putUrl))
         if putUrl:
-            restkit.request(method="PUT", url=putUrl + "&value=%s" % value)
+            restkit.request(method="PUT", url=putUrl, body=str(int(value)))
             return
-        
-        ## print "not tested"
-        ## addr = bitForUri(pinUri)        
-        ## restkit.Resource("http://bang:9032/").post(
-        ##     "pin/%s" % (addr + 2),
-        ##     value=str(bool(value)).lower())
         
     def sendHeater(self, on):
         if on != self.lastHeater: # this assumes we're the only one
                                 # talking to the heater pin, which
                                 # might not be true
-            self.sendBit(URIRef("http://bang.bigasterisk.com/parport/parport0#pin3"), int(on))
+            self.sendBit(
+                URIRef("http://projects.bigasterisk.com/device/heater"),
+                int(on))
         self.lastHeater = on
 
 loop = Loop()
@@ -175,7 +161,8 @@ postForm('http://bang:9030/subscribe',
           'hub.topic' : 'newCommand',
           'hub.verify' : 'sync'})
 
-# this matters only for initial state, and to catch commands we might have missed (?!)
+# this matters only for initial state, and for the heater timeout, and
+# to catch commands we might have missed (?!)
 task.LoopingCall(loop.poll).start(30)
 
 class Root(rend.Page):   
@@ -190,6 +177,14 @@ class Root(rend.Page):
         loop.onCommand(URIRef(d['commandClass']), URIRef(d['command']))
         
         return "ok"
+
+
+# not sure where this config is going to go:
+restkit.request(method="PUT", url="http://bang:9056/pin/d4/mode", body="output")
+restkit.request(method="PUT", url="http://bang:9056/pin/d5/mode", body="output")
+restkit.request(method="PUT", url="http://bang:9056/pin/d6/mode", body="output")
+restkit.request(method="PUT", url="http://bang:9056/pin/d7/mode", body="output")
+restkit.request(method="PUT", url="http://bang:9056/pin/d8/mode", body="output")
 
 site = NevowSite(Root())
 reactor.listenTCP(9055, site)
