@@ -19,15 +19,7 @@ CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
 
 #os.chdir("/my/site/magma")
 
-class Running(rend.Page):
-    docFactory = loaders.stan(T.img(src="out"))
-    def child_out(self, ctx):
-        return static.File("running/out.png")
-
-def foafAgent(ctx):
-    h = inevow.IRequest(ctx).getHeader('x-foaf-agent')
-    assert h is not None, "no foaf agent"
-    return URIRef(h)
+from homepage import foafAgent
 
 class Main(rend.Page):
     def __init__(self, cmdlog):
@@ -39,43 +31,15 @@ class Main(rend.Page):
         p = homepage.HomePage(self.cmdlog, foafAgent(ctx))
         return p
 
-    def child_microblogUpdate(self, ctx):
-        import microblog, homepage
-        reload(microblog)
-        req = inevow.IRequest(ctx)
-        return microblog.postAll(self.cmdlog.graph,
-                                 foafAgent(ctx),
-                                 ctx.arg('msg'))
-
     def fullUrl(self, ctx):
         request = inevow.IRequest(ctx)
         return 'http://bigasterisk.com/magma' + request.path
     
-    def child_running(self, ctx):
-        return Running()
-    def child_net(self, ctx):
-        return static.File("nets.html")
-    def child_images(self, ctx):
-        return static.File("images")
-    def child_www(self, ctx):
-        return static.File('/my/proj/room/www')
-    def child_tango(self, ctx):
-        return static.File('/usr/share/icons/Tango/32x32')
-
-for cmd in ['addCommand', 'babyKick', 'babyTable', 'garage']:
-    # too scared to touch locateChild on the openid page
-
-    def newchild(self, ctx, cmd=cmd):
+    def locateChild(self, ctx, segments):
         import homepage
         reload(homepage)
-        p = homepage.HomePage(self.cmdlog, foafAgent(ctx))
-        return getattr(p, 'child_%s' % cmd)(ctx)
+        return homepage.HomePage(self.cmdlog, foafAgent(ctx)).locateChild(ctx, segments)
 
-    setattr(Main, 'child_%s' % cmd, newchild)
-    
-
-setattr(Main, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
-setattr(Main, "child_tomato_config.js", static.File("/my/site/magma/tomato_config.js"))
 
 log.startLogging(sys.stdout)
 

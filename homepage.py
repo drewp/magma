@@ -14,6 +14,8 @@ from rdflib import URIRef, Namespace, Variable, RDFS, Literal
 from commandinference.db import XS
 import time
 from xml.utils import iso8601
+from pymongo import Connection, DESCENDING
+from dateutil.tz import tzlocal, tzutc
 
 import stripchart
 reload(stripchart)
@@ -21,11 +23,19 @@ reload(stripchart)
 CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
 
+
+def foafAgent(ctx):
+    h = inevow.IRequest(ctx).getHeader('x-foaf-agent')
+    assert h is not None, "no foaf agent"
+    return URIRef(h)
+
+
     # if this is from a phone, use the little menu. the big menu
     # should also be ext, and have links to all the inner services.
 
 class HomePage(rend.Page):
     docFactory = loaders.xmlfile("magma-sample2.html")
+
     def __init__(self, cmdlog, identity):
         """identity is an openid"""
         self.cmdlog = cmdlog
@@ -33,9 +43,19 @@ class HomePage(rend.Page):
         self.user = identity
         rend.Page.__init__(self)
 
-    def locateChild(self, ctx, segments):
-        req = inevow.IRequest(ctx)
-        req.arg('login')
+    def child_(self, ctx):
+        return self
+
+    def child_running(self, ctx):
+        return Running()
+    def child_net(self, ctx):
+        return static.File("nets.html")
+    def child_images(self, ctx):
+        return static.File("images")
+    def child_www(self, ctx):
+        return static.File('/my/proj/room/www')
+    def child_tango(self, ctx):
+        return static.File('/usr/share/icons/Tango/32x32')
 
     def renderHTTP(self, ctx):
         req = inevow.IRequest(ctx)
@@ -182,6 +202,42 @@ class HomePage(rend.Page):
 
     def child_garage(self, ctx):
         return SecureButton(self.graph, self.cmdlog, self.user)
+
+    def child_microblogUpdate(self, ctx):
+        import microblog
+        reload(microblog)
+        return microblog.postAll(self.cmdlog.graph,
+                                 foafAgent(ctx),
+                                 ctx.arg('msg'))
+
+    def child_recentVisitors(self, ctx):
+        conn = Connection("bang", 27017)['visitor']['visitor']
+        ret = []
+        for row in conn.find(sort=[('created', DESCENDING)], limit=20):
+            del row['_id']
+            row['created'] = row['created'].replace(
+                tzinfo=tzutc()).astimezone(tzlocal()).isoformat()
+            ret.append(row)
+
+        class Ret(rend.Page):
+            def renderHTTP(self, ctx):
+                # this rend.Page is just to make setHeader work
+                inevow.IRequest(ctx).setHeader("Content-Type",
+                                               "application/json")
+                return jsonlib.write({'visitors' : ret})
+        return Ret()
+
+    def child_services(self, ctx):
+        return static.File("/my/site/magma/build_services.html")
+
+setattr(HomePage, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
+setattr(HomePage, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
+setattr(HomePage, "child_tomato_config.js", static.File("/my/site/magma/tomato_config.js"))
+
+class Running(rend.Page):
+    docFactory = loaders.stan(T.img(src="out"))
+    def child_out(self, ctx):
+        return static.File("running/out.png")
 
 class BabyKick(stripchart.Chart):
     title = "Baby kicks"

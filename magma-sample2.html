@@ -34,6 +34,9 @@
 
 	  width: 320px;
       }
+      h2 {
+	  margin: 6px;
+      }
       .section {
           border: 1px solid gray;
           margin: 3px 0;
@@ -70,27 +73,32 @@
 	  background: #fff;
       }
 
-      .wifi {
+      .wifiNow {
 	  font-family: sans-serif;
       }
-      .wifi table {
+      .wifiNow table {
 	  border-collapse: collapse;
 	  font-size: 80%;
       }
-      .wifi td, .wifi th {
+      .wifiNow td, .wifiNow th {
 	  border: 1px solid #9a9a9a;
+	  white-space: nowrap;
       }
-      .wifi td {
+      .wifiNow td {
 	  padding-right: 8px;
       }
-      .wifi th {
+      .wifiNow .lease {font-size: 70%;}
+      .wifiNow .ip {font-size: 70%;}
+      .wifiNow .rssi {font-size: 70%;}
+      .wifiNow .mac {font-size: 70%;}
+      .wifiNow th {
 	  text-align: left;
       }
-      .wifi .signal {
+      .wifiNow .signal {
 	  background:#76733F;
 	  color:#FFFFFF;
       }
-      .wifi .nosignal {
+      .wifiNow .nosignal {
 	  color:#aaa;
       }
       .imgFrame {
@@ -131,17 +139,32 @@
 	  margin:3px 0 3px 2px;
 	  padding:9px 3px;
 	  text-decoration:none;
--moz-border-radius: 10px;
--webkit-border-radius: 10px;
+	  -moz-border-radius: 10px;
+	  -webkit-border-radius: 10px;
       }
       .col2 {
 	  -webkit-column-width: 104px;
 	  -moz-column-width: 104px;
       }
 
-
+      #recentVisitors .leave {
+	  opacity: .4;
+      }
+      #recentVisitors {
+	  font-size: 90%;
+	  color: #c6c6c6;
+      }
+      #recentVisitors .t {
+	  font-size: 85%;
+      }
+      #recentVisitors tr.bluetooth {
+	  background: #090932;
+      }
+      #recentVisitors tr.wifi {
+	  background: #221103;
+      }
       /* ]]> */
-    </style>
+       </style>
 
 
 <style type="text/css" media="screen" n:render="notPhone">
@@ -149,6 +172,9 @@
 body > div {    
     -moz-column-count:2;
     -moz-column-gap:20px;
+    -moz-column-width:320px;
+    -webkit-column-count: 2;
+    -webkit-column-gap:20px;
     -moz-column-width:320px;
     width: 660px;
 }
@@ -178,12 +204,11 @@ body > div {
 	  <n:attr name="src">/cam/livingRoom.jpg</n:attr>
 	</img></a>
       </div>
-      <div class="imgFrame">
+      <!--<div class="imgFrame">
 	<a href="/cam/drewDesk"><img style="top: -17px; width: 106px">
 	  <n:attr name="src">/cam/drewDesk.jpg</n:attr>
 	</img></a>
-      </div>
-
+      </div>-->
 
       <div class="imgFrame">
 	<a href="/cam/sideYard"><img style="top: -17px; width: 106px">
@@ -261,13 +286,21 @@ body > div {
     </div>
     <div class="section">
       <h2><a href="http://bigasterisk.com/tomato1/status-devices.asp">wifi bigasterisk3</a></h2>
-      <div id="wifi1" class="wifi">devices...</div>
+      <div id="wifi1" class="wifiNow">devices...</div>
       <h2><a href="http://bigasterisk.com/tomato2/status-devices.asp">wifi bigasterisk4</a></h2>
-      <div id="wifi2" class="wifi">devices...</div>
+      <div id="wifi2" class="wifiNow">devices...</div>
+
+      <div><button id="recentExpand">&gt;</button>Recent visitors...</div>
+      <div style="display:none">
+	<table id="recentVisitors">
+	  <tbody>
+	  </tbody>
+	</table>
+      </div>
     </div>
     <div class="section">
-      <a href="http://graphite.bigasterisk.com/render/?width=720&amp;height=400&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=keepLastValue(system.house.temp.sens3)&amp;target=system.house.temp.sens4&amp;target=system.house.temp.ariroom&amp;from=-100hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90">
-	<img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=200&amp;target=system.house.temp.sens1&amp;target=system.house.temp.sens2&amp;target=keepLastValue(system.house.temp.sens3)&amp;target=system.house.temp.sens4&amp;target=system.house.temp.ariroom&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90" width="320" height="200"/>
+         <a href="http://graphite.bigasterisk.com/render/?width=720&amp;height=400&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;from=-100hours&amp;hideAxes=false&amp;hideLegend=false&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90">
+	<img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=200&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90" width="320" height="200"/>
       </a>
       <div><a href="temp/tempchart/table.html">other temp tables</a></div>
     </div>
@@ -305,9 +338,9 @@ body > div {
 
       <div style="clear:both"/>
 
-      <div class="graph">
-	<h1>bloglines</h1>
-	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.msg.new_bloglines_entries.drewp&amp;from=-60days&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
+      <div class="graph" style="height: 150px">
+	<h1>phone batteries</h1>
+<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=400&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-56hours&amp;yMin=0&amp;fontSize=12&amp;lineWidth=6"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-8hours&amp;yMin=0&amp;fontSize=7&amp;lineWidth=3" width="158" height="125"/></a>
       </div>
 
       <div class="graph">
@@ -318,31 +351,16 @@ body > div {
       <div style="clear:both"/>
 
       <div class="graph">
-	<h1>space for rent</h1>
-	<img src="" width="158" height="75"/>
-      </div>
-
-      <div class="graph">
 	<h1>eon load</h1>
 	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.host.eon.load&amp;from=-10hours&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
-      </div>
-
-      <div style="clear:both"/>
-
-
-      <div class="graph" style="height: 150px">
-	<h1>phone batteries</h1>
-<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=400&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-56hours&amp;yMin=0&amp;fontSize=12&amp;lineWidth=6"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-8hours&amp;yMin=0&amp;fontSize=7&amp;lineWidth=3" width="158" height="125"/></a>
       </div>
 
       <div style="clear:both"/>
     </div>
     
     <div class="section">
-	<div><a href="http://bang:9050/cachemgr3.cgi?user_name=&amp;password=&amp;server=localhost">squid cache mgr (local)</a></div>
-	<div><a href="http://bigasterisk.com/supervisor/bang/">supervisor on bang (to embed)</a></div>
-	<div><a href="http://bigasterisk.com/supervisor/slash/">supervisor on slash (to embed)</a></div>
-	<div><a href="net">net diagram, to embed</a></div>
+      <div><a href="services">Other services</a></div>
+
     </div>
 
     <n:invisible n:render="loginBar"/>
@@ -436,7 +454,7 @@ body > div {
 		  return knownMacAddr[mac] ? knownMacAddr[mac] : "";
 	      }
 
-	      $(target).html("<table><tr><th>MAC address</th><th>IP address</th><th>Name</th><th>RSSI</th><th>Lease</th></tr></table>");
+	      $(target).html('<table><tr> <th class="name">Name</th> <th class="lease">Lease</th> <th class="ip">IP address</th> <th class="rssi">dBm</th> <th class="mac">MAC address</th> </tr></table>');
 	      var table = $(target).find('table');
 
 	      $.each(aboutIp, function (ip, rest) {
@@ -444,11 +462,11 @@ body > div {
 		      return;
 		  }
 
-		  $('<tr><td>'+str(rest['mac'])+
-			       '</td><td>'+str(ip)+
-			       '</td><td>'+nameCell(rest['name'], rest['mac'])+
-			       '</td><td>'+str(rest['rssi'], 'dBm')+
-			       '</td><td>'+str(rest['lease'])+
+		  $('<tr><td>'+nameCell(rest['name'], rest['mac'])+
+		    '</td><td class="lease">'+str(rest['lease'].replace("0 days, ", ""))+
+		    '</td><td class="ip">'+str(ip)+
+		    '</td><td class="rssi">'+str(rest['rssi'])+
+                    '</td><td class="mac">'+str(rest['mac'])+
 		    '</td></tr>').appendTo(table).addClass(rest['rssi'] ? "signal" : "nosignal");
 	      })
 	  }
@@ -458,6 +476,24 @@ body > div {
 	  $.getScript(tomatoUrl[1], 
 	       function (data, textStatus) { renderTomato(data, "#wifi2") });
 
+	  $("#recentExpand").click(function () { 
+	      $(this).text("V");
+	      $(this).parent().next().show();
+	      $.getJSON("recentVisitors", {}, function (data) {
+		  var tbody = $("#recentVisitors").find("tbody");
+		  $.each(data.visitors, function (i, row) {
+		      var tr = $("<tr>");
+		      tr.append($("<td>").addClass("t").text(
+			  row.created.replace(/\..*/, "")));
+		      tr.append($("<td>").addClass("action").text(
+			  (row.action == "arrive" ? "+" : "-") + 
+			      row.sensor.replace("bluetooth", "bt")));
+		      tr.append($("<td>").addClass("name").text(row.name));
+		      tr.addClass(row.sensor + " " + row.action);
+		      tbody.append(tr);
+		  });
+	      });
+	  });
 
 	  $("input[name=msg]").keyup(function () {
 	      var chars = $("form[action=microblogUpdate] input[type=text]").val().length;
