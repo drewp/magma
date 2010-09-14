@@ -2,7 +2,7 @@ import sys
 from rdflib import Variable, Namespace, URIRef
 from getpass import getpass
 # easy_install 'python-twitter', and don't have the one called 'twitter' around
-import xmpp, twitter, jsonlib
+import xmpp, twitter, jsonlib, urllib
 import restkit
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
@@ -108,13 +108,37 @@ def postIdenticaPassword(graph, openid, msg):
 
 postIdentica = postIdenticaPassword
 
+# from http://drewp.quickwitretort.com/2010/09/13/0
+def makeOauthFilter(graph, subj):
+    rows = graph.queryd("""
+    SELECT ?ck ?cs ?t ?ts WHERE {
+      ?id foaf:holdsAccount [
+          a mb:TwitterAccount ;
+          mb:oauthConsumerKey ?ck ;
+          mb:oauthConsumerSecret ?cs ;
+          mb:oauthToken ?t ;
+          mb:oauthTokenSecret ?ts
+      ] .
+    }
+    """, initBindings={'id' : subj})
+    conf = rows[0]
+    consumer = restkit.util.oauth2.Consumer(conf['ck'], conf['cs'])
+    token = restkit.util.oauth2.Token(conf['t'], conf['ts'])
+    return restkit.filters.oauth2.OAuthFilter("*", consumer, token,
+              restkit.util.oauth2.SignatureMethod_HMAC_SHA1())
+
 def postTwitter(graph, openid, msg):
     """
     openid is an RDF node that foaf:holdsAccount which is a mb:TwitterAccount
     """
-    login = _getUserPass(graph, openid, MB.TwitterAccount)
-    api = twitter.Api(username=login['user'], password=login['password'])
-    status = api.PostUpdate(msg)
+    oauthFilter = makeOauthFilter(graph, openid)
+    resp = restkit.request(
+        method="POST",
+        url="http://api.twitter.com/1/statuses/update.json",
+        filters=[oauthFilter],
+        body={'status' : msg})
+    if resp.status_int != 200:
+        raise ValueError("%s: %s" % (resp.status, resp.body_string()))
 
 def postAll(graph, openid, msg):
     """post to all known services for this account. Return description
@@ -132,9 +156,9 @@ if __name__ == '__main__':
     graph = RemoteSparql('http://bang:8080/openrdf-sesame/repositories', 'cmd',
                          dict(foaf=FOAF, mb=MB))
     drewp = URIRef("http://bigasterisk.com/foaf.rdf#drewp")
-    if 0:
+    if 1:
 
-        postIdentica(graph, drewp, 'test')
+        #postIdentica(graph, drewp, 'test')
         postTwitter(graph, drewp, 'test')
     else:
         print postIdenticaPassword(graph, drewp, "(testing new post library)")
