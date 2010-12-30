@@ -1,4 +1,7 @@
 #!/usr/bin/python
+import sys
+sys.path.append("..")
+
 from cmdline import getCommandLog, prettyCommand, uriFromArg
 import optparse
 

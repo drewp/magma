@@ -22,10 +22,19 @@ from nevow import rend, inevow
 from nevow.appserver import NevowSite
 
 log = logging.getLogger()
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="%(created)s %(asctime)s %(levelname)-5s %(filename)s:%(lineno)d: %(message)s")
 logging.getLogger('restkit.client').setLevel(logging.WARN)
 
 commandLog = getCommandLog()
+
+def setOutputPins():
+    # not sure where this config is going to go. Here is wrong, since an
+    # arduinoport restart after portUpdate restart forgets everything!
+    restkit.request(method="PUT", url="http://bang:9056/pin/d4/mode", body="output")
+    restkit.request(method="PUT", url="http://bang:9056/pin/d5/mode", body="output")
+    restkit.request(method="PUT", url="http://bang:9056/pin/d6/mode", body="output")
+    restkit.request(method="PUT", url="http://bang:9056/pin/d7/mode", body="output")
+    restkit.request(method="PUT", url="http://bang:9056/pin/d8/mode", body="output")
 
 class Loop(object):
     def __init__(self):
@@ -135,7 +144,10 @@ class Loop(object):
         putUrl = commandLog.graph.value(pinUri, ROOM['putUrl'])
         log.info("set %s by putting %s to %s" % (pinUri, value, putUrl))
         if putUrl:
-            restkit.request(method="PUT", url=putUrl, body=str(int(value)))
+            setOutputPins()
+            r = restkit.request(method="PUT", url=putUrl, body=str(int(value)))
+            if not r.status.startswith('2'):
+                raise ValueError("%s returned %r" % (putUrl, r.status))
             return
         
     def sendHeater(self, on):
@@ -178,14 +190,7 @@ class Root(rend.Page):
         
         return "ok"
 
-
-# not sure where this config is going to go:
-restkit.request(method="PUT", url="http://bang:9056/pin/d4/mode", body="output")
-restkit.request(method="PUT", url="http://bang:9056/pin/d5/mode", body="output")
-restkit.request(method="PUT", url="http://bang:9056/pin/d6/mode", body="output")
-restkit.request(method="PUT", url="http://bang:9056/pin/d7/mode", body="output")
-restkit.request(method="PUT", url="http://bang:9056/pin/d8/mode", body="output")
-
+setOutputPins()
 site = NevowSite(Root())
 reactor.listenTCP(9055, site)
 reactor.run()
