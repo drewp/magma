@@ -473,7 +473,7 @@ body > div {
 		  }
 
 		  $('<tr><td>'+nameCell(rest['name'], rest['mac'])+
-		    '</td><td class="lease">'+str(rest['lease'].replace("0 days, ", ""))+
+		    '</td><td class="lease">'+str((rest['lease'] || "").replace("0 days, ", ""))+
 		    '</td><td class="ip">'+str(ip)+
 		    '</td><td class="rssi">'+str(rest['rssi'])+
                     '</td><td class="mac">'+str(rest['mac'])+
