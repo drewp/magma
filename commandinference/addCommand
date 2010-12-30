@@ -5,6 +5,8 @@
 todo: check this command?
 "
 """
+import sys
+sys.path.append("..")
 from cmdline import prettyCommand, uriFromArg
 from dbclient import nowLiteral, getCommandLog
 import optparse, time
