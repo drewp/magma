@@ -200,7 +200,7 @@ body > div {
       <n:invisible n:render="addedCommand"/>
 
       <div class="imgFrame">
-	<a href="/cam/livingRoom"><img style="left: -85px; width: 250px">
+	<a href="/cam/livingRoom"><img style="left: -85px; width: 250px" alt="livingroom">
 	  <n:attr name="src">/cam/livingRoom.jpg</n:attr>
 	</img></a>
       </div>
@@ -233,6 +233,9 @@ body > div {
 	  <n:attr name="src">/cam/ari.jpg</n:attr>
 	</img></a>
       </div>
+      <div class="imgFrame" style="text-align: center">
+      <a href="/cam/all">All cameras at once</a></div>
+
       <div style="clear:both;"/>
       
       <div class="commands">
@@ -269,15 +272,15 @@ body > div {
 
       <div class="section links">
 	<img src="tango/mimetypes/sound.png"/>
-	<div><a href="http://bigasterisk.com/music/dash/ctl">drew's desk (dash)</a> / <a href="http://bigasterisk.com/music/dash/gadget">gadget</a> / <a href="http://bigasterisk.com/music/dash/theory/">theory</a></div>
-	<div><a href="http://bigasterisk.com/music/bang/ctl">bedroom (bang)</a> / <a href="http://bigasterisk.com/music/bang/gadget">gadget</a> / <a href="http://bigasterisk.com/music/bang/theory/">theory</a></div>
-	<div><a href="http://bigasterisk.com/music/slash/ctl">living room (slash)</a> / <a href="http://bigasterisk.com/music/slash/gadget">gadget</a> / <a href="http://bigasterisk.com/music/slash/theory/">theory</a></div>
-	<div><a href="http://bigasterisk.com/music/score/ctl">ari's room (score)</a> / <a href="http://bigasterisk.com/music/score/gadget">gadget</a> / <a href="http://bigasterisk.com/music/score/theory/">theory</a></div>
+	<div><a href="http://bigasterisk.com/music/dash/ctl">drew's desk</a>	  <a href="http://bigasterisk.com/music/dash/playlist">playlist</a>  <a href="http://bigasterisk.com/music/dash/gadget">gadget</a>   <a href="http://bigasterisk.com/music/dash/theory/">theory</a></div>
+	<div><a href="http://bigasterisk.com/music/bang/ctl">bedroom</a>		<a href="http://bigasterisk.com/music/bang/playlist">playlist</a> <a href="http://bigasterisk.com/music/bang/gadget">gadget</a> <a href="http://bigasterisk.com/music/bang/theory/">theory</a></div>
+	<div><a href="http://bigasterisk.com/music/slash/ctl">living room</a>	<a href="http://bigasterisk.com/music/slash/playlist">playlist</a><a href="http://bigasterisk.com/music/slash/gadget">gadget</a><a href="http://bigasterisk.com/music/slash/theory/">theory</a><form style="display:inline" method="post" action="http://10.1.0.21:9049/speak"><input type="input" name="say"/><input type="submit" value="Speak"/></form></div>
+	<div><a href="http://bigasterisk.com/music/star/ctl">ari's room</a>	<a href="http://bigasterisk.com/music/star/playlist">playlist</a><a href="http://bigasterisk.com/music/star/gadget">gadget</a><a href="http://bigasterisk.com/music/star/theory/">theory</a></div>
 	<div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
       </div>
 
     <div class="section">
-      <a href="heater/">heater control</a>
+      Supervisor: <a href="/supervisor/bang/">bang</a> <a href="/supervisor/dash/">dash</a> <a href="/supervisor/slash/">slash</a> <a href="/supervisor/star/">star</a>
     </div>
 
     <div class="section">
@@ -309,14 +312,14 @@ body > div {
 
       <div class="graph munin">
 	<h1>bang mem</h1>
-	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	<a href="http://bigasterisk.com/magma/munin/bang/bang/index.html">
 	  <img src="http://bigasterisk.com/magma/munin/bang/bang/memory-day.png"/>
 	</a>
       </div>
       
       <div class="graph munin">
 	<h1>cpu</h1>
-	<a href="http://bigasterisk.com/magma/munin/bang/bang.html">
+	<a href="http://bigasterisk.com/magma/munin/bang/bang/index.html">
 	  <img src="http://bigasterisk.com/magma/munin/bang/bang/cpu-day.png"/>
 	</a>
       </div>
@@ -324,14 +327,14 @@ body > div {
 
       <div class="graph munin">
 	<h1>slash mem</h1>
-	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
+	<a href="http://bigasterisk.com/magma/munin/slash/slash/index.html">
 	  <img src="http://bigasterisk.com/magma/munin/slash/slash/memory-day.png"/>
 	</a>
       </div>
 
       <div class="graph munin">
 	<h1>cpu</h1>
-	<a href="http://bigasterisk.com/magma/munin/slash/slash.html">
+	<a href="http://bigasterisk.com/magma/munin/slash/slash/index.html">
 	  <img src="http://bigasterisk.com/magma/munin/slash/slash/cpu-day.png"/>
 	</a>
       </div>
@@ -355,16 +358,23 @@ body > div {
 	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.host.eon.load&amp;from=-10hours&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
       </div>
 
+
+      <div class="graph" style="height: 150px">
+	<h1>dsl activity</h1>
+	<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=500&amp;target=system.net.bytesPerSec.in&amp;target=system.net.bytesPerSec.out&amp;from=-20minutes&amp;fontSize=11&amp;yMin=0&amp;yMax=300000"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=system.net.bytesPerSec.in&amp;target=system.net.bytesPerSec.out&amp;from=-10minutes&amp;fontSize=7&amp;yMin=0&amp;yMax=300000" width="158" height="125"/></a>
+      </div>
+
+
+
       <div style="clear:both"/>
     </div>
     
     <div class="section">
       <div><a href="services">Other services</a></div>
-
+<div><a href="http://bigasterisk.com/supervisor/bang/index.html?action=restart&amp;processname=ajaxterm_8022">restart ajaxterm</a></div>
     </div>
 
     <n:invisible n:render="loginBar"/>
-
 
 <n:comment>
 <!--    
