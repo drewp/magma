@@ -18,6 +18,8 @@ def getServices(host):
         addr = "http://bang:9002"
     supervisor = xmlrpclib.Server(addr).supervisor
     def maybePortnum(name):
+        if name == 'nginx':
+            return 80
         tail = row['name'].split('_')[-1]
         try:
             return int(tail)
@@ -30,8 +32,34 @@ def getServices(host):
              for row in supervisor.getAllConfigInfo()]
 
 def getAllServices():
-    return sum((getServices(h) for h in ['bang', 'bang-local', 'dash', 'slash', 'score']), [])
+    return sum((getServices(h) for h in ['bang', 'bang-local', 'dash', 'slash', 'star']), [])
 
+
+def httpChecks(host, serviceName):
+    """
+    for this supervisor service, are there any http pages we can
+    check? The return value is a list of (name, urlPath) that
+    need to return successfully.
+
+    if possible, arrange for a failure of the supervisor service to
+    mute a failure of these tests, since of course they're broken when
+    the service isn't running.
+    """
+    return {
+        ('slash', 'webcam_9020') : [('cam sideYard', '/sideYard'),
+                                    ('cam livingRoom', '/livingRoom'),
+                                    ('cam garage', '/garage')],
+        ('slash', 'webcam_9021') : [('cam laundry', '/laundry')],
+        ('slash', 'webcam_9023') : [('cam frontDoor', '/frontDoor')],
+        ('dash', 'shiftweb_9014'): [('shiftweb', '/')],
+        ('star', 'webcam_9016'): [('cam ari', '/0')],
+        ('bang', 'webcam_9053'): [('cam bedroom', '/0')],
+        ('bang', 'nginx'): [('bigasterisk home page', '/')], # wrong vhost?
+        ('bang', 'sfd_9024'): [('sfd root', '/')],
+        ('bang', 'diarybot_9048'): [('diarybot root', '/')],
+        }.get((host, serviceName), [])
+    
+    return []
 
 svcs = getAllServices()
 
@@ -42,7 +70,7 @@ out = None
 serial = 0
 written = 0
 for svc in svcs:
-    if out is None or written > 50:
+    if out is None or written > 30:
         serial += 1
         # warning- doesnt clean up old ones
         out = open("/etc/nagios3/conf.d/supervisor-%s.cfg" % serial, "w")
@@ -57,6 +85,24 @@ define service {
   check_command sup_check!%(supervisorPort)s!%(name)s
 }
 """ % svc)
+
+    for name, path in httpChecks(svc['host'], svc['name']):
+        svc.update(dict(checkName=name, path=path, cmd=name.replace(' ','_')))
+        out.write("""
+define command {
+  command_name %(cmd)s
+  command_line /usr/lib/nagios/plugins/check_http -k "x-foaf-agent: http://bigasterisk.com/foaf/nagios" -H %(host)s -p %(servicePort)s --url %(path)s --warning=1
+}
+define service {
+  use generic-service
+  host_name %(host)s
+  service_description %(checkName)s
+  check_command %(cmd)s
+}
+
+""" % svc)
+        
+        
     written += 1
 
 
