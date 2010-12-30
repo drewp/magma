@@ -1,5 +1,5 @@
 from __future__ import division
-import sys, time, re, os, stat, jsonlib
+import sys, time, re, os, stat, jsonlib, datetime, urllib
 from binascii import hexlify
 from nevow import rend, loaders
 from pprint import pprint
@@ -9,10 +9,11 @@ from twisted.python.util import sibpath
 from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
-from nevow import rend, static, loaders, tags as T, inevow, json, url
+from nevow import rend, static, loaders, tags as T, inevow, json, url, flat
+from nevow.tags import Tag
 from rdflib import URIRef, Namespace, Variable, RDFS, Literal
 from commandinference.db import XS
-import time
+from commandinference.dbclient import nowLiteral
 from xml.utils import iso8601
 from pymongo import Connection, DESCENDING
 from dateutil.tz import tzlocal, tzutc
@@ -128,12 +129,9 @@ class HomePage(rend.Page):
         request.content.seek(0)
         args = dict(url.unquerify(request.content.read()))
 
-        t = iso8601.tostring(time.time(),
-                             # using current timezone, even for passed-in value
-                             (time.timezone, time.altzone)[time.daylight]) 
         cmd = self.cmdlog.addCommand(URIRef(args['uri']),
-                               Literal(t, datatype=XS['dateTime']),
-                               self.user)
+                                     nowLiteral(),
+                                     self.user)
 
         # accept: json for AJAX
 
@@ -211,12 +209,11 @@ class HomePage(rend.Page):
                                  ctx.arg('msg'))
 
     def child_recentVisitors(self, ctx):
-        conn = Connection("bang", 27017)['visitor']['visitor']
+        coll = Connection("bang", 27017, tz_aware=True)['visitor']['visitor']
         ret = []
-        for row in conn.find(sort=[('created', DESCENDING)], limit=20):
+        for row in coll.find(sort=[('created', DESCENDING)], limit=20):
             del row['_id']
-            row['created'] = row['created'].replace(
-                tzinfo=tzutc()).astimezone(tzlocal()).isoformat()
+            row['created'] = row['created'].astimezone(tzlocal()).isoformat()
             ret.append(row)
 
         class Ret(rend.Page):
@@ -226,6 +223,60 @@ class HomePage(rend.Page):
                                                "application/json")
                 return jsonlib.write({'visitors' : ret})
         return Ret()
+
+    def child_visitorsActivityStream(self, ctx):
+        coll = Connection("bang", 27017, tz_aware=True)['visitor']['visitor']
+        coll.ensure_index('created')
+
+        doc = Tag('atom')(**{
+                'xmlns':'http://www.w3.org/2005/Atom', 
+                'xmlns:activity':'http://activitystrea.ms/spec/1.0/'})
+
+        rows = list(coll.find(sort=[('created', DESCENDING)], limit=20))
+
+        for row in rows:
+            uri = ('http://bigasterisk.com/visitor/%s/%s' % 
+                   (row['created'].strftime('%s'), urllib.quote(row['name'])))
+
+            author = ('http://bigasterisk.com/visitor/netName/%s' % 
+                      urllib.quote(row['name']))
+            
+            actVerb, english = {
+                'arrive' : ('http://bigasterisk.com/activityStreams/arrive', 
+                            'connects with'),
+                'leave' : ('http://bigasterisk.com/activityStreams/leave', 
+                           'disconnects from'),
+                }[row['action']]
+
+            desc = '%s %s bigasterisk %s' % (row['name'], english, 
+                                             row['sensor'])
+            entry = Tag('entry')[
+                Tag('id')[uri],
+
+                Tag('author')[
+                    Tag('name')[row['name']],
+                    Tag('link')(rel='alternate', type='text/html', href=author),
+                    ],
+                Tag('activity:verb')[actVerb],
+                Tag('activity:object')[
+                    Tag('id')['http://bigasterisk.com/sensor/%s' % row['sensor']],
+                    Tag('name')['bigasterisk %s' % row['sensor']],
+                    ],
+                Tag('title')[desc],
+                Tag('content')(type="html")[desc],
+                Tag('published')[row['created'].astimezone(tzlocal()).isoformat()]
+                ]
+            doc[entry]
+
+# get real data in here. sort by time. make another output; mix them. restart timeline page to show an old date. Accept end time (?) in the request.
+        class Ret(rend.Page):
+            def renderHTTP(self, ctx):
+                # this rend.Page is just to make setHeader work
+                inevow.IRequest(ctx).setHeader("Content-Type",
+                                               "application/atom+xml")
+                return flat.flatten(doc)
+        return Ret()
+
 
     def child_services(self, ctx):
         return static.File("/my/site/magma/build_services.html")
@@ -386,11 +437,9 @@ class SecureButton(rend.Page):
         """returns deferred"""
         print "go"
 
-        t = iso8601.tostring(time.time(),
-                    (time.timezone, time.altzone)[time.daylight]) 
         cmd = self.cmdlog.addCommand(
             URIRef("http://bigasterisk.com/magma/cmd/garageDoor"),
-            Literal(t, datatype=XS['dateTime']),
+            nowLiteral(),
             self.user)
 
         # the garage door also requires that bit 6 stay low, to avoid
