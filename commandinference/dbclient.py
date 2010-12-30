@@ -5,7 +5,8 @@ import sys, logging
 sys.path.append("/my/site/photo")
 from remotesparql import RemoteSparql
 from rdflib import Literal
-import time, jsonlib, restkit
+import time, jsonlib, restkit, datetime
+from dateutil.tz import tzlocal
 from xml.utils import iso8601
 from commandinference.db import CommandLog, NS, XS
 from twisted.python.util import sibpath
@@ -35,5 +36,6 @@ def getCommandLog():
     return cl
 
 def nowLiteral():
-    return Literal(iso8601.tostring(time.time(), (time.timezone, time.altzone)[time.daylight]),
-                   datatype=XS['dateTime'])
+    return Literal(
+        datetime.datetime.now(tzlocal()).isoformat(),
+        datatype=XS['dateTime'])
