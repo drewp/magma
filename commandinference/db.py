@@ -139,7 +139,7 @@ class CommandLog(object):
             return row['c'], row['t'], row['u']
         raise ValueError("No commands found of class %r" % class_)
         
-    def recentCommands(self, n=10):
+    def recentCommands(self, n=10, withIssue=False):
         """
         sequence of N recent (command, time, user) tuples. These are the
         most recent by time, not necessarily by the order that we
@@ -149,13 +149,16 @@ class CommandLog(object):
         That seems redundant.
         """
         for row in self.graph.queryd("""
-              SELECT ?c ?t ?u WHERE {
+              SELECT DISTINCT ?issue ?c ?t ?u WHERE {
                 ?issue a cl:IssuedCommand;
                        cl:command ?c;
                        dcterms:created ?t;
                        dcterms:creator ?u .
                        } ORDER BY DESC(?t) LIMIT %s""" % n):
-            yield (row['c'], row['t'], row['u'])
+            out = (row['c'], row['t'], row['u'])
+            if withIssue:
+                out = out + (row['issue'],)
+            yield out
             
         
     def __len__(self):
