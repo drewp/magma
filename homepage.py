@@ -1,28 +1,31 @@
 from __future__ import division
 import sys, time, re, os, stat, jsonlib, datetime, urllib
 from binascii import hexlify
-from nevow import rend, loaders
 from pprint import pprint
 from twisted.internet import reactor
 from twisted.python import log
 from twisted.python.util import sibpath
 from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
-from nevow.appserver import NevowSite
-from nevow import rend, static, loaders, tags as T, inevow, json, url, flat
-from nevow.tags import Tag
+from nevow import rend, static, loaders, tags as T, inevow, json, url
 from rdflib import URIRef, Namespace, Variable, RDFS, Literal
 from commandinference.db import XS
 from commandinference.dbclient import nowLiteral
 from xml.utils import iso8601
 from pymongo import Connection, DESCENDING
 from dateutil.tz import tzlocal, tzutc
+from dateutil.parser import parse
+
+import activitystream
+reload(activitystream)
+ActivityStream = activitystream.ActivityStream
 
 import stripchart
 reload(stripchart)
 
 CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
+FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
 
 def foafAgent(ctx):
@@ -57,6 +60,12 @@ class HomePage(rend.Page):
         return static.File('/my/proj/room/www')
     def child_tango(self, ctx):
         return static.File('/usr/share/icons/Tango/32x32')
+
+    def child_houseActivity(self, ctx):
+        f = static.File('houseActivity.html')
+        f.type = 'application/xhtml+xml'
+        f.encoding = None
+        return f
 
     def renderHTTP(self, ctx):
         req = inevow.IRequest(ctx)
@@ -208,78 +217,58 @@ class HomePage(rend.Page):
                                  foafAgent(ctx),
                                  ctx.arg('msg'))
 
-    def child_recentVisitors(self, ctx):
-        coll = Connection("bang", 27017, tz_aware=True)['visitor']['visitor']
-        ret = []
-        for row in coll.find(sort=[('created', DESCENDING)], limit=20):
-            del row['_id']
-            row['created'] = row['created'].astimezone(tzlocal()).isoformat()
-            ret.append(row)
-
-        class Ret(rend.Page):
-            def renderHTTP(self, ctx):
-                # this rend.Page is just to make setHeader work
-                inevow.IRequest(ctx).setHeader("Content-Type",
-                                               "application/json")
-                return jsonlib.write({'visitors' : ret})
-        return Ret()
-
     def child_visitorsActivityStream(self, ctx):
         coll = Connection("bang", 27017, tz_aware=True)['visitor']['visitor']
         coll.ensure_index('created')
 
-        doc = Tag('atom')(**{
-                'xmlns':'http://www.w3.org/2005/Atom', 
-                'xmlns:activity':'http://activitystrea.ms/spec/1.0/'})
-
         rows = list(coll.find(sort=[('created', DESCENDING)], limit=20))
 
+        stream = ActivityStream()
+
         for row in rows:
-            uri = ('http://bigasterisk.com/visitor/%s/%s' % 
-                   (row['created'].strftime('%s'), urllib.quote(row['name'])))
+            nameComponent = urllib.quote(row['name'].encode('ascii', 'ignore'))
 
             author = ('http://bigasterisk.com/visitor/netName/%s' % 
-                      urllib.quote(row['name']))
+                      nameComponent)
             
             actVerb, english = {
                 'arrive' : ('http://bigasterisk.com/activityStreams/arrive', 
-                            'connects with'),
+                            'connects to'),
                 'leave' : ('http://bigasterisk.com/activityStreams/leave', 
                            'disconnects from'),
                 }[row['action']]
 
-            desc = '%s %s bigasterisk %s' % (row['name'], english, 
-                                             row['sensor'])
-            entry = Tag('entry')[
-                Tag('id')[uri],
-
-                Tag('author')[
-                    Tag('name')[row['name']],
-                    Tag('link')(rel='alternate', type='text/html', href=author),
-                    ],
-                Tag('activity:verb')[actVerb],
-                Tag('activity:object')[
-                    Tag('id')['http://bigasterisk.com/sensor/%s' % row['sensor']],
-                    Tag('name')['bigasterisk %s' % row['sensor']],
-                    ],
-                Tag('title')[desc],
-                Tag('content')(type="html")[desc],
-                Tag('published')[row['created'].astimezone(tzlocal()).isoformat()]
-                ]
-            doc[entry]
-
-# get real data in here. sort by time. make another output; mix them. restart timeline page to show an old date. Accept end time (?) in the request.
-        class Ret(rend.Page):
-            def renderHTTP(self, ctx):
-                # this rend.Page is just to make setHeader work
-                inevow.IRequest(ctx).setHeader("Content-Type",
-                                               "application/atom+xml")
-                return flat.flatten(doc)
-        return Ret()
-
-
+            stream.addEntry(
+                actorUri=author, actorName=row['name'],
+                verbUri=actVerb, verbEnglish=english,
+                objectUri='http://bigasterisk.com/sensor/%s' % row['sensor'],
+                objectName='bigasterisk %s' % row['sensor'],
+                published=row['created'].astimezone(tzlocal()),
+                entryUriComponents=('visitor', row['name']))
+            
+        return stream.makeNevowResource()
+    
     def child_services(self, ctx):
         return static.File("/my/site/magma/build_services.html")
+
+    def child_recentCommands(self, ctx):
+        stream = ActivityStream()
+        graph = self.cmdlog.graph
+        for cmd, t, user, issue in self.cmdlog.recentCommands(20,
+                                                              withIssue=True):
+            verb = graph.value(cmd, CL.verb) or CL.mash
+            activityObject = graph.value(cmd, CL.activityObject) or CL.something
+            stream.addEntry(
+                actorUri=user, actorName=graph.value(user, FOAF.name),
+                verbUri=verb, verbEnglish=graph.label(verb),
+                objectUri=activityObject,
+                objectName=graph.label(activityObject),
+                objectIcon=graph.value(activityObject, CL.icon),
+                published=parse(t),
+                entryUri=issue,
+                )
+        return stream.makeNevowResource()
+    
 
 setattr(HomePage, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 setattr(HomePage, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
