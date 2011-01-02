@@ -1,0 +1,11 @@
+{
+  "feeds": {
+      "netVisitors" : {"sources": ["http://bang:8006/visitorsActivityStream"]},
+      "house" : { "sources": [
+	  "http://bang:8006/visitorsActivityStream",
+	  "http://bang:8006/recentCommands",
+	  "http://bang:9068/openidVisitors",
+	  "http://bang:9069/activity"
+      ] }
+  }
+}
