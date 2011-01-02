@@ -196,8 +196,11 @@ body > div {
   <body bgcolor="gray">
     <div>
 
+      <h2><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h2>
+
 <div class="section">
       <n:invisible n:render="addedCommand"/>
+
 
       <div class="imgFrame">
 	<a href="/cam/livingRoom"><img style="left: -85px; width: 250px" alt="livingroom">
@@ -489,20 +492,7 @@ body > div {
 	  $("#recentExpand").click(function () { 
 	      $(this).text("V");
 	      $(this).parent().next().show();
-	      $.getJSON("recentVisitors", {}, function (data) {
-		  var tbody = $("#recentVisitors").find("tbody");
-		  $.each(data.visitors, function (i, row) {
-		      var tr = $("<tr>");
-		      tr.append($("<td>").addClass("t").text(
-			  row.created.replace(/\..*/, "")));
-		      tr.append($("<td>").addClass("action").text(
-			  (row.action == "arrive" ? "+" : "-") + 
-			      row.sensor.replace("bluetooth", "bt")));
-		      tr.append($("<td>").addClass("name").text(row.name));
-		      tr.addClass(row.sensor + " " + row.action);
-		      tbody.append(tr);
-		  });
-	      });
+	      $("#recentVisitors").load("/activity/f/netVisitors.xhtml?order=desc");
 	  });
 
 	  $("input[name=msg]").keyup(function () {
