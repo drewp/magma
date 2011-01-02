@@ -26,15 +26,38 @@ cmd:Fillup a :Command, :DatapointCommand;
  [ rdfs:label "gallons" ]
  .
 
-cmd:garageDoor a :Command; rdfs:label "Garage"; :linksTo <http://bigasterisk.com/magma/garage/> .
+:garageDoor rdfs:label "garage door"; 
+:icon <http://bigasterisk.com/magma/tango/devices/drive-removable-media.png> .
+
+:sendPosition rdfs:label "sends position from"; 
+:icon <http://bigasterisk.com/magma/tango/apps/browser.png> .
+
+# these should be defined in gasuse and imported here
+:whiteCar rdfs:label "white car"; 
+:icon <http://bigasterisk.com/magma/tango/apps/gnome-keyring-manager.png> .
+:grayCar rdfs:label "gray car"; 
+:icon <http://bigasterisk.com/magma/tango/apps/gnome-keyring-manager.png> .
+
+cmd:garageDoor a :Command; rdfs:label "Garage"; 
+:linksTo <http://bigasterisk.com/magma/garage/> .
 
 cmd:heaterOff a cmd:Heater; 
   rdfs:label "Heater off" .
 
 cmd:heaterOn20Min a cmd:Heater; 
   rdfs:label "Heater on for 20min";
+  :verb :turnOn;
+  :activityObject :heater;
   a cmd:TimedOn;
   :onForMins "20" .
+
+:header rdfs:label "heater"; 
+:icon <http://bigasterisk.com/magma/tango/status/stock_weather-sunny.png> .
+:turnOn rdfs:label "turn on" .
+:turnOff rdfs:label "turn off" .
+:mash rdfs:label "mash"; rdfs:comment "catch-all" .
+:something rdfs:label "something"; rdfs:comment "catch-all" .
+:heater rdfs:label "the heater" .
 
 cmd:heaterOn1Min a cmd:Heater; 
   rdfs:label "Heater on for 1min";
@@ -48,15 +71,35 @@ cmd:RedLight a cmd:PollMe .
 cmd:DeckLight a cmd:PollMe .
 cmd:FrontLight a cmd:PollMe .
 
+
+:bedroomRedLight rdfs:label "bedroom red light"; 
+:icon <http://bigasterisk.com/magma/tango/status/stock_dialog-info.png> .
+:frontYardLight rdfs:label "front yard light"; 
+:icon <http://bigasterisk.com/magma/tango/status/stock_dialog-info.png> .
+:deckLight rdfs:label "deck lights"; 
+:icon <http://bigasterisk.com/magma/tango/status/stock_dialog-info.png> .
+
 # data 4 off, data 6 on
-cmd:bedroomRedLightOff a cmd:RedLight; rdfs:label "Bedroom red light off"; :value "off" .
-cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on"; :value "on" .
+cmd:bedroomRedLightOff a cmd:RedLight; rdfs:label "Bedroom red light off"; 
+:value "off"; 
+:verb :turnOff; :activityObject :bedroomRedLight .
+cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on"; 
+:value "on"; 
+:verb :turnOn; :activityObject :bedroomRedLight .
 
-cmd:frontLightOff a cmd:FrontLight; rdfs:label "Front yard light off"; :value "off" .
-cmd:frontLightOn a cmd:FrontLight; rdfs:label "Front yard light on"; :value "on" .
+cmd:frontLightOff a cmd:FrontLight; rdfs:label "Front yard light off"; 
+:value "off"; 
+:verb :turnOff; :activityObject :frontYardLight .
+cmd:frontLightOn a cmd:FrontLight; rdfs:label "Front yard light on"; 
+:value "on"; 
+:verb :turnOn; :activityObject :frontYardLight .
 
-cmd:deckLightOff a cmd:DeckLight; rdfs:label "Deck lights off"; :value "off" .
-cmd:deckLightOn a cmd:DeckLight; rdfs:label "Deck lights on"; :value "on" .
+cmd:deckLightOff a cmd:DeckLight; rdfs:label "Deck lights off"; 
+:value "off"; 
+:verb :turnOff; :activityObject :deckLight .
+cmd:deckLightOn a cmd:DeckLight; rdfs:label "Deck lights on"; 
+:value "on"; 
+:verb :turnOn; :activityObject :deckLight .
 
 [ a :IssuedCommand;
     :command cmd:heaterOff;
