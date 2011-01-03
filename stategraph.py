@@ -1,4 +1,4 @@
-import datetime, os
+import datetime, os, inspect
 from dateutil.tz import tzlocal
 from rdflib.Graph import Graph
 from rdflib import Namespace, Literal
@@ -15,8 +15,10 @@ class StateGraph(object):
         """
         self.g = Graph()
         self.ctx = ctx
-        self.g.add((ctx, DCTERMS['creator'],
-                    Literal(os.path.abspath(__file__))))
+
+        requestingFile = inspect.stack()[1][1]
+        self.g.add((ctx, DCTERMS['creator'], 
+                    Literal(os.path.abspath(requestingFile))))
         self.g.add((ctx, DCTERMS['modified'],
                Literal(datetime.datetime.now(tzlocal()))))
 
