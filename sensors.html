@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>sensors</title>
+    <style type="text/css" media="all">
+      /* <![CDATA[ */
+#rdf {
+      font-family:monospace;
+font-size:9px;
+white-space:pre;
+}
+      /* ]]> */
+</style>
+
+  </head>
+  <body>
+
+    <h2>Current RDF:</h2>
+    <div id="rdf"/>
+
+    <input id="auto" type="checkbox"/> <label for="auto">auto refresh</label>
+
+    <script type="text/javascript" src="www/jquery.1.4.4.min.js"></script>
+      <script type="text/javascript">
+      // <![CDATA[
+      $(function () { 
+	  function update() {
+	      $.get("sensorsRdf", function (trig) {
+		  $("#rdf").text(trig);
+	      });
+	  }
+	  function loop() {
+	      update();
+	      if ($("input#auto").is(":checked")) {
+		  setTimeout(loop, 2000);
+	      }
+	  }
+	  loop();
+	  $("input#auto").click(loop);
+	  
+      });
+      // ]]>
+</script>
+  </body>
+</html>

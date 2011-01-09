@@ -26,4 +26,8 @@ class StateGraph(object):
         self.g.add(*args, **kw)
 
     def asTrig(self):
-        return "%s {\n%s\n}\n" % (self.ctx.n3(), self.g.serialize(format='nt'))
+        nt = self.g.serialize(format='nt')
+        # this canonical order is just for debugging, so the lines are
+        # stable when you refresh the file repeatedly
+        ntOrder = '\n'.join(sorted(nt.splitlines()))
+        return "%s {\n%s\n}\n" % (self.ctx.n3(), ntOrder)
