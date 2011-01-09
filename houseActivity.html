@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title></title>
+    <style type="text/css" media="all">
+    /* <![CDATA[ */
+    body {
+	font-family: sans-serif;
+	background: white;
+	font-size: 14px;
+    }
+
+    .entries {
+	width: 510px;
+    }
+
+    .entry span {
+	vertical-align: top;
+	display: inline-block;
+    }
+    span.published {
+	color: #aeaeae;
+	width: 48px;
+    } 
+    span.icon {
+
+    }
+    .entry .body {
+	border-bottom: 1px solid #cbcbcb;
+	width: 400px;
+
+    }
+    .timeSection {
+	border-bottom: 1px solid #e4e4e4;
+	color: gray;
+	margin-top: 10px;
+	margin-bottom: 5px;
+    }
+
+    /* ]]> */
+</style>
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.js"></script>
+      <script type="text/javascript" src="/magma/www/json-template.js"></script>
+      <script type="text/javascript">
+      // <![CDATA[
+      
+  /* http://dansnetwork.com/2008/11/01/javascript-iso8601rfc3339-date-parser/ */
+      function parseIsoDate(s){
+	  var re=/(\d\d\d\d)\D?(\d\d)\D?(\d\d)\D?(\d\d)\D?(\d\d\D?(\d\d\.?(\d*))?)(Z|[+-]\d\d?(:\d\d)?)?/;
+	  var a=re(s).slice(1).map(function(x,i){
+	      if (i==6 && x) x=parseInt(x,10)/Math.pow(10,x.length)*1000; // convert to milliseconds
+	      return parseInt(x,10)||0;
+	  });
+	  return new Date(
+	      Date.UTC(a[0],a[1]-1,a[2],a[3]-(a[7]||0),a[4],a[5],a[6]));
+      };
+    
+
+      $(function () {
+	  var tmpl = jsontemplate.fromString($("#entryTemplate").text());
+
+	  function updateEntries(result) {
+	      var rows = result.activities;
+	      rows.reverse();
+
+	      var lastTimeSection = null;
+
+	      function whatTimeSection(t) {
+		  return t.toDateString(); // todo: half days? 'this morning'?
+	      }
+
+	      function makeTimeSection(t) {
+		  var now = new Date();
+		  var s = "";
+		  if (t.toDateString() == now.toDateString()) {
+		      s = "Today, ";
+		  } else if (t.toDateString() == new Date(now.getTime() - 86400000).toDateString()) {
+		      s = "Yesterday, ";
+		  }
+		  function pad2(n) { return n < 10 ? "0" + n : "" + n; }
+		  s = s + t.getFullYear() + "-" + pad2(t.getMonth()+1) + "-" + pad2(t.getDate());
+
+		  return $("<div>").addClass('timeSection').text(s);
+	      }
+
+	      var outElem = $(".entries");
+	      outElem.empty();
+	      $.each(rows, function (i, entry) {
+		  var t = parseIsoDate(entry.postedTime);
+		  if (!lastTimeSection || 
+		      whatTimeSection(t) != lastTimeSection) {
+	              outElem.append(makeTimeSection(t));
+		      lastTimeSection = whatTimeSection(t);
+		  }
+		  entry.shortTime = t.toTimeString().replace(/:.. .*/, "");
+		  outElem.append(tmpl.expand(entry, {}));
+	      });
+	  }
+
+	  $.getJSON("/activity/f/house.json", updateEntries);
+
+      });
+      // ]]>
+</script>
+  </head>
+  <body>
+    <h2>House Activity</h2>
+
+    <ul class="entries">
+      <li>Loading...</li>
+    </ul>
+    <div style="display: none">
+      <div id="entryTemplate">
+	<![CDATA[
+ 	  <div class="entry">
+	    <span class="published">{shortTime}</span>	
+	    <span class="icon"> <img src="http://bigasterisk.com/magma/tango/status/stock_weather-sunny.png"/></span>
+	    <span class="body" style="height: 32px"><span class="title">{title}</span></span>
+	    <!-- commentserve -->
+	  </div>
+	]]>
+      </div>
+    </div>
+
+<pre>
+todo:
+- put this on magma main site
+- remove duplicates and boring entries
+- increase caching so it's fast
+- get the icons right
+- put a line between the new items and ones you've seen
+- get links on everything
+- allow comments
+- view older history
+- change wifi/bluetooth devices to their owner people
+
+more sources:
+- gasuse entry
+- shared diarybot (with permissions!)
+- show what people are viewing with wifi and how much bandwidth it's using
+- describe the movement on the cams, inline interesting pics from them
+- phone cam photos, include them in the timeline
+- mix in twitter feeds
+- show upcoming calendar events
+- nagios alerts
+</pre>
+  </body>
+</html>

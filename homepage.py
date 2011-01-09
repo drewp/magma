@@ -61,11 +61,21 @@ class HomePage(rend.Page):
     def child_tango(self, ctx):
         return static.File('/usr/share/icons/Tango/32x32')
 
-    def child_houseActivity(self, ctx):
-        f = static.File('houseActivity.html')
+    def child_houseActivity(self, ctx, fn="houseActivity.html"):
+        f = static.File(fn)
         f.type = 'application/xhtml+xml'
         f.encoding = None
         return f
+
+    def child_sensors(self, ctx):
+        return self.child_houseActivity(ctx, fn='sensors.html')
+
+    def child_sensorsRdf(self, ctx):
+        trig = ""
+        import restkit
+        for uri in ["http://bang:9069/graph", "http://bang:9070/graph"]:
+            trig += restkit.request(uri).body_string()
+        return trig
 
     def renderHTTP(self, ctx):
         req = inevow.IRequest(ctx)
