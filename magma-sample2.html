@@ -7,341 +7,116 @@
 
     <title>magma</title>
     <link rel="Stylesheet" type="text/css" href="/nagios/stylesheets/status.css" />
-
-    <style type="text/css" media="all">
-      /* <![CDATA[ */
-
-      // hi
-
-      * {
-      margin: 0;
-      padding: 0;
-      }
-
-      html > body {
-	  background: black;
-	  margin: 0 !important;
-
-      }
-      body > div {
-	  position: absolute;
-	  top: 0;
-	  left: 0;
-	  overflow:hidden;
-	  background: black;
-	  color: gray;
-	  font-family: sans;
-
-	  width: 320px;
-      }
-      h2 {
-	  margin: 6px;
-      }
-      .section {
-          border: 1px solid gray;
-          margin: 3px 0;
-          padding: 3px 0;
-	  overflow: hidden;
-      } 
-      .ranCommand {
-          margin: 10px;
-          padding: 10px;
-          background: yellow;
-      }
-      .commands  {
-	  margin-bottom: 8px;
-      }
-
-      .commands table tr { height: 48px; }
-      .commands table td { width: 102px; height: 48px; }
-      .commands button  {
-          width: 102px;
-          height: 48px;
-	  cursor:pointer;
-	  position: absolute;
-	  margin-top: -18px !important;
-      }
-      button div.label {
-          font-size: 70%;
-      }
-      button.current { 
-	  opacity: 1;
-	  background: #faa;
-      } 
-      button.recommend { 
-	  opacity: .7;
-	  background: #fff;
-      }
-
-      .wifiNow {
-	  font-family: sans-serif;
-      }
-      .wifiNow table {
-	  border-collapse: collapse;
-	  font-size: 80%;
-      }
-      .wifiNow td, .wifiNow th {
-	  border: 1px solid #9a9a9a;
-	  white-space: nowrap;
-      }
-      .wifiNow td {
-	  padding-right: 8px;
-      }
-      .wifiNow .lease {font-size: 70%;}
-      .wifiNow .ip {font-size: 70%;}
-      .wifiNow .rssi {font-size: 70%;}
-      .wifiNow .mac {font-size: 70%;}
-      .wifiNow th {
-	  text-align: left;
-      }
-      .wifiNow .signal {
-	  background:#76733F;
-	  color:#FFFFFF;
-      }
-      .wifiNow .nosignal {
-	  color:#aaa;
-      }
-      .imgFrame {
-	  position: relative;
-	  border: 1px solid blue;
-	  width: 104px;
-	  height: 80px;
-	  overflow: hidden;
-	  float: left;
-      }
-      .imgFrame img {
-	  position: relative;
-      }
-      a {
-	  text-decoration: none;
-	  color: #00f;
-      }
-      a img {
-	  border: 0;
-      }
-      .graph {
-	  float: left; width: 158px; height: 95px; overflow: hidden;
-      }
-      .graph h1 {
-        font-size: 10px;
-        height: 22px;
-	margin: 0;
-      }
-      .graph.munin img {
-	  position: relative; left: -23px; top: -8px; width: 180px;
-      }
-
-      .links a {
-	  background:none repeat scroll 0 0 #333333;
-	  border:1px outset gray;
-	  color:#6D6CE4;
-	  display:inline-block;
-	  margin:3px 0 3px 2px;
-	  padding:9px 3px;
-	  text-decoration:none;
-	  -moz-border-radius: 10px;
-	  -webkit-border-radius: 10px;
-      }
-      .col2 {
-	  -webkit-column-width: 104px;
-	  -moz-column-width: 104px;
-      }
-
-      #recentVisitors {
-	  
-      }
-      #recentVisitors {
-	  font-size: 90%;
-	  color: #c6c6c6;
-      }
-      #recentVisitors .t {
-	  font-size: 85%;
-      }
-      #recentVisitors tr.bluetooth {
-	  background: #090932;
-      }
-      #recentVisitors tr.wifi {
-	  background: #221103;
-      }
-      /* ]]> */
-       </style>
+    <link rel="Stylesheet" type="text/css" href="/magma/www/magma.css?v=1" media="all"/>
 
 
-<style type="text/css" media="screen" n:render="notPhone">
-  /* <![CDATA[ */
+    <style type="text/css" media="screen" n:render="notPhone">
+    /* <![CDATA[ */
+    body > div {    
+	-moz-column-count:2;
+	-moz-column-gap:20px;
+	-moz-column-width:320px;
+	/*    -webkit-column-count: 2; http://code.google.com/p/chromium/issues/detail?id=58101
+	      -webkit-column-gap:20px;*/
+	-moz-column-width:320px;
+	width: 660px;
+    }
+    
+    /* ]]> */
+</style>
+      
+<style type="text/css" media="handheld">
+/* <![CDATA[ */
 body > div {    
-    -moz-column-count:2;
-    -moz-column-gap:20px;
-    -moz-column-width:320px;
-/*    -webkit-column-count: 2; http://code.google.com/p/chromium/issues/detail?id=58101
-    -webkit-column-gap:20px;*/
-    -moz-column-width:320px;
-    width: 660px;
-}
-
+    width: 320px;
+    }  
 /* ]]> */
 </style>
 
-    <style type="text/css" media="handheld">
-   /* <![CDATA[ */
-    body > div {    
-	width: 320px;
-    }  
-    /* ]]> */
-</style>
-
-    <meta name="viewport" content="width=240; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
+<meta name="viewport" content="width=240; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
 
   </head>
   <body bgcolor="gray">
-    <div>
-
-      <h2><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h2>
-
-<div class="section">
-      <n:invisible n:render="addedCommand"/>
-
-
-      <div class="imgFrame">
-	<a href="/cam/livingRoom"><img style="left: -85px; width: 250px" alt="livingroom">
-	  <n:attr name="src">/cam/livingRoom.jpg</n:attr>
-	</img></a>
-      </div>
-      <!--<div class="imgFrame">
-	<a href="/cam/drewDesk"><img style="top: -17px; width: 106px">
-	  <n:attr name="src">/cam/drewDesk.jpg</n:attr>
-	</img></a>
-      </div>-->
-
-      <div class="imgFrame">
-	<a href="/cam/sideYard"><img style="top: -17px; width: 106px">
-	  <n:attr name="src">/cam/sideYard.jpg</n:attr>
-	</img></a>
-      </div>
-
-      <div class="imgFrame">
-	<a href="/cam/garage"><img style="top: 0px; width: 106px">
-	  <n:attr name="src">/cam/garage.jpg</n:attr>
-	</img></a>
-      </div>
-      <div class="imgFrame">
-	<a href="/cam/frontDoor"><img style="left: -24px; width: 139px">
-	  <n:attr name="src">/cam/frontDoor.jpg</n:attr>
-	</img></a>
-      </div>
-
-
-      <div class="imgFrame">
-	<a href="/cam/ari"><img style="top: 0px; width: 123px;">
-	  <n:attr name="src">/cam/ari.jpg</n:attr>
-	</img></a>
-      </div>
-      <div class="imgFrame" style="text-align: center">
-      <a href="/cam/all">All cameras at once</a></div>
-
-      <div style="clear:both;"/>
-      
-      <div class="commands">
-	<n:invisible n:render="commands"/>
-      </div>
-
-      <form method="post" action="microblogUpdate">
-	<input type="text" name="msg" style="width:310px"/> <span id="blogChars"/> <input type="submit" value="Post to microblogs"/>
-	<!-- query the user to see what ublogs they have, so we could list them 
-	     in advance -->
-      </form>
-</div>
-      <div class="section links col2">
-	<div><a href="http://bigasterisk.com/diary/">diarybot viewer</a></div>
-	<!--<div><a href="http://bigasterisk.com/cam/"><img src="tango/devices/camera.png"/>house cameras</a></div>-->
-	<div><a href="http://bigasterisk.com/ari/openidAccess"><img src="tango/apps/system-users.png"/>openid access control for ari blog</a></div>
-
-	<div><a href="http://bigasterisk.com/map/"><img src="tango/apps/browser.png"/>gps map</a></div>
-	<div><a href="http://bigasterisk.com/sfd/">SFD</a></div>
-
-	<div><a href="http://bigasterisk.com/gasuse/submitFillUp">gasuse submit</a></div>
-
-	<div><a href="http://bigasterisk.com/bathroomLight/"><img src="tango/status/info.png"/>bathroom light</a></div>
-	<div><a href="http://bigasterisk.com/exchangeMeeting/all">exchangemeeting</a></div>
+    <div> 
+      <h3><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h3>
 	
-	<!--<n:invisible n:render="lights"/>-->
+      <div class="section">
+	<n:invisible n:render="addedCommand"/>
 
-	<div><a href="http://whatsplayingnext.com/upcoming">whatsplayingnext</a></div>
-	<div><a href="http://bigasterisk.com/freeway">freeway</a></div>
+	<div class="imgFrame"> <a href="/cam/livingRoom"><img style="left: -85px; width: 250px" alt="livingroom" src="/cam/livingRoom.jpg"/></a> </div>
+	<!--<div class="imgFrame">
+	    <a href="/cam/drewDesk"><img style="top: -17px; width: 106px" src="/cam/drewDesk.jpg"/></a>
+	      </div>-->
+	<div class="imgFrame"> <a href="/cam/sideYard"><img style="top: -17px; width: 106px" src="/cam/sideYard.jpg"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/garage"><img style="top: 0px; width: 106px" src="/cam/garage.jpg"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/frontDoor"><img style="left: -24px; width: 139px" src="/cam/frontDoor.jpg"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/ari"><img style="top: 0px; width: 123px;" src="/cam/ari.jpg"/></a> </div>
+	<div class="imgFrame" style="text-align: center"> <a href="/cam/all">All cameras at once</a></div>
+	<div style="clear:both;"/>
+	  
+	<form method="post" action="microblogUpdate">
+	  <input type="text" name="msg" style="width:310px"/> <span id="blogChars"/> <input type="submit" value="Post to microblogs"/>
+	    <!-- query the user to see what ublogs they have, so we could list them 
+		 in advance -->
+	</form>
+      </div>
 
+      <div class="section">
+	<a href="http://graphite.bigasterisk.com/render/?width=720&amp;height=400&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;from=-100hours&amp;hideAxes=false&amp;hideLegend=false&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90">
+	  <img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=200&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90" width="320" height="200"/>
+	</a>
+	<div><a href="temp/tempchart/table.html">other temp tables</a></div>
+      </div>
 
+      <div class="section links col2">
+	<div><a href="/diary/"><img src="www/Book-icon.png"/>diarybot viewer</a></div>
+	<div><a href="/ari/openidAccess"><img src="tango/apps/system-users.png"/>openid access control for ari blog</a></div>
+	<div><a href="/map/"><img src="tango/apps/browser.png"/>gps map</a></div>
+	<div><a href="/sfd/"><img src="www/Restaurant-Blue-2-icon.png"/>SFD</a></div>
+	<div><a href="/gasuse/submitFillUp"><img src="www/Car-Repair-Blue-icon.png"/>gasuse submit</a></div>
+	<div><a href="/bathroomLight/"><img src="tango/status/info.png"/>bathroom light</a></div>
+	<div><a href="/exchangeMeeting/all"><img src="www/Calendar-2-icon.png"/>exchange meeting</a></div>
+	<div><a href="http://whatsplayingnext.com/upcoming"><img src="www/Cinema-icon.png"/>whats playing next</a></div>
+	<div><a href="/freeway"><img src="www/road-2-icon.png"/>freeway</a></div>
+	<div><a href="http://checkvist.com/checklists/27179-family">family list</a></div>
 
       </div>
 
       <div class="section links">
 	<img src="tango/mimetypes/sound.png"/>
-	<div><a href="http://bigasterisk.com/music/dash/ctl">drew's desk</a>	  <a href="http://bigasterisk.com/music/dash/playlist">playlist</a>  <a href="http://bigasterisk.com/music/dash/gadget">gadget</a>   <a href="http://bigasterisk.com/music/dash/theory/">theory</a></div>
-	<div><a href="http://bigasterisk.com/music/bang/ctl">bedroom</a>		<a href="http://bigasterisk.com/music/bang/playlist">playlist</a> <a href="http://bigasterisk.com/music/bang/gadget">gadget</a> <a href="http://bigasterisk.com/music/bang/theory/">theory</a></div>
-	<div><a href="http://bigasterisk.com/music/slash/ctl">living room</a>	<a href="http://bigasterisk.com/music/slash/playlist">playlist</a><a href="http://bigasterisk.com/music/slash/gadget">gadget</a><a href="http://bigasterisk.com/music/slash/theory/">theory</a><form style="display:inline" method="post" action="http://10.1.0.21:9049/speak"><input type="input" name="say"/><input type="submit" value="Speak"/></form></div>
-	<div><a href="http://bigasterisk.com/music/star/ctl">ari's room</a>	<a href="http://bigasterisk.com/music/star/playlist">playlist</a><a href="http://bigasterisk.com/music/star/gadget">gadget</a><a href="http://bigasterisk.com/music/star/theory/">theory</a></div>
-	<div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
+	<div><a href="/music/dash/ctl">drew's desk</a>  <a href="/music/dash/playlist">playlist</a>  <a href="/music/dash/gadget">gadget</a>  <a href="/music/dash/theory/">theory</a></div>
+	<div><a href="/music/bang/ctl">bedroom</a>      <a href="/music/bang/playlist">playlist</a>  <a href="/music/bang/gadget">gadget</a>  <a href="/music/bang/theory/">theory</a></div>
+	<div><a href="/music/slash/ctl">living room</a>	<a href="/music/slash/playlist">playlist</a> <a href="/music/slash/gadget">gadget</a> <a href="/music/slash/theory/">theory</a>
+	<form style="display:inline" method="post" action="http://10.1.0.21:9049/speak"><input type="input" name="say"/><input type="submit" value="Speak"/></form></div>
+	  <div><a href="/music/star/ctl">ari's room</a>   <a href="/music/star/playlist">playlist</a>  <a href="/music/star/gadget">gadget</a>  <a href="/music/star/theory/">theory</a></div>
+	  <div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
       </div>
-
-    <div class="section">
-      Supervisor: <a href="/supervisor/bang/">bang</a> <a href="/supervisor/dash/">dash</a> <a href="/supervisor/slash/">slash</a> <a href="/supervisor/star/">star</a>
-    </div>
-
-    <div class="section">
-      <div><a href="http://bigasterisk.com/nagios/index.html">nagios service monitor</a></div>
-      <div class="services">nagios services...</div>
-    </div>
-    <div class="section">
-      <h2><a href="http://bigasterisk.com/tomato1/status-devices.asp">wifi bigasterisk3</a></h2>
-      <div id="wifi1" class="wifiNow">devices...</div>
-      <h2><a href="http://bigasterisk.com/tomato2/status-devices.asp">wifi bigasterisk4</a></h2>
-      <div id="wifi2" class="wifiNow">devices...</div>
-
-      <div><button id="recentExpand">&gt;</button>Recent visitors...</div>
-      <div style="display:none">
-	<table id="recentVisitors">
-	  <tbody>
-	  </tbody>
-	</table>
+      <div class="section">
+	<div><a href="/nagios/cgi-bin/status.cgi?host=all">nagios service monitor</a></div>
+	<div class="services">nagios services...</div>
       </div>
-    </div>
-    <div class="section">
-         <a href="http://graphite.bigasterisk.com/render/?width=720&amp;height=400&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;from=-100hours&amp;hideAxes=false&amp;hideLegend=false&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90">
-	<img src="http://graphite.bigasterisk.com/render/?width=320&amp;height=200&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90" width="320" height="200"/>
-      </a>
-      <div><a href="temp/tempchart/table.html">other temp tables</a></div>
-    </div>
+      <div class="section">
+	<h2><a href="/tomato1/status-devices.asp">wifi bigasterisk3</a></h2>
+	<div id="wifi1" class="wifiNow">devices...</div>
+	<h2><a href="/tomato2/status-devices.asp">wifi bigasterisk4</a></h2>
+	<div id="wifi2" class="wifiNow">devices...</div>
+
+	<div><button id="recentExpand">&gt;</button>Recent visitors...</div>
+	<div style="display:none">
+	  <table id="recentVisitors">
+	    <tbody>
+	    </tbody>
+	  </table>
+	</div>
+      </div>
 
     <div class="section" n:render="showMunin">
-
-      <div class="graph munin">
-	<h1>bang mem</h1>
-	<a href="http://bigasterisk.com/magma/munin/bang/bang/index.html">
-	  <img src="http://bigasterisk.com/magma/munin/bang/bang/memory-day.png"/>
-	</a>
-      </div>
-      
-      <div class="graph munin">
-	<h1>cpu</h1>
-	<a href="http://bigasterisk.com/magma/munin/bang/bang/index.html">
-	  <img src="http://bigasterisk.com/magma/munin/bang/bang/cpu-day.png"/>
-	</a>
-      </div>
+      <div class="graph munin"> <h1>bang mem</h1> <a href="/magma/munin/bang/bang/index.html"> <img src="/magma/munin/bang/bang/memory-day.png"/> </a> </div>
+      <div class="graph munin"> <h1>cpu</h1> <a href="/magma/munin/bang/bang/index.html"> <img src="/magma/munin/bang/bang/cpu-day.png"/> </a> </div> 
       <div style="clear:both"/>
 
-      <div class="graph munin">
-	<h1>slash mem</h1>
-	<a href="http://bigasterisk.com/magma/munin/slash/slash/index.html">
-	  <img src="http://bigasterisk.com/magma/munin/slash/slash/memory-day.png"/>
-	</a>
-      </div>
-
-      <div class="graph munin">
-	<h1>cpu</h1>
-	<a href="http://bigasterisk.com/magma/munin/slash/slash/index.html">
-	  <img src="http://bigasterisk.com/magma/munin/slash/slash/cpu-day.png"/>
-	</a>
-      </div>
-
+      <div class="graph munin"> <h1>slash mem</h1> <a href="/magma/munin/slash/slash/index.html"> <img src="/magma/munin/slash/slash/memory-day.png"/> </a> </div>
+      <div class="graph munin"> <h1>cpu</h1> <a href="/magma/munin/slash/slash/index.html"> <img src="/magma/munin/slash/slash/cpu-day.png"/> </a> </div>
       <div style="clear:both"/>
 
       <div class="graph" style="height: 150px">
@@ -361,52 +136,30 @@ body > div {
 	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.host.eon.load&amp;from=-10hours&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0" width="158" height="75"/>
       </div>
 
-
       <div class="graph" style="height: 150px">
 	<h1>dsl activity</h1>
 	<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=500&amp;target=system.net.bytesPerSec.in&amp;target=system.net.bytesPerSec.out&amp;from=-20minutes&amp;fontSize=11&amp;yMin=0&amp;yMax=300000"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=system.net.bytesPerSec.in&amp;target=system.net.bytesPerSec.out&amp;from=-10minutes&amp;fontSize=7&amp;yMin=0&amp;yMax=300000" width="158" height="125"/></a>
       </div>
 
-
-
       <div style="clear:both"/>
     </div>
     
+      <div class="commands">
+	<n:invisible n:render="commands"/>
+      </div>
+
     <div class="section">
       <div><a href="services">Other services</a></div>
-<div><a href="http://bigasterisk.com/supervisor/bang/index.html?action=restart&amp;processname=ajaxterm_8022">restart ajaxterm</a></div>
+
+      <div>Supervisor: <a href="/supervisor/bang/">bang</a> 
+      <a href="/supervisor/dash/">dash</a> 
+      <a href="/supervisor/slash/">slash</a> 
+      <a href="/supervisor/star/">star</a></div>
+
+      <div><a href="/supervisor/bang/index.html?action=restart&amp;processname=ajaxterm_8022">restart ajaxterm</a></div>
     </div>
 
     <n:invisible n:render="loginBar"/>
-
-<n:comment>
-<!--    
-    <table n:render="showTwitters">
-	<tr>
-	  <td>
-<script type="text/javascript" src="http://kentbrewster.com/js/identica-badge.js">
-{
-   "user":"drewp",
-   "server":"identi.ca",
-   width:370,
-   height:800,
-}
-</script>
-</td><td>
-<script type="text/javascript" src="http://r8ar.com/twitterati.js">
-{
-   "user" : "drewpca",
-   "width" : "370",
-   "height" : "800",
-}
-</script>
-
-	  </td>
-	</tr>
-    </table>
-    -->
-</n:comment>
-
 
     <style type="text/css">
       /* supervisor overrides */
@@ -415,94 +168,9 @@ body > div {
       table.status { border: 1px solid gray; border-collapse: collapse; }
     </style>
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
     <script type="text/javascript" src="tomato_config.js"></script>
-    <script type="text/javascript">
-      // <![CDATA[
-
-      $(function () {
-	  $(".services").load("http://bigasterisk.com/nagios/cgi-bin/status.cgi?host=all&servicestatustypes=28 table.status");
-
-	  function renderTomato(tomatoResult, target) {
-	      var arplist, wlnoise, dhcpd_static, wldev, dhcpd_lease;
-	      eval(tomatoResult);
-
-	      var aboutIp = {};
-	      var byMac = {};
-
-	      $.each(arplist, function (i, r) {
-		  var ip=r[0];
-		  if (aboutIp[ip] == undefined) { aboutIp[ip] = {}; }
-		  aboutIp[ip]['mac'] = r[1];
-		  byMac[r[1]] = aboutIp[ip];
-		  aboutIp[ip]['interface'] = r[2];
-
-	      });
-	      $.each(dhcpd_lease, function (i, r) {
-		  var ip=r[1];
-		  if (aboutIp[ip] == undefined) { aboutIp[ip] = {}; }
-		  aboutIp[ip]['name'] = r[0];
-		  aboutIp[ip]['mac'] = r[2];
-		  byMac[r[2]] = aboutIp[ip];
-		  aboutIp[ip]['lease'] = r[3];
-	      });
-	      $.each(wldev, function (i, r) {
-		  var dev=r[0], mac=r[1], rssi=r[2];
-		  if (byMac[mac] == undefined) {
-		      aboutIp[mac] = {'mac' : mac, 'dev' : dev, 'rssi' : rssi};
-		  } else {
-		      byMac[mac]['dev'] = dev;
-		      byMac[mac]['rssi'] = rssi;
-		  }
-	      });
-
-	      function str(t, suff) {
-		  return (t == undefined) ? '' : 
-		      (t + ((suff == undefined) ? '' : (' ' + suff)));
-	      }
-	      function nameCell(name, mac) {
-		  if (name && name != "*") {
-		      return name;
-		  }
-		  return knownMacAddr[mac] ? knownMacAddr[mac] : "";
-	      }
-
-	      $(target).html('<table><tr> <th class="name">Name</th> <th class="lease">Lease</th> <th class="ip">IP address</th> <th class="rssi">dBm</th> <th class="mac">MAC address</th> </tr></table>');
-	      var table = $(target).find('table');
-
-	      $.each(aboutIp, function (ip, rest) {
-		  if (ignoreIpAddr(ip)) {
-		      return;
-		  }
-
-		  $('<tr><td>'+nameCell(rest['name'], rest['mac'])+
-		    '</td><td class="lease">'+str((rest['lease'] || "").replace("0 days, ", ""))+
-		    '</td><td class="ip">'+str(ip)+
-		    '</td><td class="rssi">'+str(rest['rssi'])+
-                    '</td><td class="mac">'+str(rest['mac'])+
-		    '</td></tr>').appendTo(table).addClass(rest['rssi'] ? "signal" : "nosignal");
-	      })
-	  }
-
-	  $.getScript(tomatoUrl[0], 
-	       function (data, textStatus) { renderTomato(data, "#wifi1") });
-	  $.getScript(tomatoUrl[1], 
-	       function (data, textStatus) { renderTomato(data, "#wifi2") });
-
-	  $("#recentExpand").click(function () { 
-	      $(this).text("V");
-	      $(this).parent().next().show();
-	      $("#recentVisitors").load("/activity/f/netVisitors.xhtml?order=desc");
-	  });
-
-	  $("input[name=msg]").keyup(function () {
-	      var chars = $("form[action=microblogUpdate] input[type=text]").val().length;
-	      $("#blogChars").text("("+chars+")");
-	  });
-
-      });
-      // ]]>
-    </script>
+    <script type="text/javascript" src="/magma/www/magma.js?v=1"></script>
   </div>    
   </body>
 </html>
