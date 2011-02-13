@@ -45,18 +45,20 @@ def httpChecks(host, serviceName):
     mute a failure of these tests, since of course they're broken when
     the service isn't running.
     """
+    NOMAIL = 'notifications_enabled 0'
     return {
-        ('slash', 'webcam_9020') : [('cam sideYard', '/sideYard'),
-                                    ('cam livingRoom', '/livingRoom'),
-                                    ('cam garage', '/garage')],
-        ('slash', 'webcam_9021') : [('cam laundry', '/laundry')],
-        ('slash', 'webcam_9023') : [('cam frontDoor', '/frontDoor')],
-        ('dash', 'shiftweb_9014'): [('shiftweb', '/')],
-        ('star', 'webcam_9016'): [('cam ari', '/0')],
-        ('bang', 'webcam_9053'): [('cam bedroom', '/0')],
-        ('bang', 'nginx'): [('bigasterisk home page', '/')], # wrong vhost?
-        ('bang', 'sfd_9024'): [('sfd root', '/')],
-        ('bang', 'diarybot_9048'): [('diarybot root', '/')],
+        ('slash', 'webcam_9020') : [('cam sideYard', '/sideYard', NOMAIL),
+                                    ('cam livingRoom', '/livingRoom', NOMAIL),
+                                    ('cam garage', '/garage', NOMAIL)],
+        ('slash', 'webcam_9021') : [('cam laundry', '/laundry', NOMAIL)],
+        ('slash', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
+        ('dash', 'shiftweb_9014'): [('shiftweb', '/', '')],
+        ('star', 'webcam_9016'): [('cam ari', '/0', '')],
+        ('bang', 'webcam_9053'): [('cam bedroom', '/0', NOMAIL)],
+        ('bang', 'nginx'): [('bigasterisk home page', '/', '')], # wrong vhost?
+        ('bang', 'sfd_9024'): [('sfd root', '/', '')],
+        ('bang', 'diarybot_9048'): [('diarybot root', '/', '')],
+        ('bang', 'freeway_8009'): [('freeway root', '/', '')],
         }.get((host, serviceName), [])
     
     return []
@@ -86,8 +88,8 @@ define service {
 }
 """ % svc)
 
-    for name, path in httpChecks(svc['host'], svc['name']):
-        svc.update(dict(checkName=name, path=path, cmd=name.replace(' ','_')))
+    for name, path, more in httpChecks(svc['host'], svc['name']):
+        svc.update(dict(checkName=name, path=path, cmd=name.replace(' ','_'), more=more))
         out.write("""
 define command {
   command_name %(cmd)s
@@ -98,6 +100,7 @@ define service {
   host_name %(host)s
   service_description %(checkName)s
   check_command %(cmd)s
+  %(more)s
 }
 
 """ % svc)
