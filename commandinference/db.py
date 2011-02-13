@@ -98,16 +98,20 @@ class CommandLog(object):
                 'creator' : creator,
                 })
 
-            # workaround for PSHB hub, take this out when the hub is doing subscriptions
-            try:
-                restkit.request(method="POST", url="http://bang:9055/newCommand",
-                                body=payload,
-                                headers={"Content-Type" : "application/json"})
-            except Exception, e:
-                log.error(e)
-
-            restkit.request(method="POST", url="http://bang:9030/dispatch/newCommand",
-                            body=payload, headers={"Content-Type" : "application/json"})
+            for receiver in [
+                "http://bang:9030/dispatch/newCommand",
+                 # ^ this one should be dispatching to the rest, but i
+                 # don't have a proper PSHB setup yet
+                "http://bang:9055/newCommand",
+                "http://bang:9072/newCommand",
+                ]:
+                try:
+                    restkit.request(
+                        method="POST", url=receiver,
+                        body=payload,
+                        headers={"Content-Type" : "application/json"})
+                except Exception, e:
+                    log.error(e)
 
     def _issueUri(self, uri, time, user):
         """namespace has not been sorted out yet, and it might be
