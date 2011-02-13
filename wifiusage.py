@@ -76,6 +76,6 @@ class Application(cyclone.web.Application):
         cyclone.web.Application.__init__(self, handlers, **settings)
 
 if __name__ == '__main__':
-    log.startLogging(sys.stdout)
+    #log.startLogging(sys.stdout)
     reactor.listenTCP(9070, Application())
     reactor.run()
