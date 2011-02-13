@@ -37,7 +37,7 @@ class Main(rend.Page):
     
     def locateChild(self, ctx, segments):
         import homepage
-        reload(homepage)
+	#reload(homepage) # assume the child_ has covered this
         return homepage.HomePage(self.cmdlog, foafAgent(ctx)).locateChild(ctx, segments)
 
 
