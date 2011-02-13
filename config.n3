@@ -1,5 +1,6 @@
 @prefix : <http://bigasterisk.com/ns/command/v1#> .
 @prefix cmd: <http://bigasterisk.com/magma/cmd/> .
+@prefix sup: <http://bigasterisk.com/magma/sup/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -39,6 +40,7 @@ cmd:Fillup a :Command, :DatapointCommand;
 :icon <http://bigasterisk.com/magma/tango/apps/gnome-keyring-manager.png> .
 
 cmd:garageDoor a :Command; rdfs:label "Garage"; 
+:iconPath <http://bigasterisk.com/magma/www/icon_garage.jpg>;
 :linksTo <http://bigasterisk.com/magma/garage/> .
 
 cmd:heaterOff a cmd:Heater; 
@@ -120,26 +122,59 @@ cmd:deckLightOn a cmd:DeckLight; rdfs:label "Deck lights on";
   ] .
 
 
+# derivable from supervisor configs
+sup:cmd_backupPreDrew    :supervisor <http://bang:9001>; :processLabel "cmd_backupPreDrew" .
+sup:cmd_backupPreKelsi   :supervisor <http://bang:9001>; :processLabel "cmd_backupPreKelsi" .
+sup:cmd_trainnewspam     :supervisor <http://bang:9001>; :processLabel "cmd_trainnewspam" .
+sup:cmd_seenlists        :supervisor <http://bang:9001>; :processLabel "cmd_seenlists" .
+sup:dashTheory           :supervisor <http://dash:9001>; :processLabel "theory_9099" .
+sup:slashPandoraPause    :supervisor <http://slash:9001>; :processLabel "cmd_pandoraPause" .
+sup:slashPandoraToddler  :supervisor <http://slash:9001>; :processLabel "cmd_pandoraToddler" .
+sup:slashPandoraLullabye :supervisor <http://slash:9001>; :processLabel "cmd_pandoraLullabye" .
+
+cmd:startBackupPreDrew     a :Command, cmd:SupervisorStart;  rdfs:label "backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :iconPath <http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png> .
+cmd:stopBackupPreDrew      a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew .
+cmd:startBackupPreKelsi    a :Command, cmd:SupervisorStart;  rdfs:label "backup pre kelsi"; :supervisorProcess sup:cmd_backupPreKelsi; :iconPath <http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png> .
+cmd:stopBackupPreKelsi     a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre kelsi"; :supervisorProcess sup:cmd_backupPreKelsi .
+
+cmd:startDashTheory        a :Command, cmd:SupervisorStart;  rdfs:label "start theory on dash"; :supervisorProcess sup:dashTheory .
+cmd:stopDashTheory         a :Command, cmd:SupervisorStop;   rdfs:label "stop theory on dash"; :supervisorProcess sup:dashTheory .
+cmd:trainnewspam           a :Command, cmd:SupervisorStart;  rdfs:label "train new spam"; :supervisorProcess sup:cmd_trainnewspam .
+cmd:seenlists              a :Command, cmd:SupervisorStart;  rdfs:label "seen mailing lists"; :supervisorProcess sup:cmd_seenlists .
+cmd:slashPandoraPause      a :Command, cmd:SupervisorStart;  rdfs:label "LR pandora pause"; :supervisorProcess sup:slashPandoraPause; :iconPath <http://bigasterisk.com/magma/tango/actions/media-playback-pause.png> .
+cmd:slashPandoraToddler    a :Command, cmd:SupervisorStart;  rdfs:label "LR pandora toddler"; :supervisorProcess sup:slashPandoraToddler; :iconPath <http://bigasterisk.com/magma/tango/actions/media-playback-start.png> .
+cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pandora lullabye"; :supervisorProcess sup:slashPandoraLullabye; :iconPath <http://bigasterisk.com/magma/tango/actions/media-playback-start.png> .
+
+
+#cmd_backupPreKelsi               STOPPED    Not started
+#cmd_photoBuildCache              STOPPED    Not started
+#cmd_seenlists                    STOPPED    Not started
+#cmd_trainnewspam                 STOPPED    Not started
+
 
 <http://bigasterisk.com/kelsi/foaf.rdf#kelsi> :seesCommand 
   cmd:heaterOff,
   cmd:heaterOn20Min,
   cmd:garageDoor,
-  cmd:deckLightOn,
-  cmd:deckLightOff,
-  cmd:bedroomRedLightOn,
-  cmd:bedroomRedLightOff,
   cmd:frontLightOn,
-  cmd:frontLightOff
+  cmd:frontLightOff,
+  cmd:slashPandoraPause,
+  cmd:slashPandoraToddler,
+  cmd:slashPandoraLullabye
  .
 <http://bigasterisk.com/foaf.rdf#drewp> :seesCommand 
-  cmd:bedroomRedLightOn,
-  cmd:bedroomRedLightOff,
   cmd:deckLightOn,
   cmd:deckLightOff,
   cmd:heaterOff,
   cmd:heaterOn20Min,
   cmd:garageDoor,
   cmd:frontLightOn,
-  cmd:frontLightOff
+  cmd:frontLightOff,
+  cmd:startBackupPreDrew, cmd:stopBackupPreDrew, 
+  cmd:startBackupPreKelsi, cmd:stopBackupPreKelsi, 
+  cmd:trainnewspam, 
+  cmd:seenlists,
+  cmd:slashPandoraPause,
+  cmd:slashPandoraToddler,
+  cmd:slashPandoraLullabye
 .
