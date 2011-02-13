@@ -172,7 +172,8 @@ class HomePage(rend.Page):
                      rdfs:label ?label
                    ]
           }""", initBindings={Variable("issue") : cmd})
-        
+        if not rows:
+            return ''
         return T.div(class_='ranCommand')['Ran command %s at %s' %
                                           (rows[0]['label'], rows[0]['time'])]
         
