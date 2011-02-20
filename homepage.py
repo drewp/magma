@@ -97,17 +97,28 @@ class HomePage(rend.Page):
             "Cookie" : inevow.IRequest(ctx).getHeader("cookie")}
                        ).addCallback(T.raw)
         
-
+    @inlineCallbacks
     def render_commands(self, ctx, data):
         trs = [T.tr['']]
-        for row in self.graph.queryd("""
-         SELECT ?uri ?label ?icon ?linksTo WHERE {
+
+        import dyncommands
+        reload(dyncommands)
+        cmds = yield dyncommands.pickCommands(self.graph, self.user)
+
+        for cmd in cmds:
+
+            matches = self.graph.queryd("""
+         SELECT DISTINCT ?label ?icon ?linksTo WHERE {
            ?user cl:seesCommand ?uri .
            ?uri rdfs:label ?label .
            OPTIONAL { ?uri cl:iconPath ?icon }
            OPTIONAL { ?uri cl:linksTo ?linksTo }
          } ORDER BY ?label
-        """, initBindings={Variable("user") : self.user}):
+        """, initBindings={"uri" : cmd})
+            if len(matches) != 1:
+                log.err("found %s matches for command %r" % (len(matches), cmd))
+                continue
+            row = matches[0]
 
             if len(trs[-1].children) >= 1 + 3:
                 trs.append(T.tr[''])
@@ -118,25 +129,28 @@ class HomePage(rend.Page):
                           T.div(class_='label')[row['label']]]
                 
             buttonClass = ''
-            if row['uri'] in [CMD.BabyStart, CMD.BabyStop]:
+            if cmd in [CMD.BabyStart, CMD.BabyStop]:
                 last, _, _ = self.cmdlog.lastCommandOfClass(CL.BabyStartStop)
-                if last == row['uri']:
+                if last == cmd:
                     buttonClass += " current"
                 else:
                     buttonClass += " recommend"
 
             if row.get('linksTo'):
                 form = T.form(method="get", action=row['linksTo'])
-                button = button + "..."
+                if isinstance(button, basestring):
+                    button = button + "..."
+                else:
+                    button[1].children[0] += "..."
             else:
                 form = T.form(method="post", action="addCommand")
 
             trs[-1].children.append(T.td[
                 "\n", form[
-                    T.input(type='hidden', name='uri', value=row['uri']),
+                    T.input(type='hidden', name='uri', value=cmd),
                     T.button(class_=buttonClass)[button],
                 ]])
-        return T.table[trs]
+        returnValue(T.table[trs])
 
     def child_addCommand(self, ctx):
         request = inevow.IRequest(ctx)
