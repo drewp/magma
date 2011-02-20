@@ -30,7 +30,7 @@ class Main(rend.Page):
         reload(homepage)
         p = homepage.HomePage(self.cmdlog, foafAgent(ctx))
         return p
-
+        
     def fullUrl(self, ctx):
         request = inevow.IRequest(ctx)
         return 'http://bigasterisk.com/magma' + request.path

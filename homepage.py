@@ -15,6 +15,9 @@ from xml.utils import iso8601
 from pymongo import Connection, DESCENDING
 from dateutil.tz import tzlocal, tzutc
 from dateutil.parser import parse
+from web.contrib.template import render_genshi
+from graphitetemp import getAllTemps
+render = render_genshi('.', auto_reload=True)
 
 import activitystream
 reload(activitystream)
@@ -173,6 +176,16 @@ class HomePage(rend.Page):
         #request.prepath = ['magma']
         #request.setHost('bigasterisk.com', 80)
         return url.URL.fromString('http://bigasterisk.com/magma').add('added', cmd)
+
+    def render_tempSection(self, ctx, data):
+        temps = dict.fromkeys(['ariBedroom', 'downstairs', 'livingRoom', 'bedroom', 'KSQL'])
+        try:
+            temps.update(getAllTemps())
+        except Exception, e:
+            log.err(e)
+            temps.update({'ariBedroom': 63.719, 'downstairs': 59.337, 'livingRoom': 64.400})
+
+        return T.raw(render.tempsection(temps=temps))
 
     def render_addedCommand(self, ctx, data):
         if not ctx.arg('added'):

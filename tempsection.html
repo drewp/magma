@@ -1,0 +1,16 @@
+<div xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:py="http://genshi.edgewall.org/"
+class="graphLayout">
+  <a href="http://graphite.bigasterisk.com/render/?width=720&amp;height=400&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;from=-100hours&amp;hideAxes=false&amp;hideLegend=false&amp;lineWidth=1.5&amp;yMin=55&amp;yMax=90">
+    <img src="http://graphite.bigasterisk.com/render/?width=220&amp;height=250&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;target=system.noaa.ksql.temp_f&amp;from=-26hours&amp;hideAxes=false&amp;hideLegend=true&amp;lineWidth=1.5&amp;yMin=30&amp;yMax=90" width="220" height="250"/>
+  </a>
+  <div class="graphSidebar">
+    <div py:for="(k,tp) in sorted(temps.items(), key=lambda (k,tp):tp, reverse=True)" class="lineLegend temp-${k}"><span>&#8213;</span> ${k} <div class="currentTemp">${temps[k]}</div> </div>
+  </div>
+  <div class="graphUnder">
+    <div><input type="radio" name="tempHours" value="1" id="th1"/><label for="th1">1 hour</label></div>
+    <div><input type="radio" name="tempHours" value="10" id="th2"/><label for="th2">10 hours</label></div>
+    <div><input type="radio" name="tempHours" value="26" id="th3"/><label for="th3">26 hours</label></div>
+    <div><input type="radio" name="tempHours" value="100" id="th4"/><label for="th4">100 hours</label></div>
+  </div>
+</div>
