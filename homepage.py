@@ -178,14 +178,12 @@ class HomePage(rend.Page):
         return url.URL.fromString('http://bigasterisk.com/magma').add('added', cmd)
 
     def render_tempSection(self, ctx, data):
-        temps = dict.fromkeys(['ariBedroom', 'downstairs', 'livingRoom', 'bedroom', 'KSQL'])
         try:
+            temps = dict.fromkeys(['ariBedroom', 'downstairs', 'livingRoom', 'bedroom', 'KSQL'])
             temps.update(getAllTemps())
+            return T.raw(render.tempsection(temps=temps))
         except Exception, e:
-            log.err(e)
-            temps.update({'ariBedroom': 63.719, 'downstairs': 59.337, 'livingRoom': 64.400})
-
-        return T.raw(render.tempsection(temps=temps))
+            return T.div["Error creating temperature graph: %s" % e]
 
     def render_addedCommand(self, ctx, data):
         if not ctx.arg('added'):
