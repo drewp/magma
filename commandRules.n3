@@ -1,0 +1,13 @@
+@prefix : <http://bigasterisk.com/ns/command/v1#> .
+@prefix cmd: <http://bigasterisk.com/magma/cmd/> .
+@prefix sup: <http://bigasterisk.com/magma/sup/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix supbang: <http://bigasterisk.com/magma/sup/bang/9001/> .
+@prefix state: <http://supervisord.org/state#> .
+
+{ ?user a :CurrentUser; :seesCommand ?cmd } => { ?cmd :ranking 1 } .
+
+{ supbang:cmd_backupPreDrew :state state:EXITED } => { cmd:stopBackupPreDrew :ranking -1 } .
