@@ -41,6 +41,8 @@ class Loop(object):
         self.lastMsg = None
         self.lastHeater = None
         self.lastLight = {} # cmdclass : value
+        self.heaterStmt = (URIRef("http://projects.bigasterisk.com/device/heater"), CL['state'], CL['off'])
+
 
         self.pollClasses = [row['cls'] for row in commandLog.graph.queryd(
             "SELECT ?cls WHERE { ?cls a cmd:PollMe . }")]
@@ -154,9 +156,11 @@ class Loop(object):
         if on != self.lastHeater: # this assumes we're the only one
                                 # talking to the heater pin, which
                                 # might not be true
+            dev = URIRef("http://projects.bigasterisk.com/device/heater")
             self.sendBit(
-                URIRef("http://projects.bigasterisk.com/device/heater"),
+                dev,
                 int(on))
+            self.heaterStmt = (dev, CL['state'], CL['on'] if on else CL['off'])
         self.lastHeater = on
 
 loop = Loop()
@@ -189,6 +193,12 @@ class Root(rend.Page):
         loop.onCommand(URIRef(d['commandClass']), URIRef(d['command']))
         
         return "ok"
+
+    def child_graph(self, ctx):
+        from stategraph import StateGraph
+        g = StateGraph(ctx=URIRef("http://bigasterisk.com/magma/portUpdate"))
+        g.add(loop.heaterStmt)
+        return str(g.asTrig())
 
 setOutputPins()
 site = NevowSite(Root())
