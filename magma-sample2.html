@@ -13,36 +13,28 @@
     <style type="text/css" media="screen" n:render="notPhone">
     /* <![CDATA[ */
     body > div {    
-	-moz-column-count:2;
-	-moz-column-gap:20px;
-	-moz-column-width:320px;
-	/*    -webkit-column-count: 2; http://code.google.com/p/chromium/issues/detail?id=58101
-	      -webkit-column-gap:20px;*/
-	-moz-column-width:320px;
-	width: 660px;
+
     }
-    
+  
     /* ]]> */
 </style>
       
 <style type="text/css" media="handheld">
 /* <![CDATA[ */
-body > div {    
-    width: 320px;
-    }  
+
 /* ]]> */
 </style>
 
 <meta name="viewport" content="width=240; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
 
   </head>
-  <body bgcolor="gray">
-    <div> 
-      <h3><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h3>
+  <body>
+    <h3><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h3>
+    <n:invisible n:render="addedCommand"/>
+	
+    <div id="sections"> 
 	
       <div class="section">
-	<n:invisible n:render="addedCommand"/>
-
 	<div class="imgFrame"> <a href="/cam/livingRoom"><img style="left: -85px; width: 250px" alt="livingroom" src="/cam/livingRoom.jpg"/></a> </div>
 	<!--<div class="imgFrame">
 	    <a href="/cam/drewDesk"><img style="top: -17px; width: 106px" src="/cam/drewDesk.jpg"/></a>
@@ -53,7 +45,8 @@ body > div {
 	<div class="imgFrame"> <a href="/cam/ari"><img style="top: 0px; width: 123px;" src="/cam/ari.jpg"/></a> </div>
 	<div class="imgFrame" style="text-align: center"> <a href="/cam/all">All cameras at once</a></div>
 	<div style="clear:both;"/>
-	  
+      </div>
+<div class="section">
 	<form method="post" action="microblogUpdate">
 	  <input type="text" name="msg" style="width:310px"/> <span id="blogChars"/> <input type="submit" value="Post to microblogs"/>
 	    <!-- query the user to see what ublogs they have, so we could list them 
@@ -65,33 +58,38 @@ body > div {
 	<n:invisible n:render="tempSection"/>
       </div>
 
-      <div class="section links col2">
-	<div><a href="/diary/"><img src="www/Book-icon.png"/>diarybot viewer</a></div>
-	<div><a href="/ari/openidAccess"><img src="tango/apps/system-users.png"/>openid access control for ari blog</a></div>
-	<div><a href="/map/"><img src="tango/apps/browser.png"/>gps map</a></div>
-	<div><a href="/sfd/"><img src="www/Restaurant-Blue-2-icon.png"/>SFD</a></div>
-	<div><a href="/gasuse/submitFillUp"><img src="www/Car-Repair-Blue-icon.png"/>gasuse submit</a></div>
-	<div><a href="/bathroomLight/"><img src="tango/status/info.png"/>bathroom light</a></div>
-	<div><a href="/exchangeMeeting/all"><img src="www/Calendar-2-icon.png"/>exchange meeting</a></div>
-	<div><a href="http://whatsplayingnext.com/upcoming"><img src="www/Cinema-icon.png"/>whats playing next</a></div>
-	<div><a href="/freeway"><img src="www/road-2-icon.png"/>freeway</a></div>
-	<div><a href="http://checkvist.com/checklists/27179-family">family list</a></div>
-
+      <div class="section">
+	<div class="links col2" style="xheight: 500px">
+	  <div><a href="/diary/"><img src="www/Book-icon.png" width="32" height="32"/>diarybot <br/>viewer</a></div>
+	  <div><a href="/ari/openidAccess"><img src="tango/apps/system-users.png" width="32" height="32"/>openid access <br/>control for ari blog</a></div>
+	  <div><a href="/map/"><img src="tango/apps/browser.png" width="32" height="32"/>gps <br/>map</a></div>
+	  <div><a href="/sfd/"><img src="www/Restaurant-Blue-2-icon.png" width="48" height="48"/>SFD</a></div>
+	  <div><a href="/gasuse/submitFillUp"><img src="www/Car-Repair-Blue-icon.png" width="32" height="32"/>gasuse <br/>submit</a></div>
+	  <div><a href="/bathroomLight/"><img src="tango/status/info.png" width="32" height="32"/>bathroom <br/>light</a></div>
+	  <div><a href="/exchangeMeeting/all"><img src="www/Calendar-2-icon.png" width="32" height="32"/>exchange <br/>meeting</a></div>
+	  <div><a href="http://whatsplayingnext.com/upcoming"><img src="www/Cinema-icon.png" width="32" height="32"/>whats playing <br/>next</a></div>
+	  <div><a href="/freeway"><img src="www/road-2-icon.png" width="32" height="32"/>freeway</a></div>
+	  <div><a href="http://checkvist.com/checklists/27179-family">family <br/>list</a></div>
+	</div>
       </div>
 
-      <div class="section links">
-	<img src="tango/mimetypes/sound.png"/>
-	<div><a href="/music/dash/ctl">drew's desk</a>  <a href="/music/dash/playlist">playlist</a>  <a href="/music/dash/gadget">gadget</a>  <a href="/music/dash/theory/">theory</a></div>
-	<div><a href="/music/bang/ctl">bedroom</a>      <a href="/music/bang/playlist">playlist</a>  <a href="/music/bang/gadget">gadget</a>  <a href="/music/bang/theory/">theory</a></div>
-	<div><a href="/music/slash/ctl">living room</a>	<a href="/music/slash/playlist">playlist</a> <a href="/music/slash/gadget">gadget</a> <a href="/music/slash/theory/">theory</a>
-	<form style="display:inline" method="post" action="http://10.1.0.21:9049/speak"><input type="input" name="say"/><input type="submit" value="Speak"/></form></div>
-	  <div><a href="/music/star/ctl">ari's room</a>   <a href="/music/star/playlist">playlist</a>  <a href="/music/star/gadget">gadget</a>  <a href="/music/star/theory/">theory</a></div>
-	  <div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
+      <div class="section">
+	<div class="links music">
+	  <img src="tango/mimetypes/sound.png"/>
+	  <div><a href="/music/dash/ctl">drew's desk</a>  <a href="/music/dash/playlist">playlist</a>  <a href="/music/dash/gadget">gadget</a>  <a href="/music/dash/theory/">theory</a></div>
+	  <div><a href="/music/bang/ctl">bedroom</a>      <a href="/music/bang/playlist">playlist</a>  <a href="/music/bang/gadget">gadget</a>  <a href="/music/bang/theory/">theory</a></div>
+	  <div><a href="/music/slash/ctl">living room</a> <a href="/music/slash/playlist">playlist</a> <a href="/music/slash/gadget">gadget</a> <a href="/music/slash/theory/">theory</a>
+	  <form style="display:inline" method="post" action="http://10.1.0.21:9049/speak"><input type="input" name="say"/><input type="submit" value="Speak"/></form></div>
+	    <div><a href="/music/star/ctl">ari's room</a> <a href="/music/star/playlist">playlist</a>  <a href="/music/star/gadget">gadget</a>  <a href="/music/star/theory/">theory</a></div>
+	    <div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
+	</div>
       </div>
+
       <div class="section">
 	<div><a href="/nagios/cgi-bin/status.cgi?host=all">nagios service monitor</a></div>
 	<div class="services">nagios services...</div>
       </div>
+
       <div class="section">
 	<h2><a href="/tomato1/status-devices.asp">wifi bigasterisk3</a></h2>
 	<div id="wifi1" class="wifiNow">devices...</div>
@@ -115,7 +113,8 @@ body > div {
       <div class="graph munin"> <h1>slash mem</h1> <a href="/magma/munin/slash/slash/index.html"> <img src="/magma/munin/slash/slash/memory-day.png"/> </a> </div>
       <div class="graph munin"> <h1>cpu</h1> <a href="/magma/munin/slash/slash/index.html"> <img src="/magma/munin/slash/slash/cpu-day.png"/> </a> </div>
       <div style="clear:both"/>
-
+    </div>
+<div class="section">
       <div class="graph" style="height: 150px">
 	<h1>phone batteries</h1>
 <a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=400&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-56hours&amp;yMin=0&amp;fontSize=12&amp;lineWidth=6"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-8hours&amp;yMin=0&amp;fontSize=7&amp;lineWidth=3" width="158" height="125"/></a>
@@ -141,9 +140,11 @@ body > div {
       <div style="clear:both"/>
     </div>
     
+    <div class="section">
       <div class="commands">
 	<n:invisible n:render="commands"/>
       </div>
+    </div>
 
     <div class="section">
       <div><a href="services">Other services</a></div>
@@ -155,19 +156,23 @@ body > div {
 
       <div><a href="/supervisor/bang/index.html?action=restart&amp;processname=ajaxterm_8022">restart ajaxterm</a></div>
     </div>
-
-    <n:invisible n:render="loginBar"/>
-
-    <style type="text/css">
-      /* supervisor overrides */
-      th.name { width: 1em !important }
-
-      table.status { border: 1px solid gray; border-collapse: collapse; }
-    </style>
-
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
-    <script type="text/javascript" src="tomato_config.js"></script>
-    <script type="text/javascript" src="/magma/www/magma.js?v=1"></script>
   </div>    
-  </body>
-</html>
+  
+  <n:invisible n:render="loginBar"/>
+
+  <style type="text/css">
+  /* supervisor overrides */
+  th.name { width: 1em !important }
+
+  table.status { border: 1px solid gray; border-collapse: collapse; }
+   </style>
+
+   <script type="text/javascript"> var notPhone=false; </script>
+   <script type="text/javascript" n:render="notPhone"> notPhone=true; </script>
+
+   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+   <script type="text/javascript" src="/magma/www/jquery.isotope.min.js"></script>
+   <script type="text/javascript" src="tomato_config.js"></script>
+   <script type="text/javascript" src="/magma/www/magma.js?v=1"></script>
+     </body>
+   </html>
