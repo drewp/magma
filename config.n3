@@ -55,11 +55,17 @@ cmd:heaterOn20Min a cmd:Heater;
 
 :header rdfs:label "heater"; 
 :icon <http://bigasterisk.com/magma/tango/status/stock_weather-sunny.png> .
-:turnOn rdfs:label "turn on" .
-:turnOff rdfs:label "turn off" .
-:mash rdfs:label "mash"; rdfs:comment "catch-all" .
-:something rdfs:label "something"; rdfs:comment "catch-all" .
+:turnOn rdfs:label "turns on" .
+:turnOff rdfs:label "turns off" .
 :heater rdfs:label "the heater" .
+:playsPandora rdfs:label "plays pandora station" .
+:lullabye rdfs:label "lullabye" .
+:toddler rdfs:label "toddler" .
+cmd:slashPandoraLullabye :verb :playsPandora; :activityObject :lullabye .
+cmd:slashPandoraToddler :verb :playsPandora; :activityObject :toddler .
+cmd:slashPandoraPause :verb :pausePandora; :activityObject :pandora .
+:pausePandora rdfs:label "pauses" .
+:pandora rdfs:label "pandora" .
 
 cmd:heaterOn1Min a cmd:Heater; 
   rdfs:label "Heater on for 1min";
