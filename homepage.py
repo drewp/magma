@@ -108,52 +108,63 @@ class HomePage(rend.Page):
         reload(dyncommands)
         cmds = yield dyncommands.pickCommands(self.graph, self.user)
 
-        for cmd in cmds:
+        belowZero = []
 
-            matches = self.graph.queryd("""
-         SELECT DISTINCT ?label ?icon ?linksTo WHERE {
-           ?user cl:seesCommand ?uri .
-           ?uri rdfs:label ?label .
-           OPTIONAL { ?uri cl:iconPath ?icon }
-           OPTIONAL { ?uri cl:linksTo ?linksTo }
-         } ORDER BY ?label
-        """, initBindings={"uri" : cmd})
-            if len(matches) != 1:
-                log.err("found %s matches for command %r" % (len(matches), cmd))
+        for (cmd, score) in cmds:
+            if score < 0:
+                belowZero.append((cmd, score))
                 continue
-            row = matches[0]
 
             if len(trs[-1].children) >= 1 + 3:
                 trs.append(T.tr[''])
-                
-            button = row['label']
-            if 'icon' in row:
-                button = [T.img(src=row['icon'], alt=row['label']),
-                          T.div(class_='label')[row['label']]]
-                
-            buttonClass = ''
-            if cmd in [CMD.BabyStart, CMD.BabyStop]:
-                last, _, _ = self.cmdlog.lastCommandOfClass(CL.BabyStartStop)
-                if last == cmd:
-                    buttonClass += " current"
-                else:
-                    buttonClass += " recommend"
+            trs[-1].children.append(T.td["\n", self._buttonForm(cmd, score)])
 
-            if row.get('linksTo'):
-                form = T.form(method="get", action=row['linksTo'])
-                if isinstance(button, basestring):
-                    button = button + "..."
-                else:
-                    button[1].children[0] += "..."
-            else:
-                form = T.form(method="post", action="addCommand")
-
-            trs[-1].children.append(T.td[
-                "\n", form[
-                    T.input(type='hidden', name='uri', value=cmd),
-                    T.button(class_=buttonClass)[button],
-                ]])
+        trs.append(T.tr[T.td(colspan="3")])
+        for (cmd, score) in belowZero:
+            trs[-1].children[-1][self._buttonForm(cmd, score)]
         returnValue(T.table[trs])
+
+    def _buttonForm(self, cmd, score):
+
+        matches = self.graph.queryd("""
+     SELECT DISTINCT ?label ?icon ?linksTo WHERE {
+       ?user cl:seesCommand ?uri .
+       ?uri rdfs:label ?label .
+       OPTIONAL { ?uri cl:iconPath ?icon }
+       OPTIONAL { ?uri cl:linksTo ?linksTo }
+     } ORDER BY ?label
+    """, initBindings={"uri" : cmd})
+        if len(matches) != 1:
+            raise ValueError("found %s matches for command %r" % (len(matches), cmd))
+            
+        row = matches[0]
+
+        button = [row['label'], " ", score]
+        if 'icon' in row:
+            button = [T.img(src=row['icon'], alt=row['label']),
+                      T.div(class_='label')[button]]
+
+        buttonClass = ''
+        if cmd in [CMD.BabyStart, CMD.BabyStop]:
+            last, _, _ = self.cmdlog.lastCommandOfClass(CL.BabyStartStop)
+            if last == cmd:
+                buttonClass += " current"
+            else:
+                buttonClass += " recommend"
+
+        if row.get('linksTo'):
+            form = T.form(method="get", action=row['linksTo'])
+            if isinstance(button, basestring):
+                button = button + "..."
+            else:
+                button[1].children[0] += "..."
+        else:
+            form = T.form(method="post", action="addCommand")
+
+        return form(class_="lowRank" if score < 0 else "")[
+                T.input(type='hidden', name='uri', value=cmd),
+                T.button(class_="%s" % buttonClass)[button],
+            ]
 
     def child_addCommand(self, ctx):
         request = inevow.IRequest(ctx)
