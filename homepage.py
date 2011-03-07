@@ -339,13 +339,13 @@ class HomePage(rend.Page):
         graph = self.cmdlog.graph
         for cmd, t, user, issue in self.cmdlog.recentCommands(20,
                                                               withIssue=True):
-            verb = graph.value(cmd, CL.verb) or CL.mash
-            activityObject = graph.value(cmd, CL.activityObject) or CL.something
+            verb = graph.value(cmd, CL.verb) or Literal("%s-missing-verb" % cmd)
+            activityObject = graph.value(cmd, CL.activityObject) or Literal("%s-missing-object" % cmd)
             stream.addEntry(
                 actorUri=user, actorName=graph.value(user, FOAF.name),
-                verbUri=verb, verbEnglish=graph.label(verb),
+                verbUri=verb, verbEnglish=graph.label(verb, default=verb),
                 objectUri=activityObject,
-                objectName=graph.label(activityObject),
+                objectName=graph.label(activityObject, default=activityObject),
                 objectIcon=graph.value(activityObject, CL.icon),
                 published=parse(t),
                 entryUri=issue,
