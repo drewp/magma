@@ -7,7 +7,57 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix supbang: <http://bigasterisk.com/magma/sup/bang/9001/> .
 @prefix state: <http://supervisord.org/state#> .
+@prefix room: <http://projects.bigasterisk.com/room/> .
+@prefix hour: <http://projects.bigasterisk.com/room/localHour> .
 
-{ ?user a :CurrentUser; :seesCommand ?cmd } => { ?cmd :ranking 1 } .
+{ hour: room:state 19 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 20 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 21 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 22 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 23 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 0 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 1 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 2 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 3 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 4 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 5 } => { :ari a :sleep . :outside a :dark } .
+{ hour: room:state 6 } => { :ari a :sleep . :outside a :dark } .
 
-{ supbang:cmd_backupPreDrew :state state:EXITED } => { cmd:stopBackupPreDrew :ranking -1 } .
+{ hour: room:state 7 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 8 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 9 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 10 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 11 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 12 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 13 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 14 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 15 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 16 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 17 } => { :ari a :wake . :outside a :light } .
+{ hour: room:state 18 } => { :ari a :wake . :outside a :light } .
+
+
+{ 
+  ?user a :CurrentUser; :seesCommand ?cmd . 
+} => { 
+  ?cmd a :available .
+} .
+
+{ 
+  supbang:cmd_backupPreDrew :state state:EXITED .
+} => { 
+  cmd:stopBackupPreDrew :ranking -1 .
+} .
+
+{:ari a :sleep .} =>  {cmd:slashPandoraToddler :ranking -1 .} .
+{:outside a :light } => { cmd:frontLightOn :ranking -1 . } .
+{:outside a :light } => { cmd:frontLightOff :ranking 10 . } .
+#{not on? } => { cmd:frontLightOff :ranking -1 . } .
+#{:outside a :dark } => { cmd:frontLightOff :ranking 0 . } .
+
+{ 
+  <http://projects.bigasterisk.com/device/heater> :state :off . 
+} => { 
+  <http://bigasterisk.com/magma/cmd/heaterOff> :ranking -1 .
+} .
+
