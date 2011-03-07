@@ -264,34 +264,70 @@ class HomePage(rend.Page):
                                  foafAgent(ctx),
                                  ctx.arg('msg'))
 
+    def debounceVisits(self, actions):
+        """
+        actions is a list of (time, action, ...) tuples. If there's an
+        arrive right after a leave, we remove both in the result
+
+        also removes connects that follow a connect
+
+        maybe this should also catch cases where noname joins, and
+        then is replaced by someone with a name
+        """
+        threshold = datetime.timedelta(seconds=30*60)
+
+        keep = [True] * len(actions)
+
+        for i, action in enumerate(actions[:-1]):
+            if (action[1] == 'leave' and
+                actions[i+1][0] - action[0] < threshold):
+                keep[i] = keep[i+1] = False
+            if action[1] == 'arrive' and actions[i+1][1] == 'arrive':
+                keep[i+1] = False
+        return [action for k, action in zip(keep, actions) if k]
+                
+
     def child_visitorsActivityStream(self, ctx):
         coll = Connection("bang", 27017, tz_aware=True)['visitor']['visitor']
         coll.ensure_index('created')
 
-        rows = list(coll.find(sort=[('created', DESCENDING)], limit=20))
-
+        start = datetime.datetime.now() - datetime.timedelta(days=2)
+        rows = list(coll.find(spec={'created' : {'$gt' : start}},
+                              sort=[('created', DESCENDING)]))
+        print "got %s rows of visitor data" % len(rows)
         stream = ActivityStream()
 
+        joins = {} # name : [(created, sensor, action)]
         for row in rows:
-            nameComponent = urllib.quote(row['name'].encode('ascii', 'ignore'))
+            joins.setdefault(row['name'], []).append(
+                (row['created'], row['action'], row['sensor']))
 
-            author = ('http://bigasterisk.com/visitor/netName/%s' % 
-                      nameComponent)
-            
-            actVerb, english = {
-                'arrive' : ('http://bigasterisk.com/activityStreams/arrive', 
-                            'connects to'),
-                'leave' : ('http://bigasterisk.com/activityStreams/leave', 
-                           'disconnects from'),
-                }[row['action']]
+        for name, actions in joins.items():
+            actions.sort()
+            actions[:] = self.debounceVisits(actions)
 
-            stream.addEntry(
-                actorUri=author, actorName=row['name'],
-                verbUri=actVerb, verbEnglish=english,
-                objectUri='http://bigasterisk.com/sensor/%s' % row['sensor'],
-                objectName='bigasterisk %s' % row['sensor'],
-                published=row['created'].astimezone(tzlocal()),
-                entryUriComponents=('visitor', row['name']))
+        for name, actions in joins.items():
+            for (created, action, sensor) in actions:
+
+                nameComponent = urllib.quote(name.encode('ascii', 'ignore'))
+
+                author = ('http://bigasterisk.com/visitor/netName/%s' % 
+                          nameComponent)
+
+                actVerb, english = {
+                    'arrive' : ('http://bigasterisk.com/activityStreams/arrive',
+                                'connects to'),
+                    'leave' : ('http://bigasterisk.com/activityStreams/leave', 
+                               'disconnects from'),
+                    }[action]
+
+                stream.addEntry(
+                    actorUri=author, actorName=name,
+                    verbUri=actVerb, verbEnglish=english,
+                    objectUri='http://bigasterisk.com/sensor/%s' % sensor,
+                    objectName='bigasterisk %s' % sensor,
+                    published=created.astimezone(tzlocal()),
+                    entryUriComponents=('visitor', name))
             
         return stream.makeNevowResource()
     
