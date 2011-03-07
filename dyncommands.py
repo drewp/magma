@@ -4,19 +4,20 @@ state of the world
 """
 from twisted.internet.defer import inlineCallbacks, returnValue
 from cyclone.httpclient import fetch
-import sys, time
+import sys, time, datetime
 sys.path.append("/my/proj/room/fuxi/build/lib.linux-x86_64-2.6")
 from FuXi.Rete.RuleStore import N3RuleStore
 from rdflib.Graph import Graph, ConjunctiveGraph
-from rdflib import Namespace, RDF
+from rdflib import Namespace, RDF, Literal
 sys.path.append("/my/proj/room")
 from inference import parseTrig, infer
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
+ROOM = Namespace("http://projects.bigasterisk.com/room/")
 
 @inlineCallbacks
 def pickCommands(graph, user):
     """
-    list of useful command uris with most relevant first
+    list of (command uris, rank) with most relevant first
     """
     fileParsing = 0
     httpReading = 0
@@ -42,6 +43,13 @@ def pickCommands(graph, user):
         trig = (yield fetch(source)).body
         g.addN(parseTrig(trig))
     httpReading += time.time()
+    
+    ctx = ROOM.clock
+    g.addN([
+        (ROOM.localHour, ROOM.state, Literal(datetime.datetime.now().hour),
+         ctx),
+        ])
+
     print "facts", len(g)
 
     target = infer(g, ruleStore)
@@ -49,11 +57,14 @@ def pickCommands(graph, user):
         print "target", s
 
     rankCmd = {}
-    for s,p,o in target.triples((None, CL.ranking, None)):
-        rankCmd[s] = o
-    ret = sorted(rankCmd.keys(), key=lambda cmd: (rankCmd[cmd], cmd))
-    for cmd in ret:
-        print "rank", cmd, rankCmd[cmd]
+    for cmd, rank in target.query("SELECT DISTINCT ?cmd ?rank WHERE { ?cmd a cl:available . OPTIONAL { ?cmd cl:ranking ?rank } }", initNs=dict(cl=CL)):
+        rankCmd[cmd] = rankCmd.get(cmd, 0) + float(rank or 0)
+        
+    ret = sorted(rankCmd.items(), key=lambda (cmd,r): (r, cmd),
+                 reverse=True)
+    
+    for cmd,r in ret:
+        print "rank", cmd, r
 
     print "spent %.1fms parsing files, %.1fms fetching http" % (
         1000 * fileParsing, 1000 * httpReading)
