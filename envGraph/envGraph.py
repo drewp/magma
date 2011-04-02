@@ -21,7 +21,7 @@ class GraphHandler(cyclone.web.RequestHandler):
         g = StateGraph(ROOM.environment)
         now = datetime.datetime.now(tzlocal())
 
-        g.add((ROOM.localHour, ROOM.state, Literal(now.hour)))
+        g.add((ROOM.time, ROOM.localHour, Literal(now.hour)))
         
         self.set_header('Content-type', 'application/x-trig')
         self.write(g.asTrig())
