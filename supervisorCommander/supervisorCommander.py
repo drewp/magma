@@ -132,6 +132,7 @@ class Application(cyclone.web.Application):
                 comp = "%s-%s" % (m.group(1), m.group(2))
                 if comp not in addresses:
                     addresses[comp] = arg
+                    continue
             raise ValueError(
                 "can't figure out what to url component to use for %r" % arg)
         return addresses
