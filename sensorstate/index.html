@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:py="http://genshi.edgewall.org/">
+  <head>
+    <title>sensor state</title>
+    <style type="text/css" media="all">
+      /* <![CDATA[ */
+a {
+    text-decoration: none;
+}
+.value {
+    font-weight: bold;
+}
+h2 a {
+    color: black;
+}
+dt a {
+    color: black;
+}
+td {
+ vertical-align: top;
+padding-right: 20px;
+}
+.cols {
+
+}
+section {
+
+    background: none repeat scroll 0 0 #EBEBEB;
+    border: 1px solid #C5C5C5;
+    border-radius: 20px 20px 20px 20px;
+    margin: 8px;
+    padding: 8px;
+    width: 30em;
+}
+/* ]]> */
+    </style>
+
+  </head>
+  <body>
+    <div class="cols">
+      <section py:for="((label, sect), sensors) in sorted(sections.items())">
+	<h2><a href="${sect}">${label}</a></h2>
+	<dl>
+	  <py:for each="(label, uri, desc) in sorted(sensors)">
+	    <dt><a href="${uri}">${label}</a></dt>
+	    <dd>${Markup(desc)}</dd>
+	  </py:for>
+	</dl>
+      </section>
+    </div>
+  </body>
+</html>
