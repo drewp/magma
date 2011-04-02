@@ -3,10 +3,11 @@
 """
 display all the RDF state data from other services
 """
-import sys, os, datetime, cyclone.web, simplejson, logging, cgi
+import sys, os, datetime, cyclone.web, simplejson, logging, cgi, time
 sys.path.extend(["../f/FuXi-1.2.production/build/lib.linux-x86_64-2.6",
                  "/my/proj/room/fuxi/build/lib.linux-x86_64-2.6/"])
-from twisted.internet import reactor
+from twisted.internet import reactor, defer
+from twisted.web.client import getPage
 from twisted.python import log
 from rdflib.Graph import ConjunctiveGraph
 from rdflib import Namespace, Literal, URIRef, RDFS, RDF
@@ -23,24 +24,47 @@ DEV = Namespace("http://projects.bigasterisk.com/device/")
 ROOM = Namespace("http://projects.bigasterisk.com/room/")
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
 
-@logTime
+def linked(txt, uri):
+    if not txt:
+        txt = uri
+    ret = cgi.escape(txt)
+    if uri:
+        ret = '<a href="%s">%s</a>' % (cgi.escape(uri), ret)
+    return ret
+
 def readGraphs():
     g = ConjunctiveGraph()
+    # this file should only be reread when it changes
     g.parse("../config.n3", format="n3")
-    # when this reads from the web, it should not-reparse the ones
-    # that are 304 not modified
-    for f in 'graph graph.1 graph.2 ps1 ps2 ps3 ps4 ps5 ps6 env'.split():
-        g.addN(parseTrig(open('sample/'+f).read()))
-    return g
+    dl = []
+    startTime = time.time()
+    for uri in [
+        "http://bang:9055/graph",
+        "http://bang:9069/graph",
+        "http://bang:9070/graph",
+        "http://bang:9072/bang-9002/processStatus",
+        "http://bang:9072/bang/processStatus",
+        "http://bang:9072/dash/processStatus",
+        "http://bang:9072/slash-11000/processStatus",
+        "http://bang:9072/slash/processStatus",
+        "http://bang:9072/star/processStatus",
+        "http://bang:9075/graph",
+        ]:
+        # this ought to not reparse the ones that are 304 not modified
+        d = getPage(uri)
+        def done(trig, uri):
+            g.addN(parseTrig(trig))
+            print "%s done in %.02fms" % (uri, 1000 * (time.time() - startTime))
+        d.addCallback(done, uri)
+        dl.append(d)
+    return defer.DeferredList(dl).addCallback(lambda result: g)
 
 class Index(cyclone.web.RequestHandler):
 
     def queryInputs(self, graph):
         for subclass in graph.subjects(RDFS.subClassOf, CL.Input):
-            print "hi sc", subclass
             subclassLabel = graph.label(subclass)
             for sensor in graph.subjects(RDF.type, subclass):
-                print "  ", sensor
                 label = graph.label(sensor)
                 yield subclass, subclassLabel, sensor, label
 
@@ -54,9 +78,10 @@ class Index(cyclone.web.RequestHandler):
             ?sensor rdf:type ?subclass .
             OPTIONAL { ?sensor rdfs:label ?label }
           }""", initNs=dict(cl=CL, rdfs=RDFS.RDFSNS, rdf=RDF.RDFNS))
-        
+
+    @defer.inlineCallbacks
     def get(self):
-        g = readGraphs()
+        g = yield readGraphs()
         sections = {} # (label, sensor class) : [(label, sensor, desc), ...]
         for subclass, subclassLabel, sensor, label in self.queryInputs(g):
             sections.setdefault((subclassLabel, subclass), []
@@ -82,22 +107,12 @@ class Index(cyclone.web.RequestHandler):
                 cgi.escape(o)))
         return '; '.join(ret)
 
-def linked(txt, uri):
-    if not txt:
-        txt = uri
-    ret = cgi.escape(txt)
-    if uri:
-        ret = '<a href="%s">%s</a>' % (cgi.escape(uri), ret)
-    return ret
-
 class Application(cyclone.web.Application):
     def __init__(self):
         handlers = [
             (r"/", Index),
         ]
-        settings = {
-            }
-        cyclone.web.Application.__init__(self, handlers, **settings)
+        cyclone.web.Application.__init__(self, handlers)
 
 if __name__ == '__main__':
     log.startLogging(sys.stdout)
