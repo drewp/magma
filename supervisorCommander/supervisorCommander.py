@@ -92,10 +92,16 @@ class ProcessStatus(cyclone.web.RequestHandler):
         infos = serv.supervisor.getAllProcessInfo()
         graph = StateGraph(ctx=CL['supervisors'])
         for p in infos:
+            # this uri design is not very good yet. should just be
+            # host->supinstance->processid
             processUri = URIRef("http://bigasterisk.com/magma/sup/%s/%s" %
                                 (addr, p['name']))
             graph.add((processUri, RDF.type,
                        URIRef("http://bigasterisk.com/ns/command/v1#Process")))
+            if p['name'].startswith("cmd_"):
+                graph.add((processUri, RDF.type,
+                           URIRef("http://bigasterisk.com/ns/command/v1#CommandProcess")))
+                
             graph.add((processUri, RDFS.label, Literal(p['name'])))
             state = URIRef('http://supervisord.org/config#%s' % p['statename'])
             graph.add((processUri, CL.state, state))
