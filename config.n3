@@ -1,10 +1,35 @@
 @prefix : <http://bigasterisk.com/ns/command/v1#> .
 @prefix cmd: <http://bigasterisk.com/magma/cmd/> .
+@prefix room: <http://projects.bigasterisk.com/room/> .
+@prefix dev: <http://projects.bigasterisk.com/device/> .
 @prefix sup: <http://bigasterisk.com/magma/sup/> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:DoorInput		rdfs:subClassOf :Input; rdfs:label "Door Input" .
+:TemperatureInput	rdfs:subClassOf :Input; rdfs:label "Temperature Input" .
+:WifiInput		rdfs:subClassOf :Input; rdfs:label "Wifi Input" .
+:BluetoothInput		rdfs:subClassOf :Input; rdfs:label "Bluetooth Input" .
+:MotionInput		rdfs:subClassOf :Input; rdfs:label "Motion Input" .
+:IdleInput		rdfs:subClassOf :Input; rdfs:label "Idle Input" .
+:CommandProcess		rdfs:subClassOf :Input; rdfs:label "Command Process Input" .
+:ServerInput		rdfs:subClassOf :Input; rdfs:label "Server Input" .
+:EnvironmentInput       rdfs:subClassOf :Input; rdfs:label "Environment Input" .
+
+room:time a :EnvironmentInput ; rdfs:label "time" .
+room:localHour rdfs:label "local hour" .
+dev:theaterDoorOpen a :DoorInput; rdfs:label "theater door open" .
+
+dev:livingRoomTemperature a :TemperatureInput; rdfs:label "living room temperature" .
+dev:ariBedroomTemperature a :TemperatureInput; rdfs:label "ari room temperature".
+dev:ksqlTemperature a :TemperatureInput; rdfs:label "KSQL temperature" .
+dev:downstairsTemperature a :TemperatureInput; rdfs:label "downstairs temperature" .
+:temperature rdfs:label "temperature" .
+:state rdfs:label "state" .
+<http://projects.bigasterisk.com/room/state> rdfs:label "state" .
+<http://projects.bigasterisk.com/room/closed> rdfs:label "closed" .
 
 cmd:BabyKick a :Command, :DatapointCommand; 
   rdfs:label "record baby kick";
