@@ -39,10 +39,16 @@ def getSupervisorParams(graph, commandUri):
 class Index(cyclone.web.RequestHandler):
     def get(self):
         self.write("this is supervisorcommander, talking to supervisors at: " +
-                   ", ".join('<a href="%s">%s</a>' % (cgi.escape(comp),
+                   ", ".join('<a href="%s/">%s</a>' % (cgi.escape(comp),
                                                       cgi.escape(uri))
                              for comp, uri in sorted(
                                  self.settings.addresses.items())))
+
+class SubIndex(cyclone.web.RequestHandler):
+    def get(self, comp):
+        self.write('supervisorcommander can talk to the supervisor at %s: '
+                   '<a href="processStatus">processStatus</a>' %
+                   cgi.escape(self.settings.addresses[comp]))
 
 class NewCommandHandler(cyclone.web.RequestHandler):
     def post(self):
@@ -103,6 +109,7 @@ class Application(cyclone.web.Application):
     def __init__(self, args):
         handlers = [
             (r"/", Index),
+            (r"/([^/]+)/", SubIndex),
             (r"/(.*?)/processStatus", ProcessStatus),
             #(r"/processStatus", CombinedProcessStatus),
             (r'/(.*?)/newCommand', NewCommandHandler),
