@@ -4,14 +4,15 @@
 display all the RDF state data from other services
 """
 import sys, os, datetime, cyclone.web, simplejson, logging, cgi
-sys.path.append("../f/FuXi-1.2.production/build/lib.linux-x86_64-2.6")
+sys.path.extend(["../f/FuXi-1.2.production/build/lib.linux-x86_64-2.6",
+                 "/my/proj/room/fuxi/build/lib.linux-x86_64-2.6/"])
 from twisted.internet import reactor
 from twisted.python import log
 from rdflib.Graph import ConjunctiveGraph
 from rdflib import Namespace, Literal, URIRef, RDFS, RDF
-sys.path.append("../../room")
+sys.path.extend(["../../room", "/my/proj/room"])
 from inference import parseTrig
-sys.path.append("../../ffg/ffg")
+sys.path.extend(["../../ffg/ffg", '/my/proj/ffg/ffg'])
 from evtiming import logTime
 from web.contrib.template import render_genshi
 
