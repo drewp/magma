@@ -41,7 +41,11 @@ def pickCommands(graph, user):
                    #"http://bang:9070/graph", # wifi
                    ]:
         trig = (yield fetch(source)).body
-        g.addN(parseTrig(trig))
+        try:
+            g.addN(parseTrig(trig))
+        except Exception, e:
+            import traceback
+            traceback.print_exc()
     httpReading += time.time()
     
     ctx = ROOM.clock

@@ -12,9 +12,10 @@ def _graphiteGet(graphite, target):
 def getAllTemps():
     lastTemp = {}
     graphite = restkit.Resource("http://graphite.bigasterisk.com/render/")
-    for name in ['downstairs', 'bedroom', 'livingRoom']:
+    for name in ['downstairs', 'bedroom', 'livingRoom', 'ariBedroom', 'frontDoor']:
         try:
-            lastTemp[name] = _graphiteGet(graphite, "system.house.temp.%s" % name)
+            lastTemp[name] = _graphiteGet(graphite, "system.house.temp.%s" % 
+                                          name.replace('ariBedroom', 'ariroom'))
         except ValueError:
             log.error("temp failed: %r" % name)
 
@@ -23,7 +24,4 @@ def getAllTemps():
     except ValueError:
         pass
 
-    lastTemp['ariBedroom'] = jsonlib.read(
-        restkit.request("http://star:9014/temperature").body_string(),
-        use_float=True)['temp']
     return lastTemp

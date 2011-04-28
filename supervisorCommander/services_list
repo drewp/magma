@@ -72,7 +72,7 @@ out = None
 serial = 0
 written = 0
 for svc in svcs:
-    if out is None or written > 20:
+    if out is None or written > 15:
         serial += 1
         # warning- doesnt clean up old ones
         out = open("/etc/nagios3/conf.d/supervisor-%s.cfg" % serial, "w")
