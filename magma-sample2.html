@@ -60,6 +60,7 @@
 
       <div class="section">
 	<div class="links col2" style="xheight: 500px">
+	  <div><a href="/search/"><img src="www/search_icon.png" width="32" height="32"/>search</a></div>
 	  <div><a href="/diary/"><img src="www/Book-icon.png" width="32" height="32"/>diarybot <br/>viewer</a></div>
 	  <div><a href="/ari/openidAccess"><img src="tango/apps/system-users.png" width="32" height="32"/>openid access <br/>control for ari blog</a></div>
 	  <div><a href="/map/"><img src="tango/apps/browser.png" width="32" height="32"/>gps <br/>map</a></div>
@@ -83,6 +84,12 @@
 	    <div><a href="/music/star/ctl">ari's room</a> <a href="/music/star/playlist">playlist</a>  <a href="/music/star/gadget">gadget</a>  <a href="/music/star/theory/">theory</a></div>
 	    <div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
 	</div>
+      </div>
+
+      <div class="section">
+	Front door message:
+	<div><textarea id="frontDoorLcd"  rows="3"></textarea></div>
+	<div><input type="text" id="frontDoorBottomLine" disabled="1"/></div>
       </div>
 
       <div class="section">
@@ -172,7 +179,9 @@
 
    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
    <script type="text/javascript" src="/magma/www/jquery.isotope.min.js"></script>
+
+   <script type="text/javascript" src="/magma/www/now-local.js"></script>
    <script type="text/javascript" src="tomato_config.js"></script>
-   <script type="text/javascript" src="/magma/www/magma.js?v=1"></script>
+   <script type="text/javascript" src="/magma/www/magma.js?v=2"></script>
      </body>
    </html>

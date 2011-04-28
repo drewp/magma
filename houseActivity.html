@@ -95,6 +95,9 @@
 		      lastTimeSection = whatTimeSection(t);
 		  }
 		  entry.shortTime = t.toTimeString().replace(/:.. .*/, "");
+		  if (!entry.icon) {
+		      entry.icon = "http://bigasterisk.com/magma/tango/status/stock_weather-sunny.png";
+		  }
 		  outElem.append(tmpl.expand(entry, {}));
 	      });
 	  }
@@ -116,7 +119,7 @@
 	<![CDATA[
  	  <div class="entry">
 	    <span class="published">{shortTime}</span>	
-	    <span class="icon"> <img src="http://bigasterisk.com/magma/tango/status/stock_weather-sunny.png"/></span>
+	    <span class="icon"> <img src="{icon}"/></span>
 	    <span class="body" style="height: 32px"><span class="title">{title}</span></span>
 	    <!-- commentserve -->
 	  </div>
