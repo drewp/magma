@@ -52,6 +52,9 @@ class SubIndex(cyclone.web.RequestHandler):
 
 class NewCommandHandler(cyclone.web.RequestHandler):
     def post(self):
+        """the command payload has enough information to tell us which
+        supervisor we're talking to, and it doesn't even have to be
+        one that this web server was configured to talk to (!)"""
         event = simplejson.loads(self.request.body)
         # remember we may get hit twice with different command
         # types. the correct way to get a single run would be to use
@@ -118,11 +121,11 @@ class Application(cyclone.web.Application):
             (r"/([^/]+)/", SubIndex),
             (r"/(.*?)/processStatus", ProcessStatus),
             #(r"/processStatus", CombinedProcessStatus),
-            (r'/(.*?)/newCommand', NewCommandHandler),
+            (r'/newCommand', NewCommandHandler),
             #(r'/graph', GraphHandler),
         ]
         settings = {
-            'cmdlog': None,#getCommandLog(),
+            'cmdlog': getCommandLog(),
             'addresses' : self.pickAddresses(args),
             'xmlrpcConnections' : {}
             }
