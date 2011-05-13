@@ -48,6 +48,7 @@ class HomePage(rend.Page):
         self.cmdlog = cmdlog
         self.graph = cmdlog.graph
         self.user = identity
+        self.salt = str(time.time())
         rend.Page.__init__(self)
 
     def child_(self, ctx):
@@ -89,6 +90,10 @@ class HomePage(rend.Page):
         
         return rend.Page.renderHTTP(self, ctx)
 
+    def render_noCache(self, ctx, data):
+        ctx.tag.attributes['src'] = ctx.tag.attributes['src'] + '&_salt=%s' % self.salt
+        return ctx.tag
+                    
     def render_notPhone(self, ctx, data):
         ua = inevow.IRequest(ctx).getHeader('User-Agent')
         if 'webOS' in ua:
