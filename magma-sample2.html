@@ -7,7 +7,7 @@
 
     <title>magma</title>
     <link rel="Stylesheet" type="text/css" href="/nagios/stylesheets/status.css" />
-    <link rel="Stylesheet" type="text/css" href="/magma/www/magma.css?v=1" media="all"/>
+    <link rel="Stylesheet" type="text/css" href="/magma/www/magma.css?v=2" media="all"/>
 
 
     <style type="text/css" media="screen" n:render="notPhone">
@@ -59,6 +59,10 @@
 
 	<h2>Solar output (W)</h2>
 	<a href="http://graphite.bigasterisk.com/render/?width=900&amp;height=583&amp;target=system.house.solar.power_w&amp;from=-15hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=150&amp;target=system.house.solar.power_w&amp;from=-26hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true"/></a>
+
+	<div class="prevSolar"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=90&amp;target=system.house.solar.power_w&amp;from=-48hours&amp;until=-24hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true" style="opacity: .8"/></div>
+	<div class="prevSolar"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=90&amp;target=system.house.solar.power_w&amp;from=-72hours&amp;until=-48hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true" style="opacity: .6"/></div>
+	<div class="prevSolar"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=90&amp;target=system.house.solar.power_w&amp;from=-96hours&amp;until=-72hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true" style="opacity: .4"/></div>
 
       </div>
 
