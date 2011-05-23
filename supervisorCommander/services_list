@@ -32,7 +32,7 @@ def getServices(host):
              for row in supervisor.getAllConfigInfo()]
 
 def getAllServices():
-    return sum((getServices(h) for h in ['bang', 'bang-local', 'dash', 'slash', 'star']), [])
+    return sum((getServices(h) for h in ['bang', 'bang-local', 'dash', 'slash', 'star', 'space']), [])
 
 
 def httpChecks(host, serviceName):
@@ -45,13 +45,14 @@ def httpChecks(host, serviceName):
     mute a failure of these tests, since of course they're broken when
     the service isn't running.
     """
-    NOMAIL = 'notifications_enabled 0'
+    NOMAIL = ''#'notifications_enabled 0'
     return {
         ('slash', 'webcam_9020') : [('cam sideYard', '/sideYard', NOMAIL),
                                     ('cam livingRoom', '/livingRoom', NOMAIL),
                                     ('cam garage', '/garage', NOMAIL)],
         ('slash', 'webcam_9021') : [('cam laundry', '/laundry', NOMAIL)],
-        ('slash', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
+        ('space', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
+        ('space', 'frontdoor_9080') : [('front door arduino', '/', '')],
         ('dash', 'shiftweb_9014'): [('shiftweb', '/', '')],
         ('star', 'webcam_9016'): [('cam ari', '/0', '')],
         ('bang', 'webcam_9053'): [('cam bedroom', '/0', NOMAIL)],
@@ -59,6 +60,8 @@ def httpChecks(host, serviceName):
         ('bang', 'sfd_9024'): [('sfd root', '/', '')],
         ('bang', 'diarybot_9048'): [('diarybot root', '/', '')],
         ('bang', 'freeway_8009'): [('freeway root', '/', '')],
+        ('bang', 'arduinoport_9056'): [('arduino ping', '/', '')],
+        ('bang', 'portUpdate_9055'): [('heater update', '/', '')],
         }.get((host, serviceName), [])
     
     return []
