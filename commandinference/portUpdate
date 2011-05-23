@@ -38,6 +38,7 @@ def setOutputPins():
 
 class Loop(object):
     def __init__(self):
+        self.lastPoll = 0
         self.lastMsg = None
         self.lastHeater = None
         self.lastLight = {} # cmdclass : value
@@ -55,6 +56,11 @@ class Loop(object):
                 self.onCommand(commandClass, cmd)
 
         self.pollHeater()
+        self.lastPoll = time.time()
+
+    def ranRecently(self):
+        dt = time.time() - self.lastPoll
+        return dt < 30
 
     def onCommand(self, commandClass, cmd):
         if commandClass == URIRef("http://bigasterisk.com/magma/cmd/Heater"):
@@ -181,7 +187,11 @@ postForm('http://bang:9030/subscribe',
 # to catch commands we might have missed (?!)
 task.LoopingCall(loop.poll).start(30)
 
-class Root(rend.Page):   
+class Root(rend.Page):
+    def renderHTTP(self, ctx):
+        assert loop.ranRecently()
+        return "portUpdate (poll loop is running)"
+    
     def child_newCommand(self, ctx):
         request = inevow.IRequest(ctx)
         if ctx.arg('hub.mode') == 'subscribe':
