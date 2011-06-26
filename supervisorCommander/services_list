@@ -64,6 +64,7 @@ def httpChecks(host, serviceName):
         ('bang', 'portUpdate_9055'): [('heater update', '/', '')],
         ('bang', 'sba_9060'): [('bedroom shiftbrite', '/', '')],
         ('dash', 'zwave_9082'): [('zwave', '/', '')],
+        ('bang', 'reasoning_9071'): [('reasoning', '/', '')],
         }.get((host, serviceName), [])
     
     return []
