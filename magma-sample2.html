@@ -29,20 +29,23 @@
 
   </head>
   <body>
-    <h3><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h3>
-    <n:invisible n:render="addedCommand"/>
 	
     <div id="sections"> 
+
+      <div class="section">
+	<h3><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h3>
+	<n:invisible n:render="addedCommand"/>
+      </div>
 	
       <div class="section">
-	<div class="imgFrame"> <a href="/cam/livingRoom"><img style="left: -85px; width: 250px" alt="livingroom" src="/cam/livingRoom.jpg"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/livingRoom">living room<img style="left: -85px; width: 250px" alt="livingroom" src="/cam/livingRoom.jpg"/></a> </div>
 	<!--<div class="imgFrame">
 	    <a href="/cam/drewDesk"><img style="top: -17px; width: 106px" src="/cam/drewDesk.jpg"/></a>
 	      </div>-->
-	<div class="imgFrame"> <a href="/cam/sideYard"><img style="top: -17px; width: 106px" src="/cam/sideYard.jpg"/></a> </div>
-	<div class="imgFrame"> <a href="/cam/garage"><img style="top: 0px; width: 106px" src="/cam/garage.jpg"/></a> </div>
-	<div class="imgFrame"> <a href="/cam/frontDoor"><img style="left: -24px; width: 139px" src="/cam/frontDoor.jpg"/></a> </div>
-	<div class="imgFrame"> <a href="/cam/ari"><img style="top: 0px; width: 123px;" src="/cam/ari.jpg"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/sideYard">side yard<img style="top: -17px; width: 106px" src="/cam/sideYard.jpg"/>sideyard</a> </div>
+	<div class="imgFrame"> <a href="/cam/garage">garage<img style="top: 0px; width: 106px" src="/cam/garage.jpg"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/frontDoor">front door<img style="left: -24px; width: 139px" src="/cam/frontDoor.jpg"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/ari">ari<img style="top: 0px; width: 123px;" src="/cam/ari.jpg"/></a> </div>
 	<div class="imgFrame" style="text-align: center"> <a href="/cam/all">All cameras at once</a></div>
 	<div style="clear:both;"/>
       </div>
@@ -57,8 +60,13 @@
       <div class="section">
 	<n:invisible n:render="tempSection"/>
 
+	<h2>Power meter</h2>
+	Units don't seem to be in watts, yet.
+	<div><a href="http://graphite.bigasterisk.com/render/?width=900&amp;height=583&amp;target=keepLastValue(system.house.powerMeter_w)&amp;from=-15hours&amp;yMin=0&amp;hideLegend=true"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=150&amp;target=keepLastValue(system.house.powerMeter_w)&amp;from=-26hours&amp;yMin=0&amp;hideLegend=true"/></a></div>
+	<div style="clear: both"/>
+
 	<h2>Solar output (W)</h2>
-	<a href="http://graphite.bigasterisk.com/render/?width=900&amp;height=583&amp;target=system.house.solar.power_w&amp;from=-15hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=150&amp;target=system.house.solar.power_w&amp;from=-26hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true"/></a>
+	<div><a href="http://graphite.bigasterisk.com/render/?width=900&amp;height=583&amp;target=system.house.solar.power_w&amp;from=-15hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=150&amp;target=system.house.solar.power_w&amp;from=-26hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true"/></a></div>
 
 	<div class="prevSolar"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=90&amp;target=system.house.solar.power_w&amp;from=-48hours&amp;until=-24hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true" style="opacity: .8"/></div>
 	<div class="prevSolar"><img n:render="noCache" src="http://graphite.bigasterisk.com/render/?width=240&amp;height=90&amp;target=system.house.solar.power_w&amp;from=-72hours&amp;until=-48hours&amp;areaMode=all&amp;yMax=4000&amp;hideLegend=true" style="opacity: .6"/></div>
@@ -96,8 +104,9 @@
 
       <div class="section">
 	Front door message:
-	<div><textarea id="frontDoorLcd"  rows="3"></textarea></div>
-	<div><input type="text" id="frontDoorBottomLine" disabled="1"/></div>
+	<div><textarea id="frontDoorLcd" rows="7"></textarea></div>
+	<div><input type="text" id="frontDoorLastLine" disabled="1"/></div>
+	<div id="frontDoorSave" style="color: #000">Saving...</div>
       </div>
 
       <div class="section">
@@ -106,10 +115,10 @@
       </div>
 
       <div class="section">
-	<h2><a href="/tomato1/status-devices.asp">wifi bigasterisk3</a></h2>
-	<div id="wifi1" class="wifiNow">devices...</div>
-	<h2><a href="/tomato2/status-devices.asp">wifi bigasterisk4</a></h2>
-	<div id="wifi2" class="wifiNow">devices...</div>
+	<div>Wifi users</div>
+	<n:invisible n:render="wifiTable"/>
+
+	<div>Routers: <a href="/tomato1/status-devices.asp">bigasterisk3</a> <a href="/tomato2/status-devices.asp">bigasterisk4</a></div>
 
 	<div><button id="recentExpand">&gt;</button>Recent visitors...</div>
 	<div style="display:none">
@@ -186,10 +195,10 @@
    <script type="text/javascript" n:render="notPhone"> notPhone=true; </script>
 
    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
-   <script type="text/javascript" src="/magma/www/jquery.isotope.min.js"></script>
+   <script type="text/javascript" src="/magma/www/jquery.isotope-1.4.min.js"></script>
 
    <script type="text/javascript" src="/magma/www/now-local.js"></script>
    <script type="text/javascript" src="tomato_config.js"></script>
-   <script type="text/javascript" src="/magma/www/magma.js?v=2"></script>
+   <script type="text/javascript" src="/magma/www/magma.js?v=6"></script>
      </body>
    </html>

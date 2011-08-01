@@ -201,6 +201,9 @@ class HomePage(rend.Page):
         except Exception, e:
             return T.div["Error creating temperature graph: %s" % e]
 
+    def render_wifiTable(self, ctx, data):
+        return getPage("http://bang:9070/table").addCallback(T.raw)
+
     def render_addedCommand(self, ctx, data):
         if not ctx.arg('added'):
             return ''
@@ -522,7 +525,7 @@ class SecureButton(rend.Page):
         # the garage door also requires that bit 6 stay low, to avoid
         # false opens during bootup, when all pins go high for a while
         return getPage("http://slash:9014/otherBit?bit=7&pulse=1",
-                       method="PUT", headers={'Use-Agent' : 'magma'})
+                       method="PUT", headers={'User-Agent' : 'magma'})
 
 
     def getTicket(self):

@@ -169,7 +169,7 @@ sup:slashPandoraLullabye :supervisor <http://slash:9001>; :processLabel "cmd_pan
 :drewPhone rdfs:label "Drew's phone" .
 :kelsiPhone rdfs:label "Kelsi's phone" .
 
-cmd:startBackupPreDrew     a :Command, cmd:SupervisorStart;  rdfs:label "backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :iconPath <http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png> .
+cmd:startBackupPreDrew     a :Command, cmd:SupervisorStart;  rdfs:label "backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :iconPath <http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png> .
 cmd:stopBackupPreDrew      a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :activityObject :drewPhone .
 cmd:startBackupPreKelsi    a :Command, cmd:SupervisorStart;  rdfs:label "backup pre kelsi"; :supervisorProcess sup:cmd_backupPreKelsi; :iconPath <http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png>; :verb :backsUp; :activityObject :kelsiPhone.
 cmd:stopBackupPreKelsi     a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre kelsi"; :supervisorProcess sup:cmd_backupPreKelsi .
@@ -208,7 +208,7 @@ cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pand
   cmd:frontLightOn,
   cmd:frontLightOff,
   cmd:startBackupPreDrew, cmd:stopBackupPreDrew, 
-  cmd:startBackupPreKelsi, cmd:stopBackupPreKelsi, 
+#  cmd:startBackupPreKelsi, cmd:stopBackupPreKelsi, 
   cmd:trainnewspam, 
   cmd:seenlists,
   cmd:slashPandoraPause,
