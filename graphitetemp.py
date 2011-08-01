@@ -5,7 +5,7 @@ def _graphiteGet(graphite, target):
     data = graphite.get('',
                         target="keepLastValue(%s)" % target,
                         rawData='true',
-                        **{'from':'-20minutes'}).body_string()
+                        **{'from':'-60minutes'}).body_string()
     v = data.split('|')[-1].split(',')[-1]
     return float(v)
 

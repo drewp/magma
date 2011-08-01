@@ -52,7 +52,7 @@ def httpChecks(host, serviceName):
                                     ('cam garage', '/garage', NOMAIL)],
         ('slash', 'webcam_9021') : [('cam laundry', '/laundry', NOMAIL)],
         ('space', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
-        ('space', 'frontdoor_9080') : [('front door arduino', '/', '')],
+        ('space', 'frontDoorArduino_9080') : [('front door arduino', '/', '')],
         ('dash', 'shiftweb_9014'): [('shiftweb', '/', '')],
         ('star', 'webcam_9016'): [('cam ari', '/0', '')],
         ('bang', 'webcam_9053'): [('cam bedroom', '/0', NOMAIL)],
@@ -65,6 +65,9 @@ def httpChecks(host, serviceName):
         ('bang', 'sba_9060'): [('bedroom shiftbrite', '/', '')],
         ('dash', 'zwave_9082'): [('zwave', '/', '')],
         ('bang', 'reasoning_9071'): [('reasoning', '/', '')],
+        ('bang', 'photo_8030'): [('photo', '/events', '')],
+        ('bang', 'frontDoorMessage_9081'): [('frontDoorMessage', '/', '')],
+        ('bang', 'tomatoWifi_9070'): [('tomatoWifi', '/', '')],
         }.get((host, serviceName), [])
     
     return []
