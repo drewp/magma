@@ -211,10 +211,9 @@ class HomePage(rend.Page):
 
         rows = self.graph.queryd("""
           SELECT ?label ?time WHERE {
-            ?issue dcterms:created ?time;
+            ?issue dcterms:created ?time ;
                    cl:command [
-                     rdfs:label ?label
-                   ]
+                     rdfs:label ?label ]
           }""", initBindings={Variable("issue") : cmd})
         if not rows:
             return ''
