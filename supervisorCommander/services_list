@@ -32,7 +32,7 @@ def getServices(host):
              for row in supervisor.getAllConfigInfo()]
 
 def getAllServices():
-    return sum((getServices(h) for h in ['bang', 'bang-local', 'dash', 'slash', 'star', 'space']), [])
+    return sum((getServices(h) for h in ['bang', 'bang-local', 'dash', 'slash', 'star']), [])
 
 
 def httpChecks(host, serviceName):
@@ -51,23 +51,26 @@ def httpChecks(host, serviceName):
                                     ('cam livingRoom', '/livingRoom', NOMAIL),
                                     ('cam garage', '/garage', NOMAIL)],
         ('slash', 'webcam_9021') : [('cam laundry', '/laundry', NOMAIL)],
-        ('space', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
-        ('space', 'frontDoorArduino_9080') : [('front door arduino', '/', '')],
+        ('slash', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
+        ('slash', 'frontDoorArduino_9080') : [('front door arduino', '/', '')],
         ('dash', 'shiftweb_9014'): [('shiftweb', '/', '')],
         ('star', 'webcam_9016'): [('cam ari', '/0', '')],
         ('bang', 'webcam_9053'): [('cam bedroom', '/0', NOMAIL)],
         ('bang', 'nginx'): [('bigasterisk home page', '/', '')], # wrong vhost?
+        ('slash', 'websound_9049'): [('websound', '/', '')],
         ('bang', 'sfd_9024'): [('sfd root', '/', '')],
         ('bang', 'diarybot_9048'): [('diarybot root', '/', '')],
         ('bang', 'freeway_8009'): [('freeway root', '/', '')],
         ('bang', 'arduinoport_9056'): [('arduino ping', '/', '')],
         ('bang', 'portUpdate_9055'): [('heater update', '/', '')],
-        ('bang', 'sba_9060'): [('bedroom shiftbrite', '/', '')],
+        ('bang', 'sba_9060'): [('bedroom shiftbrite', '/', NOMAIL)],
         ('dash', 'zwave_9082'): [('zwave', '/', '')],
         ('bang', 'reasoning_9071'): [('reasoning', '/', '')],
         ('bang', 'photo_8030'): [('photo', '/events', '')],
         ('bang', 'frontDoorMessage_9081'): [('frontDoorMessage', '/', '')],
         ('bang', 'tomatoWifi_9070'): [('tomatoWifi', '/', '')],
+        ('bang', 'bluetooth_9077'): [('bluetooth watcher', '/', '')],
+        ('bang', 'photo_watchMail_9082'): [('photo watchMail', '/', '')],
         }.get((host, serviceName), [])
     
     return []
@@ -75,13 +78,13 @@ def httpChecks(host, serviceName):
 svcs = getAllServices()
 
 # this multi-file stupidness is because when a nagios config file crosses about
-# 12k, nagios truncates it and reports an error on whatever the last
+# 12k (3k?), nagios truncates it and reports an error on whatever the last
 # broken line happens to be. Using nagios 3.2.0-4ubuntu2
 out = None
 serial = 0
 written = 0
 for svc in svcs:
-    if out is None or written > 15:
+    if out is None or written > 12:
         serial += 1
         # warning- doesnt clean up old ones
         out = open("/etc/nagios3/conf.d/supervisor-%s.cfg" % serial, "w")
