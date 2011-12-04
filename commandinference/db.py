@@ -73,10 +73,11 @@ class CommandLog(object):
         
         g = self.writeGraph
         issue = self._issueUri(uri, time, user) 
-        g.add((issue, RDF.type, CL['IssuedCommand']),
-              (issue, CL['command'], uri),
-              (issue, DCTERMS['created'], time),
-              (issue, DCTERMS['creator'], user),
+        g.add([(issue, RDF.type, CL['IssuedCommand']),
+               (issue, CL['command'], uri),
+               (issue, DCTERMS['created'], time),
+               (issue, DCTERMS['creator'], user),
+               ],
               # separate into smaller contexts for backup and sync purposes
               context=CL[strftime('commands/%Y/%m')]
               )
@@ -89,7 +90,7 @@ class CommandLog(object):
         """
         for row in self.graph.queryd(
             "SELECT DISTINCT ?cls WHERE { ?cmd a ?cls }",
-            initBindings={Variable('cmd') : command}):
+            initBindings={'cmd' : command}):
             payload = jsonlib.write({
                 'issue' : issue,
                 'commandClass' : row['cls'],
@@ -133,13 +134,13 @@ class CommandLog(object):
         """
         for row in self.graph.queryd("""
                 SELECT ?c ?t ?u WHERE {
-                  ?issue a cl:IssuedCommand;
+                  ?issue a cl:IssuedCommand ;
                          cl:command ?c .
                   ?c a ?cls .
-                  ?issue dcterms:created ?t;
+                  ?issue dcterms:created ?t ;
                          dcterms:creator ?u .
                 } ORDER BY DESC(?t) LIMIT 1""",
-                         initBindings={Variable("cls") : class_}):
+                         initBindings={"cls" : class_}):
             return row['c'], row['t'], row['u']
         raise ValueError("No commands found of class %r" % class_)
         
@@ -154,9 +155,9 @@ class CommandLog(object):
         """
         for row in self.graph.queryd("""
               SELECT DISTINCT ?issue ?c ?t ?u WHERE {
-                ?issue a cl:IssuedCommand;
-                       cl:command ?c;
-                       dcterms:created ?t;
+                ?issue a cl:IssuedCommand ;
+                       cl:command ?c ;
+                       dcterms:created ?t ;
                        dcterms:creator ?u .
                        } ORDER BY DESC(?t) LIMIT %s""" % n):
             out = (row['c'], row['t'], row['u'])
