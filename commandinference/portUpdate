@@ -6,7 +6,7 @@ also watch commands for the remote-controlled lights.
 
 This can run anywhere; it listens for command pings and PUTs pin settings to other URIs according to the device configurations
 """
-import sys, time, atexit, logging, traceback, urllib, jsonlib
+import sys, time, atexit, logging, traceback, urllib, json
 
 sys.path.append('..') # for commandinference
 from twisted.internet import reactor
@@ -198,7 +198,7 @@ class Root(rend.Page):
             request.setResponseCode(202)
             return ctx.arg('hub.challenge')
 
-        d = jsonlib.read(request.content.read())
+        d = json.loads(request.content.read())
         log.debug("incoming command %s", d)
         loop.onCommand(URIRef(d['commandClass']), URIRef(d['command']))
         
