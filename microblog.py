@@ -31,8 +31,7 @@ def _getUserPass(graph, openid, accountType):
         ?id foaf:holdsAccount [
           a ?atype ;
           foaf:accountName ?user ;
-          mb:password ?password
-        ]
+          mb:password ?password ]
       }""", initBindings={Variable("id") : openid,
                           Variable("atype") : accountType}))
     if len(rows) != 1:
@@ -117,8 +116,7 @@ def makeOauthFilter(graph, subj):
           mb:oauthConsumerKey ?ck ;
           mb:oauthConsumerSecret ?cs ;
           mb:oauthToken ?t ;
-          mb:oauthTokenSecret ?ts
-      ] .
+          mb:oauthTokenSecret ?ts ] .
     }
     """, initBindings={'id' : subj})
     conf = rows[0]
