@@ -1,40 +1,41 @@
-@prefix : <http://bigasterisk.com/ns/command/v1#> .
-@prefix cmd: <http://bigasterisk.com/magma/cmd/> .
-@prefix sup: <http://bigasterisk.com/magma/sup/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-@prefix supbang: <http://bigasterisk.com/magma/sup/bang/9001/> .
-@prefix state: <http://supervisord.org/state#> .
-@prefix room: <http://projects.bigasterisk.com/room/> .
-@prefix hour: <http://projects.bigasterisk.com/room/localHour> .
+@prefix bigast:  <http://bigasterisk.com/>.
+@prefix :        <http://bigasterisk.com/ns/command/v1#> .
+@prefix cmd:     <http://bigasterisk.com/magma/cmd/> .
+@prefix supbang: <http://bigasterisk.com/magma/sup/bang/> .
+@prefix dev:     <http://projects.bigasterisk.com/device/> .
+@prefix room:    <http://projects.bigasterisk.com/room/> .
+@prefix sup:     <http://supervisord.org/config#> .
+@prefix env:     <http://projects.bigasterisk.com/device/environment>.
 
-{ hour: room:state 19 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 20 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 21 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 22 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 23 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 0 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 1 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 2 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 3 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 4 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 5 } => { :ari a :sleep . :outside a :dark } .
-{ hour: room:state 6 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 19 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 20 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 21 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 22 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 23 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 0 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 1 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 2 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 3 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 4 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 5 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 6 } => { :ari a :sleep . :outside a :dark } .
 
-{ hour: room:state 7 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 8 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 9 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 10 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 11 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 12 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 13 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 14 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 15 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 16 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 17 } => { :ari a :wake . :outside a :light } .
-{ hour: room:state 18 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 7 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 8 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 9 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 10 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 11 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 12 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 13 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 14 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 15 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 16 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 17 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 18 } => { :ari a :wake . :outside a :light } .
 
 
 { 
@@ -44,7 +45,7 @@
 } .
 
 { 
-  supbang:cmd_backupPreDrew :state state:EXITED .
+  supbang:cmd_backupPreDrew :state sup:EXITED .
 } => { 
   cmd:stopBackupPreDrew :ranking -1 .
 } .
