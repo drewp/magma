@@ -7,8 +7,13 @@ from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
 from nevow import rend, static, loaders, tags as T, inevow, json
-from rdflib.Graph import Graph
+from rdflib import Graph
 from rdflib import URIRef, Literal, Namespace, Variable
+
+# rdflib3 compat
+from rdflib import RDFS
+RDFS.RDFSNS = RDFS
+
 from commandinference.dbclient import nowLiteral, getCommandLog
 
 """
