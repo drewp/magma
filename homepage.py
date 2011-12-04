@@ -16,6 +16,8 @@ from pymongo import Connection, DESCENDING
 from dateutil.tz import tzlocal, tzutc
 from dateutil.parser import parse
 from web.contrib.template import render_genshi
+from cyclone.httpclient import fetch
+
 from graphitetemp import getAllTemps
 render = render_genshi('.', auto_reload=True)
 
@@ -30,6 +32,7 @@ CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
 
+mongo = Connection("bang", 27017, tz_aware=True)
 
 def foafAgent(ctx):
     h = inevow.IRequest(ctx).getHeader('x-foaf-agent')
@@ -109,13 +112,14 @@ class HomePage(rend.Page):
     def render_commands(self, ctx, data):
         trs = [T.tr['']]
 
-        import dyncommands
-        reload(dyncommands)
-        cmds = yield dyncommands.pickCommands(self.graph, self.user)
+        response = yield fetch("http://bang:8007/commands",
+                           headers={"X-Foaf-Agent":[str(self.user)]})
+        cmds = jsonlib.loads(response.body)
 
         belowZero = []
 
         for (cmd, score) in cmds:
+            cmd = URIRef(cmd)
             if score < 0:
                 belowZero.append((cmd, score))
                 continue
@@ -137,7 +141,7 @@ class HomePage(rend.Page):
        ?uri rdfs:label ?label .
        OPTIONAL { ?uri cl:iconPath ?icon }
        OPTIONAL { ?uri cl:linksTo ?linksTo }
-     } ORDER BY ?label
+     } ORDER BY ?label 
     """, initBindings={"uri" : cmd})
         if len(matches) != 1:
             raise ValueError("found %s matches for command %r" % (len(matches), cmd))
@@ -294,8 +298,24 @@ class HomePage(rend.Page):
         return [action for k, action in zip(keep, actions) if k]
                 
 
+    def render_transactions(self, ctx):
+        coll = mongo['heist']['transactions']
+        rows = reversed(list(coll.find(sort=[("readAt", -1)], limit=6)))
+        now = datetime.datetime.now(tzlocal())
+        def recentClass(d):
+            if (now - d).total_seconds() < 86400*2:
+                return {"class" : "recent"}
+            return {}
+        return T.table(class_="transactions")[
+            [T.tr(**recentClass(row['date']))[
+                T.td(class_="date")[row['date'].date().isoformat()],
+                T.td(class_="to")[row['payee']],
+                T.td(class_="amt")[row['amount']]
+                ] for row in rows]
+            ]
+
     def child_visitorsActivityStream(self, ctx):
-        coll = Connection("bang", 27017, tz_aware=True)['visitor']['visitor']
+        coll = mongo['visitor']['visitor']
         coll.ensure_index('created')
 
         start = datetime.datetime.now() - datetime.timedelta(days=2)
@@ -339,7 +359,9 @@ class HomePage(rend.Page):
         return stream.makeNevowResource()
     
     def child_services(self, ctx):
-        return static.File("/my/site/magma/build_services.html")
+        class F2(static.File):
+            contentTypes = {'.html' : 'application/xhtml+xml'}
+        return F2("/my/site/magma/build_services.html")
 
     def child_recentCommands(self, ctx):
         stream = ActivityStream()
@@ -521,10 +543,8 @@ class SecureButton(rend.Page):
             nowLiteral(),
             self.user)
 
-        # the garage door also requires that bit 6 stay low, to avoid
-        # false opens during bootup, when all pins go high for a while
-        return getPage("http://slash:9014/otherBit?bit=7&pulse=1",
-                       method="PUT", headers={'User-Agent' : 'magma'})
+        return getPage("http://slash:9050/garageDoorOpen",
+                       method="POST", headers={'User-Agent' : 'magma'})
 
 
     def getTicket(self):
@@ -545,6 +565,9 @@ class SecureButton(rend.Page):
 
     def render_lastCmd(self, ctx, data):
         return self.lastCmd
+
+    def child_images(self, ctx):
+        return static.File("images")
 
 def divBar(text, width, fraction, barColor):
     fraction = min(1, max(0, fraction))
