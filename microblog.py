@@ -1,8 +1,6 @@
 import sys
 from rdflib import Variable, Namespace, URIRef
-from getpass import getpass
-# easy_install 'python-twitter', and don't have the one called 'twitter' around
-import xmpp, twitter, jsonlib, urllib
+import xmpp, jsonlib
 import restkit
 
 FOAF = Namespace("http://xmlns.com/foaf/0.1/")
@@ -78,7 +76,7 @@ def postIdenticaOauth():
         # The request.
         resp = request(request_token_url, filters=[auth])
         print resp.__dict__
-        print resp.body
+        print resp.body_string()
     else:
         tok = restkit.oauth2.Token(oauth_token, oauth_token_secret)
 
@@ -86,7 +84,7 @@ def postIdenticaOauth():
         "http://identi.ca/api/statuses/friends_timeline.json",
         filters=[OAuthFilter(('*', consumer, tok))],
         method="GET")
-    print resp.body
+    print resp.body_string()
     print resp
 
     resp = restkit.request("http://identi.ca/api/statuses/update.json",
@@ -94,7 +92,7 @@ def postIdenticaOauth():
                     method="POST",
                     body=jsonlib.dumps({'status' : 'first oauth update'}))
 
-    print resp.body
+    print resp.body_string()
     print resp
 
 def postIdenticaPassword(graph, openid, msg):
@@ -103,7 +101,7 @@ def postIdenticaPassword(graph, openid, msg):
                            filters=[restkit.BasicAuth(login['user'],
                                                       login['password'])])
     resp = api.post("statuses/update.json", status=msg)
-    return jsonlib.read(resp.body)
+    return jsonlib.read(resp.body_string())
 
 postIdentica = postIdenticaPassword
 
@@ -120,10 +118,10 @@ def makeOauthFilter(graph, subj):
     }
     """, initBindings={'id' : subj})
     conf = rows[0]
-    consumer = restkit.util.oauth2.Consumer(conf['ck'], conf['cs'])
-    token = restkit.util.oauth2.Token(conf['t'], conf['ts'])
-    return restkit.filters.oauth2.OAuthFilter("*", consumer, token,
-              restkit.util.oauth2.SignatureMethod_HMAC_SHA1())
+    consumer = restkit.oauth2.Consumer(conf['ck'], conf['cs'])
+    token = restkit.oauth2.Token(conf['t'], conf['ts'])
+    return restkit.OAuthFilter("*", consumer, token,
+              restkit.oauth2.SignatureMethod_HMAC_SHA1())
 
 def postTwitter(graph, openid, msg):
     """
