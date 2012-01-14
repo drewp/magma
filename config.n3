@@ -72,6 +72,7 @@ cmd:heaterOff a cmd:Heater;
   rdfs:label "Heater off" .
 
 cmd:heaterOn20Min a cmd:Heater; 
+  :iconPath <data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBggGBRUIBwgKCQkVDRYODRgMDRofGBwYJxwhIB8dFR4jJycqHCUrJR4dK0EsLzMpOCwsISo2NTAqPycrLC8BCQoKDQsNGQ4OGTEkHiQ1NTQsNDUsKTUsKTQsMCkpKTQpNCwsKSwpNCkpKSksNCkpLCkqLCkpKSwsKTQpKSkpKf/AABEIADIAMgMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABgcCBAUDAf/EADEQAAEEAQMCAwYFBQAAAAAAAAECAwQRAAUSIQYxBxNRFDJBgbHBIiNhcZIVQpGh0v/EABoBAAMAAwEAAAAAAAAAAAAAAAABAwQFBgL/xAAkEQACAQMCBgMAAAAAAAAAAAAAAQIDETEEEhQhUXGi8RNBYf/aAAwDAQACEQMRAD8AvHMVKShO5RCUgWbPGZZwuqZyosHy21USlSlURdAdufU/TACPaj4mMOah7LpSoyGqSrz5vmhFXawhCU7lEJ7WUgnse16sjxQRGc3RdU0rUUhtxS21RpDCiQgqAQtXmJs1VK28kC7OQpPS/UDlOCCZTRpabRX4aBoUr3v15HoM9ldNvvNKTJ0ZcRdgtkRXlJ282F05d9uR6ducl89K17lFRqdC2Oler9M6vgqkaY4q0K2uocA3pPNFQBPBAsEcdx3BA72UT0bJidL9SolMqU24XlRp3mjalLZPBsknirI45SMva8ompK6weJRlF2lk+4xjGI+fDIT1zKSlt5XbZFUD/Eq++Tb4ZX/iM2pmDJVd7oa1j9Pyyn7YfQLJvwpOtRtMQiPoyHkhtITUxPahXdGYO6rrVfmdM7RX9s1s/bI9o2vSxGSlPUTTn4AAlcE/AdveHbNl/WJbirOtRyPRcAhP+d1/O85edWKjtV7/AL6N2tPLdzS8iKas2t8OPvx1sbpRWUrUD8RfI75eEOSiZCRJb9xbaXE/sRY+uUVKdKNPW466h0e1FVoSQCKT2vL2ix24cRMZkbW0NpQn9ABQ+mdBplajHsa7V8qzR74xjMgxRkL8S4oVoK36FGO40vnn3SRQ/lk0yIdTdEr1bc/GcjrkFwOJExkKTfpzY4HAtJ44xoTKgT1nqjLYT7Q2SBQuM0eP3285g515qu2lOR1fvFa/5yXyPCHW5E72pT2kJXYNIFJ4Fe4loJ/1znN1Xwj6jfd3CPBdI7eQpCB370AkH5jI8NQWIorxFbqY+HpkdT660lYACJZfc2JFbUhJoj0JpPzGXqMqeF4a69EHnQv6ZpcjbtBhTZKbBq9/B5sC6NcD0y0IbTzUJDcp/wBoeS2lLiygJ3KA5VtHAs818MooqKtHB4lKU3uk7s2cYxjEMYxgAxjGADGMYAMYxgB//9k=>;
   rdfs:label "Heater on for 20min";
   :verb :turnOn;
   :activityObject :heater;
@@ -200,8 +201,7 @@ cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pand
   cmd:slashPandoraLullabye
  .
 <http://bigasterisk.com/foaf.rdf#drewp> :seesCommand 
-  cmd:deckLightOn,
-  cmd:deckLightOff,
+#  cmd:deckLightOn, cmd:deckLightOff,
   cmd:heaterOff,
   cmd:heaterOn20Min,
   cmd:garageDoor,
