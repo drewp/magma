@@ -21,6 +21,8 @@ class ActivityStream(object):
         """
         published is a datetime with zone.
 
+        order of adds doesn't matter; we sort by 'published' later
+
         if entryUri is None, entryUriComponents should be any
         components *besides the publish time* that are needed to make
         a unique id. A word for the type of stream would be good, plus
