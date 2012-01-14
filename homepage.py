@@ -1,19 +1,14 @@
 from __future__ import division
-import sys, time, re, os, stat, jsonlib, datetime, urllib
+import time, re, os, stat, jsonlib, datetime, urllib
 from binascii import hexlify
-from pprint import pprint
-from twisted.internet import reactor
-from twisted.python import log
-from twisted.python.util import sibpath
 from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow import rend, static, loaders, tags as T, inevow, json, url
-from rdflib import URIRef, Namespace, Variable, RDFS, Literal
-from commandinference.db import XS
+from rdflib import URIRef, Namespace, Variable, Literal
 from commandinference.dbclient import nowLiteral
-from xml.utils import iso8601
+
 from pymongo import Connection, DESCENDING
-from dateutil.tz import tzlocal, tzutc
+from dateutil.tz import tzlocal
 from dateutil.parser import parse
 from web.contrib.template import render_genshi
 from cyclone.httpclient import fetch
@@ -410,7 +405,7 @@ class BabyKick(stripchart.Chart):
                   dcterms:created ?t ;
                   a cl:IssuedCommand ]
               } ORDER BY ?t""" % cmdN3):
-                t = iso8601.parse(row['t'])
+                t = time.mktime(parse(row['t']).timetuple())
                 rows.append((t, None, d))
             
         print "found rows", rows
@@ -466,7 +461,7 @@ class BabyTable(rend.Page):
               a cl:IssuedCommand .
            FILTER ( ?t > "2009-07-25T00:00:00Z"^^xs:dateTime )
           } ORDER BY ?t"""):
-            t = iso8601.parse(row['t'])
+            t = time.mktime(parse(row['t']).timetuple())
             rows.append((t, row['cmd'], row['t']))
 
         label = {CMD.BabyStart : 'start',

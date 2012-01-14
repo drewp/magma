@@ -1,20 +1,16 @@
-#!buildout_bin/py
-import os, sys
+#!buildout_bin/python
+import sys
 from twisted.internet import reactor
 from twisted.python import log
-from twisted.python.util import sibpath
-from twisted.web.client import getPage
-from twisted.internet.defer import inlineCallbacks, returnValue
 from nevow.appserver import NevowSite
-from nevow import rend, static, loaders, tags as T, inevow, json
-from rdflib import Graph
-from rdflib import URIRef, Literal, Namespace, Variable
+from nevow import rend, inevow
+from rdflib import Namespace
 
 # rdflib3 compat
 from rdflib import RDFS
 RDFS.RDFSNS = RDFS
 
-from commandinference.dbclient import nowLiteral, getCommandLog
+from commandinference.dbclient import getCommandLog
 
 """
 need ajaxy supervisor interface

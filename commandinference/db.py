@@ -3,11 +3,11 @@ where's the Command object? Lots of times these are passed to js, so
 maybe the Command class will be made there. But also, usually it's
 just the command uri that you need, and that's a regular rdf resource.
 """
-import sys, urllib, jsonlib, restkit, logging
-from rdflib import URIRef, RDF, Namespace, Variable, Literal, RDFS
-from time import strftime
+import urllib, jsonlib, restkit, logging
+from rdflib import URIRef, RDF, Namespace, Literal, RDFS
+from time import strftime, mktime
+from dateutil.parser import parse
 
-from xml.utils import iso8601
 
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
@@ -118,7 +118,7 @@ class CommandLog(object):
         """namespace has not been sorted out yet, and it might be
         nicer to use some other escaping (or even hashing) function on
         the other URIs."""
-        secs = iso8601.parse(str(time))        
+        secs = mktime(parse(str(time)).timetuple())
         return URIRef("http://bigasterisk.com/command/%s/%s/%s" %
                        (urllib.quote(uri), secs, urllib.quote(user)))
 
