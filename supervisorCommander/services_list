@@ -45,12 +45,12 @@ def httpChecks(host, serviceName):
     mute a failure of these tests, since of course they're broken when
     the service isn't running.
     """
-    NOMAIL = ''#'notifications_enabled 0'
+    NOMAIL = 'notifications_enabled 0'
     return {
         ('slash', 'webcam_9020') : [('cam sideYard', '/sideYard', NOMAIL),
                                     ('cam livingRoom', '/livingRoom', NOMAIL),
                                     ('cam garage', '/garage', NOMAIL)],
-        ('slash', 'webcam_9021') : [('cam laundry', '/laundry', NOMAIL)],
+        #('slash', 'webcam_9021') : [('cam laundry', '/laundry', NOMAIL)], # offline
         ('slash', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
         ('slash', 'frontDoorArduino_9080') : [('front door arduino', '/', '')],
         ('dash', 'shiftweb_9014'): [('shiftweb', '/', '')],
@@ -69,7 +69,7 @@ def httpChecks(host, serviceName):
         ('bang', 'photo_8030'): [('photo', '/events', '')],
         ('bang', 'frontDoorMessage_9081'): [('frontDoorMessage', '/', '')],
         ('bang', 'tomatoWifi_9070'): [('tomatoWifi', '/', '')],
-        ('bang', 'bluetooth_9077'): [('bluetooth watcher', '/', '')],
+        #('bang', 'bluetooth_9077'): [('bluetooth watcher', '/', '')], # broken since ubuntu upgrade
         ('bang', 'photo_watchMail_9082'): [('photo watchMail', '/', '')],
         }.get((host, serviceName), [])
     
