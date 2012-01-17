@@ -3,7 +3,7 @@ import time, re, os, stat, jsonlib, datetime, urllib
 from binascii import hexlify
 from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
-from nevow import rend, static, loaders, tags as T, inevow, json, url
+from nevow import rend, static, loaders, tags as T, inevow, json, url, flat
 from rdflib import URIRef, Namespace, Variable, Literal
 from commandinference.dbclient import nowLiteral
 
@@ -102,13 +102,26 @@ class HomePage(rend.Page):
         return getPage("http://bang:9023/_loginBar", headers={
             "Cookie" : inevow.IRequest(ctx).getHeader("cookie")}
                        ).addCallback(T.raw)
+
+    @inlineCallbacks
+    def child_commands(self, ctx):
+        """
+        rendered html of buttons to click
+        """
+        out = yield self.render_commands(ctx, None)
+        class Page(rend.Page):
+            def renderHTTP(self, ctx):
+                return flat.flatten(out)
+        returnValue(Page())
         
     @inlineCallbacks
-    def render_commands(self, ctx, data):
+    def render_commands(self, ctx, data, columns=2):
         trs = [T.tr['']]
 
         response = yield fetch("http://bang:8007/commands",
-                           headers={"X-Foaf-Agent":[str(self.user)]})
+                               headers={"X-Foaf-Agent":[str(self.user)]})
+        if not response:
+            raise ValueError('-H "X-Foaf-Agent: %s" http://bang:8007/commands failed' % str(self.user))
         cmds = jsonlib.loads(response.body)
 
         belowZero = []
@@ -119,11 +132,11 @@ class HomePage(rend.Page):
                 belowZero.append((cmd, score))
                 continue
 
-            if len(trs[-1].children) >= 1 + 3:
+            if len(trs[-1].children) >= 1 + columns:
                 trs.append(T.tr[''])
             trs[-1].children.append(T.td["\n", self._buttonForm(cmd, score)])
 
-        trs.append(T.tr[T.td(colspan="3")])
+        trs.append(T.tr[T.td(colspan=columns)])
         for (cmd, score) in belowZero:
             trs[-1].children[-1][self._buttonForm(cmd, score)]
         returnValue(T.table[trs])
@@ -143,9 +156,12 @@ class HomePage(rend.Page):
             
         row = matches[0]
 
+        isLink = self.graph.queryd("ASK { ?cmd a cl:CommandLink }",
+                                   initBindings={"cmd" : cmd})
+
         button = [row['label'], " ", score]
-        if 'icon' in row:
-            button = [T.img(src=row['icon'], alt=row['label']),
+        if row['icon']:
+            button = [T.img(src=row['icon'], alt='icon'),
                       T.div(class_='label')[button]]
 
         buttonClass = ''
@@ -156,10 +172,10 @@ class HomePage(rend.Page):
             else:
                 buttonClass += " recommend"
 
-        if row.get('linksTo'):
-            form = T.form(method="get", action=row['linksTo'])
-            if isinstance(button, basestring):
-                button = button + "..."
+        if row.get('linksTo') or isLink:
+            form = T.form(method="get", action=row['linksTo'] or cmd)
+            if len(button) == 3:
+                button[0] = button[0] + "..."
             else:
                 button[1].children[0] += "..."
         else:
@@ -190,7 +206,27 @@ class HomePage(rend.Page):
         #request.received_headers['host'] = 'bigasterisk.com'
         #request.prepath = ['magma']
         #request.setHost('bigasterisk.com', 80)
-        return url.URL.fromString('http://bigasterisk.com/magma').add('added', cmd)
+
+        message = self.addedCommandMessage(cmd)
+        class Ret(rend.Page):
+            def renderHTTP(self, ctx):
+                req = inevow.IRequest(ctx)
+                req.setHeader("Location", url.URL.fromString('http://bigasterisk.com/magma').add('added', cmd))
+                # req.setResponseCode(303) # this would be right for non-js browsers, but i don't know how to make the page jquery read my message and not follow the redir
+                req.write(message.encode('utf8'))
+                req.finish()
+                return ''
+        return Ret()
+
+    def child_tempSection(self, ctx):
+        temps = dict.fromkeys(['ariBedroom', 'downstairs', 'livingRoom', 'bedroom', 'KSQL'])
+        temps.update(getAllTemps())
+        return jsonlib.dumps([dict(
+            name=k,
+            val="%.1f &#176;F" % v if v is not None else '?')
+                              for k,v in sorted(temps.items(),
+                                                key=lambda (k,tp):tp,
+                                                reverse=True)])
 
     def render_tempSection(self, ctx, data):
         try:
@@ -207,7 +243,9 @@ class HomePage(rend.Page):
         if not ctx.arg('added'):
             return ''
         cmd = URIRef(ctx.arg('added'))
+        return T.div(class_='ranCommand')[self.addedCommandMessage(cmd)]
 
+    def addedCommandMessage(self, cmd):
         rows = self.graph.queryd("""
           SELECT ?label ?time WHERE {
             ?issue dcterms:created ?time ;
@@ -216,8 +254,9 @@ class HomePage(rend.Page):
           }""", initBindings={Variable("issue") : cmd})
         if not rows:
             return ''
-        return T.div(class_='ranCommand')['Ran command %s at %s' %
-                                          (rows[0]['label'], rows[0]['time'])]
+        return 'Ran command %s at %s' % (
+            rows[0]['label'],
+            parse(rows[0]['time']).time().replace(microsecond=0).isoformat())
         
     @inlineCallbacks
     def render_lights(self, ctx, data):
