@@ -200,13 +200,5 @@
 
     <script type="text/javascript" src="/magma/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="bundle.js?v={{bundleChecksum}}"></script>
-<script>
-$(function() {
-   var socket = io.connect('/');
-    socket.emit('join', 'hey');
-    socket.on('hey', function (r) { console.log("update", r) });
-});
-</script>
-
   </body>
 </html>

@@ -54,9 +54,11 @@ io.configure(function () {
     io.set('log level', 2);
 
     // really I want the socket.io.js file to be in the assetManager bundle
-    io.enable('browser client minification');
-    io.enable('browser client gzip');
-    io.enable('browser client etag');      
+    if (!debug) {
+	io.enable('browser client minification');
+	io.enable('browser client gzip');
+	io.enable('browser client etag');      
+    }
 });
 
 io.sockets.on('connection', function (socket) {
