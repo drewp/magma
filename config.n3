@@ -65,14 +65,14 @@ cmd:Fillup a :Command, :DatapointCommand;
 :icon <http://bigasterisk.com/magma/tango/apps/gnome-keyring-manager.png> .
 
 cmd:garageDoor a :Command; rdfs:label "Garage"; :verb :operates ; :activityObject :garageDoor;
-:iconPath <http://bigasterisk.com/magma/www/icon_garage.jpg>;
+:iconPath <http://bigasterisk.com/magma/static/icon_garage.jpg>;
 :linksTo <http://bigasterisk.com/magma/garage/> .
 
 cmd:heaterOff a cmd:Heater; 
   rdfs:label "Heater off" .
 
 cmd:heaterOn20Min a cmd:Heater; 
-  :iconPath <data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBggGBRUIBwgKCQkVDRYODRgMDRofGBwYJxwhIB8dFR4jJycqHCUrJR4dK0EsLzMpOCwsISo2NTAqPycrLC8BCQoKDQsNGQ4OGTEkHiQ1NTQsNDUsKTUsKTQsMCkpKTQpNCwsKSwpNCkpKSksNCkpLCkqLCkpKSwsKTQpKSkpKf/AABEIADIAMgMBIgACEQEDEQH/xAAbAAEAAgMBAQAAAAAAAAAAAAAABgcCBAUDAf/EADEQAAEEAQMCAwYFBQAAAAAAAAECAwQRAAUSIQYxBxNRFDJBgbHBIiNhcZIVQpGh0v/EABoBAAMAAwEAAAAAAAAAAAAAAAABAwQFBgL/xAAkEQACAQMCBgMAAAAAAAAAAAAAAQIDETEEEhQhUXGi8RNBYf/aAAwDAQACEQMRAD8AvHMVKShO5RCUgWbPGZZwuqZyosHy21USlSlURdAdufU/TACPaj4mMOah7LpSoyGqSrz5vmhFXawhCU7lEJ7WUgnse16sjxQRGc3RdU0rUUhtxS21RpDCiQgqAQtXmJs1VK28kC7OQpPS/UDlOCCZTRpabRX4aBoUr3v15HoM9ldNvvNKTJ0ZcRdgtkRXlJ282F05d9uR6ducl89K17lFRqdC2Oler9M6vgqkaY4q0K2uocA3pPNFQBPBAsEcdx3BA72UT0bJidL9SolMqU24XlRp3mjalLZPBsknirI45SMva8ompK6weJRlF2lk+4xjGI+fDIT1zKSlt5XbZFUD/Eq++Tb4ZX/iM2pmDJVd7oa1j9Pyyn7YfQLJvwpOtRtMQiPoyHkhtITUxPahXdGYO6rrVfmdM7RX9s1s/bI9o2vSxGSlPUTTn4AAlcE/AdveHbNl/WJbirOtRyPRcAhP+d1/O85edWKjtV7/AL6N2tPLdzS8iKas2t8OPvx1sbpRWUrUD8RfI75eEOSiZCRJb9xbaXE/sRY+uUVKdKNPW466h0e1FVoSQCKT2vL2ix24cRMZkbW0NpQn9ABQ+mdBplajHsa7V8qzR74xjMgxRkL8S4oVoK36FGO40vnn3SRQ/lk0yIdTdEr1bc/GcjrkFwOJExkKTfpzY4HAtJ44xoTKgT1nqjLYT7Q2SBQuM0eP3285g515qu2lOR1fvFa/5yXyPCHW5E72pT2kJXYNIFJ4Fe4loJ/1znN1Xwj6jfd3CPBdI7eQpCB370AkH5jI8NQWIorxFbqY+HpkdT660lYACJZfc2JFbUhJoj0JpPzGXqMqeF4a69EHnQv6ZpcjbtBhTZKbBq9/B5sC6NcD0y0IbTzUJDcp/wBoeS2lLiygJ3KA5VtHAs818MooqKtHB4lKU3uk7s2cYxjEMYxgAxjGADGMYAMYxgB//9k=>;
+  :iconPath <http://bigasterisk.com/magma/static/heater.png>;
   rdfs:label "Heater on for 20min";
   :verb :turnOn;
   :activityObject :heater;
@@ -170,10 +170,8 @@ sup:slashPandoraLullabye :supervisor <http://slash:9001>; :processLabel "cmd_pan
 :drewPhone rdfs:label "Drew's phone" .
 :kelsiPhone rdfs:label "Kelsi's phone" .
 
-cmd:startBackupPreDrew     a :Command, cmd:SupervisorStart;  rdfs:label "backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :iconPath <http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png> .
+cmd:startBackupPreDrew     a :Command, cmd:SupervisorStart;  rdfs:label "backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :iconPath <http://bigasterisk.com/magma/static/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png> .
 cmd:stopBackupPreDrew      a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :activityObject :drewPhone .
-cmd:startBackupPreKelsi    a :Command, cmd:SupervisorStart;  rdfs:label "backup pre kelsi"; :supervisorProcess sup:cmd_backupPreKelsi; :iconPath <http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png>; :verb :backsUp; :activityObject :kelsiPhone.
-cmd:stopBackupPreKelsi     a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre kelsi"; :supervisorProcess sup:cmd_backupPreKelsi .
 
 cmd:startDashTheory        a :Command, cmd:SupervisorStart;  rdfs:label "start theory on dash"; :supervisorProcess sup:dashTheory .
 cmd:stopDashTheory         a :Command, cmd:SupervisorStop;   rdfs:label "stop theory on dash"; :supervisorProcess sup:dashTheory .

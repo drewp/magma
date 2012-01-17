@@ -1,0 +1,300 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html > body {
+    background: black;
+    margin: 0 !important;
+
+}
+#sections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow:hidden;
+    background: black;
+    color: gray;
+    font-family: sans;
+}
+h2 {
+    margin: 6px;
+}
+.section {
+    border: 1px solid gray;
+    margin: 3px 3px 3px 0;
+    padding: 3px 0;
+    overflow: hidden;
+    width: 320px;
+} 
+.ranCommand {
+    margin: 10px;
+    padding: 10px;
+    background: yellow;
+}
+.commands  {
+    margin-bottom: 8px;
+}
+
+.commands table tr { height: 64px; }
+.commands table td { width: 153px; height: 64px; }
+.commands button  {
+    width: 153px;
+    height: 90px;
+    cursor:pointer;
+    position: relative;
+    background:#222222;
+    border:1px outset gray;
+    color:#6D6CE4;
+    font-size: 16px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
+.commands button div.label, .commands button img {
+    top: 0;
+    left: 0;
+}
+button div.label {
+    font-weight: bold;
+    text-shadow: 2px 2px 1px black;
+}
+.commands button img {
+    float:left;
+    opacity: 1;
+}
+button.current { 
+    opacity: 1;
+    background: #faa;
+} 
+button.recommend { 
+    opacity: .7;
+    background: #fff;
+}
+
+.commands form {
+    position: relative;
+}
+.commands form .response {
+    background: none repeat scroll 0 0 #929292;
+    border: 1px solid white;
+    color: black;
+    left: 20px;
+    opacity: 0.9;
+    overflow: hidden;
+    padding: 3px;
+    position: absolute;
+    top: 20px;
+    width: 163px;
+    z-index: 5;
+}
+
+.commands form .response.success {
+    background: #63ad67;
+}
+.commands form .response.error {
+    background: #EB846A;
+    border: #f00;
+}
+
+.wifiNow {
+    font-family: sans-serif;
+}
+.wifiNow table {
+    border-collapse: collapse;
+    font-size: 80%;
+}
+.wifiNow td, .wifiNow th {
+    border: 1px solid #9a9a9a;
+    white-space: nowrap;
+}
+.wifiNow td {
+    padding-right: 8px;
+}
+.wifiNow .lease {font-size: 70%;}
+.wifiNow .ip {font-size: 70%;}
+.wifiNow .rssi {font-size: 70%;}
+.wifiNow .mac {font-size: 70%;}
+.wifiNow th {
+    text-align: left;
+}
+.wifiNow .signal {
+    background:#76733F;
+    color:#FFFFFF;
+}
+.wifiNow .nosignal {
+    color:#aaa;
+}
+.imgFrame {
+    position: relative;
+    border: 1px solid blue;
+    width: 104px;
+    height: 80px;
+    overflow: hidden;
+    float: left;
+}
+.imgFrame img {
+    position: relative;
+}
+.imgFrame a {
+    font-size: 10px;
+} 
+a {
+    text-decoration: none;
+    color: #00f;
+}
+a img {
+    border: 0;
+    float: left;
+}
+.graph {
+    float: left; width: 158px; height: 104px; overflow: hidden;
+}
+.graph h1 {
+    font-size: 10px;
+    height: 22px;
+    margin: 0;
+}
+.graph.munin img {
+    position: relative; left: -23px; top: -8px; width: 180px;
+}
+
+.links a {
+    background:none repeat scroll 0 0 #333333;
+    border:1px outset gray;
+    color:#6D6CE4;
+    display:inline-block;
+    margin:3px 0 3px 2px;
+    padding:9px 3px;
+    text-decoration:none;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    height: 58px;
+}
+.music a {
+    background: none repeat scroll 0 0 #2C2D18;
+    border-color: #676922;
+    color: #B9BC48;
+    height: auto;
+}
+.col2 > div {
+
+}
+
+#recentVisitors {
+    
+}
+#recentVisitors {
+    font-size: 90%;
+    color: #c6c6c6;
+}
+#recentVisitors .t {
+    font-size: 85%;
+}
+#recentVisitors tr.bluetooth {
+    background: #090932;
+}
+#recentVisitors tr.wifi {
+    background: #221103;
+}
+.graphSidebar {
+    width: 75px;
+    font-size: 10px;
+    float:left;
+    padding-top: 17px;
+}
+.graphUnder {
+    font-size: 13px;
+    clear:both;
+}
+.graphUnder > div {
+    display: inline-block;
+}
+.graphUnder label {
+    line-height: 30px;
+    display:inline-block;
+    padding: 4px;
+}
+.graphLayout {
+    width: 320px;
+    height: 300px;
+}
+.graphLayout > a > img {
+    float: left;
+}
+.currentTemp {
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+.temp-livingRoom { color: #B45AE5; }
+.temp-downstairs { color: #4C4CC3; }
+.temp-bedroom    { color: #C80032; }
+.temp-ariBedroom { color: #0FB30F; }
+.temp-KSQL       { color: #966432; }
+.temp-frontDoor  { color: #e3e31f; }
+
+form.lowRank {
+}
+form.lowRank button {
+height: 30px;
+width: 80px;
+background: #565656;
+}
+
+#frontDoorLcd, #frontDoorLastLine {
+background: #5af199;
+color: #484848;
+font-family: monospace;
+width: 12.5em;
+overflow:hidden;
+font-size: 12px;
+padding: 4px;
+border: 0;
+}
+#frontDoorSave {
+position: absolute;
+top: 0;
+right: 0;
+}
+
+
+/* from http://isotope.metafizzy.co/docs/animating.html */
+.isotope,
+.isotope .isotope-item {
+  /* change duration value to whatever you like */
+  -webkit-transition-duration: 0.8s;
+     -moz-transition-duration: 0.8s;
+          transition-duration: 0.8s;
+}
+
+.isotope {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+     -moz-transition-property:    -moz-transform, opacity;
+          transition-property:         transform, opacity;
+}
+
+.prevSolar {
+    overflow: hidden;
+    width: 240px;
+    height: 76px; 
+}
+.prevSolar > div {
+    position: relative;
+    top:-5px;
+}
+.transactions { font-size: 80%; }
+.transactions td { vertical-align: top; }
+.transactions td.date, .transactions td.amt {
+ white-space: nowrap;
+}
+.transactions tr.recent { color: yellow; }
+
+th.status img { display: none; }
+th.status { white-space: nowrap; }

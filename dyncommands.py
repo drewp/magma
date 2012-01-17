@@ -10,19 +10,13 @@ from twisted.internet import reactor
 import cyclone.web
 from cyclone.httpclient import fetch
 import time, genshi.template, jsonlib
-from rdflib.Graph import Graph, ConjunctiveGraph
+from rdflib import Graph, ConjunctiveGraph
 from rdflib import Namespace, RDF, URIRef
 
-sys.path.append("/my/proj/sparqlhttp")
+# see buildout.cfg for the extra-paths that let these work
 from sparqlhttp.graph2 import SyncGraph
-
-sys.path.append("/my/proj/room/fuxi/build/lib.linux-x86_64-2.6")
 from FuXi.Rete.RuleStore import N3RuleStore
-
-sys.path.append("/my/proj/homeauto/lib")
 from cycloneerr import PrettyErrorHandler
-
-sys.path.append("/my/proj/room")
 from inference import parseTrig, infer
 from commandinference.db import NS
 
@@ -36,6 +30,10 @@ class PickCommands(object):
 
     def makeRuleGraph(self):
         self.ruleStore = N3RuleStore()
+        class NullDispatcher(object):
+            def dispatch(self, *args):
+                pass
+        self.ruleStore.dispatcher = NullDispatcher()
         self.ruleGraph = Graph(self.ruleStore)
         self.ruleGraph.parse('commandRules.n3', format='n3') # for inference
 
@@ -57,7 +55,11 @@ class PickCommands(object):
 
         @inlineCallbacks
         def addData(source):
-            trig = (yield fetch(source)).body
+            try:
+                trig = (yield fetch(source)).body
+            except AttributeError:
+                print vars()
+                raise
             try:
                 g.addN(parseTrig(trig))
             except Exception:

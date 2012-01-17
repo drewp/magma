@@ -1,0 +1,19 @@
+#!/usr/bin/python
+"""
+nagios table, extracted cleaned up for xhtml
+
+"""
+import cyclone.web
+from twisted.internet import reactor
+from lxml.html import parse
+from lxml.etree import ElementTree
+
+class Index(cyclone.web.RequestHandler):
+    def get(self):
+        doc = parse("http://bang:9019/status.cgi?host=all&servicestatustypes=28").getroot()
+        table = doc.cssselect("table.status")
+        ElementTree(element=table[0]).write(self)
+
+if __name__ == '__main__':
+    reactor.listenTCP(8012, cyclone.web.Application(handlers=[(r"/", Index)]))
+    reactor.run()
