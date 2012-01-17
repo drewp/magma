@@ -1,6 +1,4 @@
-
 $(function () {
-
     $("#recentExpand").click(function () { 
 	$(this).text("V");
 	$(this).parent().next().show();
@@ -11,7 +9,6 @@ $(function () {
 	var chars = $("form[action=microblogUpdate] input[type=text]").val().length;
 	$("#blogChars").text("("+chars+")");
     });
-
 
     function TempGraph() {
 	var self=this;
@@ -106,4 +103,9 @@ nowjs not working yet
     if (notPhone) {
 	setTimeout(isotopeSections, 50);
     }
+    var socket = io.connect('/magma/', {resource: "magma/socket.io"});
+    socket.emit('join', 'hey');
+    socket.on('hey', function (r) { console.log("update", r) });
+
+
 });
