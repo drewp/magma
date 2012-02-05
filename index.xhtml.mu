@@ -40,7 +40,11 @@
     <div id="sections"> 
 
       <div class="section">
-	<h3><a href="houseActivity" style="color: #e33e5f; text-decoration: underline">New activity feeds!</a></h3>
+	<p>Server connection: <span id="ping"/></p>
+	<p><a href="houseActivity" style="text-decoration: underline;">Activity feeds</a></p>
+{{^notPhone}}
+	<p><a href="#commands" style="text-decoration: underline; display: inline-block; padding: 30px">Skip to commands</a></p>
+{{/notPhone}}
       </div>
 	
       <div class="section">
@@ -52,9 +56,10 @@
 	<div class="imgFrame" style="text-align: center"> <a href="/cam/all">All cameras at once</a></div>
 	<div style="clear:both;"/>
       </div>
-<div class="section">
+
+      <div class="section">
 	<form method="post" action="microblogUpdate">
-	  <input type="text" name="msg" style="width:310px"/> <span id="blogChars"/> <input type="submit" value="Post to microblogs"/>
+	  <input type="text" name="msg" style="width:310px" autocomplete="off"/> <span id="blogChars"/> <input type="submit" value="Post to microblogs"/>
 	    <!-- query the user to see what ublogs they have, so we could list them 
 		 in advance -->
 	</form>
@@ -116,7 +121,7 @@
 
       <div class="section">
 	<div>USAA Transactions:</div>
-	{{{transactions}}}
+	{{{recentTransactions}}}
       </div>
 
       <div class="section">
@@ -173,6 +178,7 @@
     </div>
     
     <div class="section">
+      <a name="commands"/>
       <div class="commands">
 	{{{commands}}}
       </div>

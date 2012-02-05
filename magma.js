@@ -14,6 +14,7 @@ var express = require('express'),
     app = express.createServer(),
     io = require('socket.io').listen(app);
 var Mu = require('Mu');
+var async = require('async');
 
 Mu.templateRoot = '.';
 
@@ -66,23 +67,31 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function (reason) {
 	console.log("disconnect", socket.id);
     });
+    socket.emit("ping","3");
     socket.join("updates");
 
-    setTimeout(function () { io.sockets.in("updates").emit("hey", "data") }, 1000);
+    setTimeout(function () {
+	console.log("pinging"); 
+	socket.emit("ping", "2");
+	io.sockets.in("updates").emit("ping", "1");
+ }, 1000);
 });
 
 function httpGet(url, headers, cb) {
+    /* cb is called with (error, result) but i didn't implement errors yet */
     var shred = new Shred;
+    var t1 = +new Date();
     shred.get({
 	url: url,
 	headers: headers,
 	on: {
 	    200: function (response) {
-		cb(response.content.body);
+		//console.log(url, "in", +new Date() - t1);
+		cb(null, response.content.body);
 	    },
 	    response: function (response) {
 		inspect(response);
-		cb("error: "+response);
+		cb(null, "error: "+response);
 	    }
 	}
     });
@@ -90,40 +99,45 @@ function httpGet(url, headers, cb) {
 
 app.get("/", function (req, res) {
     res.header("content-type", "application/xhtml+xml");
-    httpGet("http://bang:9023/_loginBar", {"Cookie": req.header("cookie")}, function (loginBar) {
-    httpGet("http://bang:9094/", {}, function (recentTransactions) {
-    httpGet("http://bang:9070/table", {}, function (wifiTable) {
-    httpGet("http://bang:8006/commands", {"x-foaf-agent" : req.header("x-foaf-agent")}, function (commands) {
-    httpGet("http://bang:8006/tempSection", {"x-foaf-agent" : req.header("x-foaf-agent")}, function (tempSection) {
-    httpGet("http://bang:8012/", {}, function (nagios) {
-	wifiTable = wifiTable.replace(/^[\s\S]*?<div/, "<div");
 
-	var ctx = {
-	    notPhone: !req.header("user-agent").match(/webOS|iPhone/),
-	    loginBar: loginBar,
-	    wifiTable: wifiTable,
-	    commands: commands,
-	    nagios: nagios,
-	    recentTransactions: recentTransactions,
-	    salt: +new Date,
-	    showMunin: true,
-	    temps: JSON.parse(tempSection),
-	    bundleChecksum: am.cacheHashes['js'],
-	    cssChecksum: am.cacheHashes['css']
-	};
-	Mu.render('./index.xhtml', ctx, {cached: !debug}, 
-		  function (err, output) {
-		      if (err) {
-			  throw err;
-		      }
-		      output.addListener('data', 
-					 function (c) { res.write(c); })
-			  .addListener('end', function () { res.end(); });
-		  });
-    });
-    });
-    });
-    });
-    });
-    });
+    var hh = {"x-foaf-agent" : req.header("x-foaf-agent")};
+    async.parallel(
+	{
+	    loginBar: async.apply(httpGet, "http://bang:9023/_loginBar", {"Cookie": req.header("cookie")}),
+	    recentTransactions: async.apply(httpGet, "http://bang:9094/", hh),
+	    wifiTable: async.apply(httpGet, "http://bang:9070/table", hh),
+	    commands: async.apply(httpGet, "http://bang:8006/commands", hh),
+	    tempSection: async.apply(httpGet, "http://bang:8006/tempSection", hh),
+	    nagios: async.apply(httpGet, "http://bang:8012/", hh)
+	}, 
+	function (err, r) {
+	    if (err) {
+		throw err;
+	    }
+	    
+	    r.wifiTable = r.wifiTable.replace(/^[\s\S]*?<div/, "<div");
+
+	    var ctx = {
+		notPhone: !req.header("user-agent").match(/webOS|iPhone/),
+		loginBar: r.loginBar,
+		wifiTable: r.wifiTable,
+		commands: r.commands,
+		nagios: r.nagios,
+		recentTransactions: r.recentTransactions,
+		salt: +new Date,
+		showMunin: true,
+		temps: JSON.parse(r.tempSection),
+		bundleChecksum: am.cacheHashes['js'],
+		cssChecksum: am.cacheHashes['css']
+	    };
+	    Mu.render('./index.xhtml', ctx, {cached: !debug}, 
+		      function (err, output) {
+			  if (err) {
+			      throw err;
+			  }
+			  output.addListener('data', 
+					     function (c) { res.write(c); })
+			      .addListener('end', function () { res.end(); });
+		      });
+	});
 });    

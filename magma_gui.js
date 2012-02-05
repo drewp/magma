@@ -104,8 +104,10 @@ nowjs not working yet
 	setTimeout(isotopeSections, 50);
     }
     var socket = io.connect('/magma/', {resource: "magma/socket.io"});
-    socket.emit('join', 'hey');
-    socket.on('hey', function (r) { console.log("update", r) });
+    //socket.emit('join', 'hey');
+    socket.on('ping', function (r) { 
+	$("#ping").text(r); 
+    });
 
 
 });
