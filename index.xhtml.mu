@@ -48,10 +48,10 @@
       </div>
 	
       <div class="section">
-	<div class="imgFrame"> <a href="/cam/livingRoom">living room<div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 72px; width: 106px; height: 72px"/></a> </div>
-	<div class="imgFrame"> <a href="/cam/sideYard">side yard    <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 144px; width: 106px; height: 72px"/></a> </div>
-	<div class="imgFrame"> <a href="/cam/garage">garage         <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 216px; width: 106px; height: 72px"/></a> </div>
-	<div class="imgFrame"> <a href="/cam/frontDoor">front door  <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 288px; width: 106px; height: 72px"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/livingRoom">living room<div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 -72px; width: 106px; height: 72px"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/sideYard">side yard    <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 -144px; width: 106px; height: 72px"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/garage">garage         <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 -216px; width: 106px; height: 72px"/></a> </div>
+	<div class="imgFrame"> <a href="/cam/frontDoor">front door  <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 -288px; width: 106px; height: 72px"/></a> </div>
 	<div class="imgFrame"> <a href="/cam/ari">ari               <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 0px; width: 106px; height: 72px"/></a> </div>
 	<div class="imgFrame" style="text-align: center"> <a href="/cam/all">All cameras at once</a></div>
 	<div style="clear:both;"/>
@@ -204,7 +204,6 @@
    <script type="text/javascript"> notPhone=true; </script>
 {{/notPhone}}
 
-    <script type="text/javascript" src="/magma/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="bundle.js?v={{bundleChecksum}}"></script>
   </body>
 </html>
