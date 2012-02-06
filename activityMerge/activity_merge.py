@@ -126,14 +126,16 @@ class feed(object):
                       'name' : o.findtext(ATOM+"name"),
                       }
             imgLink = o.find(ATOM+"link")
+            icon = ''
             if imgLink and imgLink.attrib['rel'] == 'icon': # now 'preview'? this needs loop
+                icon = imgLink.attrib['href']
                 object['image'] = imgLink.attrib['href']
             title = e.findtext(ATOM+'title')
             return {'actor' : actor,
                     'verb' : verb,
                     'object' : object,
                     'title' : title,
-                    'icon' : 'http://bigasterisk.com/magma/www/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png',
+                    'icon' : icon,
                     'postedTime' : e.findtext(ATOM+"published"),
                     }
         
