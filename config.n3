@@ -66,13 +66,16 @@ cmd:Fillup a :Command, :DatapointCommand;
 
 cmd:garageDoor a :Command; rdfs:label "Garage"; :verb :operates ; :activityObject :garageDoor;
 :iconPath <http://bigasterisk.com/magma/static/icon_garage.jpg>;
+:buttonIcon "garage";
 :linksTo <http://bigasterisk.com/magma/garage/> .
 
 cmd:heaterOff a cmd:Heater; 
-  rdfs:label "Heater off" .
+  rdfs:label "Heater off";
+  :buttonIcon "heaterOff" .
 
 cmd:heaterOn20Min a cmd:Heater; 
   :iconPath <http://bigasterisk.com/magma/static/heater.png>;
+  :buttonIcon "heaterOn";
   rdfs:label "Heater on for 20min";
   :verb :turnOn;
   :activityObject :heater;
@@ -123,12 +126,18 @@ cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on";
 :value "on"; 
 :verb :turnOn; :activityObject :bedroomRedLight .
 
-cmd:frontLightOff a cmd:FrontLight; rdfs:label "Front yard light off"; 
-:value "off"; 
-:verb :turnOff; :activityObject :frontYardLight .
-cmd:frontLightOn a cmd:FrontLight; rdfs:label "Front yard light on"; 
-:value "on"; 
-:verb :turnOn; :activityObject :frontYardLight .
+cmd:frontLightOff a cmd:FrontLight; 
+  rdfs:label "Front yard light off"; 
+  :value "off"; 
+  :buttonIcon "frontLightOff" ; 
+  :verb :turnOff; 
+  :activityObject :frontYardLight .
+cmd:frontLightOn a cmd:FrontLight;
+  rdfs:label "Front yard light on"; 
+  :value "on"; 
+  :buttonIcon "frontLightOn" ; 
+  :verb :turnOn; 
+  :activityObject :frontYardLight .
 
 cmd:deckLightOff a cmd:DeckLight; rdfs:label "Deck lights off"; 
 :value "off"; 
@@ -170,13 +179,13 @@ sup:slashPandoraLullabye :supervisor <http://slash:9001>; :processLabel "cmd_pan
 :drewPhone rdfs:label "Drew's phone" .
 :kelsiPhone rdfs:label "Kelsi's phone" .
 
-cmd:startBackupPreDrew     a :Command, cmd:SupervisorStart;  rdfs:label "backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :iconPath <http://bigasterisk.com/magma/static/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png> .
-cmd:stopBackupPreDrew      a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :activityObject :drewPhone .
+cmd:startBackupPreDrew     a :Command, cmd:SupervisorStart;  rdfs:label "backup pre drew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :iconPath <http://bigasterisk.com/magma/static/Palm_Pre_Icons_by_thiago_silva/PNG/backup.png>; :buttonIcon "backupPreDrew" .
+cmd:stopBackupPreDrew      a :Command, cmd:SupervisorStop;   rdfs:label "stop backup pre drew"; :buttonIcon "stopBackupPreDrew"; :supervisorProcess sup:cmd_backupPreDrew; :verb :backsUp; :activityObject :drewPhone .
 
 cmd:startDashTheory        a :Command, cmd:SupervisorStart;  rdfs:label "start theory on dash"; :supervisorProcess sup:dashTheory .
 cmd:stopDashTheory         a :Command, cmd:SupervisorStop;   rdfs:label "stop theory on dash"; :supervisorProcess sup:dashTheory .
-cmd:trainnewspam           a :Command, cmd:SupervisorStart;  rdfs:label "train new spam"; :supervisorProcess sup:cmd_trainnewspam .
-cmd:seenlists              a :Command, cmd:SupervisorStart;  rdfs:label "seen mailing lists"; :supervisorProcess sup:cmd_seenlists .
+cmd:trainnewspam           a :Command, cmd:SupervisorStart;  rdfs:label "train new spam"; :supervisorProcess sup:cmd_trainnewspam; :buttonIcon "trainNewSpam" .
+cmd:seenlists              a :Command, cmd:SupervisorStart;  rdfs:label "seen mailing lists"; :supervisorProcess sup:cmd_seenlists; :buttonIcon "seenLists" .
 cmd:slashPandoraPause      a :Command, cmd:SupervisorStart;  rdfs:label "LR pandora pause"; :supervisorProcess sup:slashPandoraPause; :iconPath <http://bigasterisk.com/magma/tango/actions/media-playback-pause.png> .
 cmd:slashPandoraToddler    a :Command, cmd:SupervisorStart;  rdfs:label "LR pandora toddler"; :supervisorProcess sup:slashPandoraToddler; :iconPath <http://bigasterisk.com/magma/tango/actions/media-playback-start.png> .
 cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pandora lullabye"; :supervisorProcess sup:slashPandoraLullabye; :iconPath <http://bigasterisk.com/magma/tango/actions/media-playback-start.png> .
