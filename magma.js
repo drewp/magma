@@ -15,8 +15,10 @@ var express = require('express'),
     io = require('socket.io').listen(app);
 var Mu = require('Mu');
 var async = require('async');
+var httpProxy = require('http-proxy');
 
 Mu.templateRoot = '.';
+var proxy = new httpProxy.RoutingProxy();
 
 app.listen(8010);
 app.use(express.bodyParser()); // allows req.body.someParam
@@ -31,11 +33,22 @@ var am = assetManager({
 	route: /\/bundle\.js/,
 	dataType: 'js',
 	files: ["static/jquery-1.7.1.js", 
-		"static/jquery.isotope-1.5.07.js",
+		"static/jquery.isotope-1.5.07.js", // 5k min+gzip
+		debug ? "static/knockout-2.0.0.debug.js" : "static/knockout-2.0.0.js",
+		'parts/node/lib/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js',
 		"tomato_config.js",
 		"magma_gui.js"
 	       ],
 	debug: debug,
+	// also in map3.js
+	postManipulate: [
+	    function (file, path, index, isLast, callback) {
+		// minifier bug lets '++new Date' from
+		// socket.io.js into the result, which is a parse error.
+		callback(null, file.replace(/\+\+new Date/mig, 
+					    '\+\(\+new Date)'));
+	    }
+	]
     },
     'css' : {
 	path: __dirname + "/",
@@ -67,14 +80,6 @@ io.sockets.on('connection', function (socket) {
     socket.on('disconnect', function (reason) {
 	console.log("disconnect", socket.id);
     });
-    socket.emit("ping","3");
-    socket.join("updates");
-
-    setTimeout(function () {
-	console.log("pinging"); 
-	socket.emit("ping", "2");
-	io.sockets.in("updates").emit("ping", "1");
- }, 1000);
 });
 
 function httpGet(url, headers, cb) {
@@ -84,9 +89,10 @@ function httpGet(url, headers, cb) {
     shred.get({
 	url: url,
 	headers: headers,
+	//timeout: {seconds: 2},
 	on: {
 	    200: function (response) {
-		//console.log(url, "in", +new Date() - t1);
+		console.log(url, "in", +new Date() - t1);
 		cb(null, response.content.body);
 	    },
 	    response: function (response) {
@@ -97,17 +103,31 @@ function httpGet(url, headers, cb) {
     });
 }
 
+var staticDir = express.static(__dirname + '/static/');
+app.get("/icons", function (req, res) {
+    req.url = "icons-nq8.png";
+    return staticDir(req, res); 
+});
+
+["/services", "/addCommand", "/microblogUpdate", "/garage/*", "/houseActivity"
+].forEach(function (url) {
+    var dest = {host: 'localhost', port: 8006};
+    app.get(url, function (req, res) { proxy.proxyRequest(req, res, dest); });
+    app.post(url, function (req, res) { proxy.proxyRequest(req, res, dest); });
+});
+
 app.get("/", function (req, res) {
     res.header("content-type", "application/xhtml+xml");
 
+    var ch = {"Cookie": req.header("cookie")};
     var hh = {"x-foaf-agent" : req.header("x-foaf-agent")};
     async.parallel(
 	{
-	    loginBar: async.apply(httpGet, "http://bang:9023/_loginBar", {"Cookie": req.header("cookie")}),
+	    loginBar: async.apply(httpGet, "http://bang:9023/_loginBar", ch),
 	    recentTransactions: async.apply(httpGet, "http://bang:9094/", hh),
 	    wifiTable: async.apply(httpGet, "http://bang:9070/table", hh),
 	    commands: async.apply(httpGet, "http://bang:8006/commands", hh),
-	    tempSection: async.apply(httpGet, "http://bang:8006/tempSection", hh),
+	    tempSection: async.apply(httpGet,"http://bang:8006/tempSection",hh),
 	    nagios: async.apply(httpGet, "http://bang:8012/", hh)
 	}, 
 	function (err, r) {
@@ -141,3 +161,15 @@ app.get("/", function (req, res) {
 		      });
 	});
 });    
+
+
+var internal = express.createServer();
+internal.listen(8014);
+internal.use(express.bodyParser());
+console.log('internal connections to http://localhost:8014/');
+
+internal.post("/frontDoorChange", function (req, res) {
+    io.sockets.emit("frontDoorChange", req.body);
+    res.send("");
+});
+

@@ -147,7 +147,7 @@ class HomePage(rend.Page):
      SELECT DISTINCT ?label ?icon ?linksTo WHERE {
        ?user cl:seesCommand ?uri .
        ?uri rdfs:label ?label .
-       OPTIONAL { ?uri cl:iconPath ?icon }
+       OPTIONAL { ?uri cl:buttonIcon ?icon }
        OPTIONAL { ?uri cl:linksTo ?linksTo }
      } ORDER BY ?label 
     """, initBindings={"uri" : cmd})
@@ -161,7 +161,7 @@ class HomePage(rend.Page):
 
         button = [row['label'], " ", score]
         if row['icon']:
-            button = [T.img(src=row['icon'], alt='icon'),
+            button = [T.div(class_="icon %s" % row['icon']),
                       T.div(class_='label')[button]]
 
         buttonClass = ''
