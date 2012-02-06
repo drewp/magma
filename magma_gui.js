@@ -63,31 +63,73 @@ $(function () {
 	return false;
     });
 
-/*
-nowjs not working yet
-    now.updateMsg = function (main, bot) {
-	$("#frontDoorLcd").val(main);
-	$("#frontDoorBottomLine").val(bot);
-	// restore cursor position if they were editing?
-    }
-    $("#frontDoorLcd").keyup(function () { now.editedMain($(this).val()); });
-*/
+    function FrontDoor() {
+	var self = this;
 
+	this.message = ko.observable("...");
 /*
-    (function () {
-// needs to route to frontdoormsg instead, who could probably render this whole widget
-	$.get("frontDoor/lcd/lastLine", function (data){ $("#frontDoorLastLine").val(data) });
-	var fd = $("#frontDoorLcd")
-	$.get("frontDoor/lcd", function (data){ fd.val(data) });
-	
-	fd.keyup(function() {
-	    $("#frontDoorSave").css("color", "yellow");
-	    $.post("frontDoor/lcd", {message: fd.val()}, function () {
+	    read: function () {
+		$.get("frontDoor/message", function (data){ 
+		    self.message(data);
+//not going great. switch to normal obs
+		});
+		return _message;
+	    },
+	    write: function (v) {
+		_message = v;
+		console.log("wr", v);
+	    }
+	}),
+*/
+	this.lastLine =  ko.observable("...");
+	this.lastLineEnable = ko.observable(false);
+    };
+
+    var frontDoor = new FrontDoor
+    ko.applyBindings(frontDoor, document.getElementById("frontDoor"));
+
+    var loading = false;
+
+    function frontDoorUpdate() {
+	$.get("frontDoor/message", function (data){ 
+	    loading = true;
+	    frontDoor.message(data);
+	    loading = false;
+	});
+
+	$.get("frontDoor/lastLine", function (data){
+	    frontDoor.lastLine(data) 
+	});
+    }
+    frontDoorUpdate();
+    frontDoor.message.subscribe(function (msg) {
+	if (loading) {
+	    return;
+	}
+	$("#frontDoorSave").css("color", "yellow");
+	// this put is echoing back as a change event, which makes
+	// another socketio request and sends me fetching the new
+	// value (which is probably what I just typed)
+	$.ajax({
+	    type: "PUT",
+	    url: "frontDoor/message", 
+	    data: msg, 
+	    success: function () {
 		$("#frontDoorSave").css("color", "black");
-	    });
+	    }
+	});
+    });
+
+    
+    //$.get("frontDoor/lastLine", function (data){ frontDoor.lastLine(data) });
+
+	
+/*
+	fd.keyup(function() {
 	});
     })();
 */
+
     function isotopeSections() {
 	var iso = $('#sections').isotope({
 	    itemSelector : '.section',
@@ -104,10 +146,16 @@ nowjs not working yet
 	setTimeout(isotopeSections, 50);
     }
     var socket = io.connect('/magma/', {resource: "magma/socket.io"});
-    //socket.emit('join', 'hey');
-    socket.on('ping', function (r) { 
-	$("#ping").text(r); 
-    });
 
+    var disconnected = $("#disconnected");
+    socket.on('reconnect_failed', function (r) { disconnected.show(); });
+    socket.on("error",            function (r) { disconnected.show(); });
+    socket.on("disconnect",       function () { disconnected.show(); });
+    socket.on("connect_failed",   function (r) { disconnected.show(); })
+    socket.on("connecting",       function (how) { disconnected.hide(); });
+
+    socket.of("").on("frontDoorChange", function (r) {
+	frontDoorUpdate();
+    });
 
 });

@@ -40,7 +40,7 @@
     <div id="sections"> 
 
       <div class="section">
-	<p>Server connection: <span id="ping"/></p>
+	<p id="disconnected">No live updates</p>
 	<p><a href="houseActivity" style="text-decoration: underline;">Activity feeds</a></p>
 {{^notPhone}}
 	<p><a href="#commands" style="text-decoration: underline; display: inline-block; padding: 30px">Skip to commands</a></p>
@@ -92,10 +92,9 @@
 
       </div>
 
-
       <div class="section">
 	<div class="links music">
-	  <img src="tango/mimetypes/sound.png"/>
+	  <div class="icon music"/>
 	  <div><a href="/music/dash/playlist">drew's desk</a></div>
 	  <div>
 	    <a href="/music/slash/playlist">living room</a> 	  
@@ -107,10 +106,10 @@
 	</div>
       </div>
 
-      <div class="section">
+      <div class="section" id="frontDoor">
 	Front door message:
-	<div><textarea id="frontDoorLcd" rows="7"></textarea></div>
-	<div><input type="text" id="frontDoorLastLine" disabled="1"/></div>
+	<div><textarea rows="3" cols="21" data-bind='value: message, valueUpdate: "afterkeydown"'></textarea></div>
+	<div><input type="text" data-bind="enable: lastLineEnable, value: lastLine"/></div>
 	<div id="frontDoorSave" style="color: #000">Saving...</div>
       </div>
 
