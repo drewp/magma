@@ -1,5 +1,5 @@
 from __future__ import division
-import time, re, os, stat, jsonlib, datetime, urllib
+import time, re, os, stat, jsonlib, datetime, urllib, logging
 from binascii import hexlify
 from twisted.web.client import getPage
 from twisted.internet.defer import inlineCallbacks, returnValue
@@ -19,6 +19,9 @@ render = render_genshi('.', auto_reload=True)
 import activitystream
 reload(activitystream)
 ActivityStream = activitystream.ActivityStream
+
+logging.basicConfig()
+log = logging.getLogger()
 
 import stripchart
 reload(stripchart)
@@ -188,6 +191,7 @@ class HomePage(rend.Page):
 
     def child_addCommand(self, ctx):
         request = inevow.IRequest(ctx)
+        log.warn("addCommand", request)
         if request.method != "POST":
             # there's a correct http status for this
             raise ValueError("addCommand only takes POST")

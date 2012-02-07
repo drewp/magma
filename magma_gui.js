@@ -90,10 +90,14 @@ $(function () {
 
     var loading = false;
 
+    var pendingUpdate = null;
+
     function frontDoorUpdate() {
+	$("#frontDoorSave").text("sync");
 	$.get("frontDoor/message", function (data){ 
 	    loading = true;
 	    frontDoor.message(data);
+	    $("#frontDoorSave").text("");
 	    loading = false;
 	});
 
@@ -106,7 +110,7 @@ $(function () {
 	if (loading) {
 	    return;
 	}
-	$("#frontDoorSave").css("color", "yellow");
+	$("#frontDoorSave").text("save");
 	// this put is echoing back as a change event, which makes
 	// another socketio request and sends me fetching the new
 	// value (which is probably what I just typed)
@@ -115,21 +119,12 @@ $(function () {
 	    url: "frontDoor/message", 
 	    data: msg, 
 	    success: function () {
-		$("#frontDoorSave").css("color", "black");
+		$("#frontDoorSave").text("");
 	    }
 	});
     });
 
     
-    //$.get("frontDoor/lastLine", function (data){ frontDoor.lastLine(data) });
-
-	
-/*
-	fd.keyup(function() {
-	});
-    })();
-*/
-
     function isotopeSections() {
 	var iso = $('#sections').isotope({
 	    itemSelector : '.section',
@@ -145,17 +140,35 @@ $(function () {
     if (notPhone) {
 	setTimeout(isotopeSections, 50);
     }
+
     var socket = io.connect('/magma/', {resource: "magma/socket.io"});
 
     var disconnected = $("#disconnected");
-    socket.on('reconnect_failed', function (r) { disconnected.show(); });
-    socket.on("error",            function (r) { disconnected.show(); });
-    socket.on("disconnect",       function () { disconnected.show(); });
-    socket.on("connect_failed",   function (r) { disconnected.show(); })
-    socket.on("connecting",       function (how) { disconnected.hide(); });
+
+    ["reconnect_failed", "error", "disconnect", "connect_failed"
+    ].forEach(function (disconnectEvent) {
+	socket.on(disconnectEvent, function (r) { 
+	    disconnected.show(); 
+	    $(window).trigger("relayout"); 
+	});
+    });
+    socket.on("connecting", function (how) { 
+	disconnected.hide(); 
+	$(window).trigger("relayout"); 
+    });
 
     socket.of("").on("frontDoorChange", function (r) {
-	frontDoorUpdate();
+	clearTimeout(pendingUpdate);
+	pendingUpdate = setTimeout(frontDoorUpdate, 1200);
+	$("#frontDoorSave").text("sync");
     });
+
+    function updateSensors(display) {
+	display.forEach(function (row) {
+	    $("#"+row.id).attr("class", row.cssClass).text(row.value);
+	});
+    }
+    updateSensors(initialSensorDisplay);
+    socket.of("").on("sensorChange", updateSensors);
 
 });
