@@ -66,8 +66,17 @@
       </div>
 
       <div class="section">
-	{{> tempsection}}
+	<h2>Sensors</h2>
+	<div class="sensor">Front door: <span id="dev-frontDoorMotion"/> <span id="dev-frontDoorOpen"/></div>
+	<div class="sensor">Theater door: <span id="dev-theaterDoorOutsideMotion"/> <span id="dev-theaterDoorOpen"/></div>
+      </div>
 
+      <div class="section">
+	<h2>Temperatures</h2>
+	{{> tempsection}}
+      </div>
+
+      <div class="section">
 	<h2>Power meter</h2>
 	Units don't seem to be in watts, yet.
 
@@ -94,7 +103,7 @@
 
       <div class="section">
 	<div class="links music">
-	  <div class="icon music"/>
+	  <h2><div class="icon music"/>Music</h2>
 	  <div><a href="/music/dash/playlist">drew's desk</a></div>
 	  <div>
 	    <a href="/music/slash/playlist">living room</a> 	  
@@ -107,24 +116,24 @@
       </div>
 
       <div class="section" id="frontDoor">
-	Front door message:
+	<h2>Front door message</h2>
 	<div><textarea rows="3" cols="21" data-bind='value: message, valueUpdate: "afterkeydown"'></textarea></div>
 	<div><input type="text" data-bind="enable: lastLineEnable, value: lastLine"/></div>
-	<div id="frontDoorSave" style="color: #000">Saving...</div>
+	<div id="frontDoorSave"></div>
       </div>
 
       <div class="section">
-	<div><a href="/nagios/cgi-bin/status.cgi?host=all">nagios service monitor</a></div>
+	<h2><a href="/nagios/cgi-bin/status.cgi?host=all">Service monitor</a></h2>
 	<div class="services">{{{nagios}}}</div>
       </div>
 
       <div class="section">
-	<div>USAA Transactions:</div>
+	<h2>USAA Transactions:</h2>
 	{{{recentTransactions}}}
       </div>
 
       <div class="section">
-	<div>Wifi users</div>
+	<h2>Wifi users</h2>
 	{{{wifiTable}}}
 
 	<div>Routers: <a href="/tomato1/status-devices.asp">bigasterisk3</a> <a href="/tomato2/status-devices.asp">bigasterisk4</a></div>
@@ -198,7 +207,7 @@
   
   {{{loginBar}}}
 
-   <script type="text/javascript"> var notPhone=false; </script>
+   <script type="text/javascript"> var notPhone=false; var initialSensorDisplay={{{sensorDisplay}}};</script>
 {{#notPhone}}
    <script type="text/javascript"> notPhone=true; </script>
 {{/notPhone}}

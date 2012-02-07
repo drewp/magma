@@ -16,12 +16,13 @@ var express = require('express'),
 var Mu = require('Mu');
 var async = require('async');
 var httpProxy = require('http-proxy');
+var rdf = require('./rdf.js');
 
 Mu.templateRoot = '.';
 var proxy = new httpProxy.RoutingProxy();
 
 app.listen(8010);
-app.use(express.bodyParser()); // allows req.body.someParam
+
 //app.use(express.static(__dirname+"/static", {maxAge: 86400*10*1000})); // may never be used if i get everything into assetManager
 if (debug) app.use(Connect.logger());
 //app.use(Connect.conditionalGet());
@@ -45,8 +46,10 @@ var am = assetManager({
 	    function (file, path, index, isLast, callback) {
 		// minifier bug lets '++new Date' from
 		// socket.io.js into the result, which is a parse error.
-		callback(null, file.replace(/\+\+new Date/mig, 
-					    '\+\(\+new Date)'));
+		callback(null, file
+			 .replace(/\+\+new Date/mig, '\+\(\+new Date)')
+			 // in knockout
+			 .replace(/\+\+\+([a-z]+)/g, '\+(\+\+$1)'));
 	    }
 	]
     },
@@ -93,7 +96,7 @@ function httpGet(url, headers, cb) {
 	on: {
 	    200: function (response) {
 		console.log(url, "in", +new Date() - t1);
-		cb(null, response.content.body);
+		cb(null, response.getHeader('Content-Type') == "application/json" ? response.content.data : response.content.body);
 	    },
 	    response: function (response) {
 		inspect(response);
@@ -108,12 +111,15 @@ app.get("/icons", function (req, res) {
     req.url = "icons-nq8.png";
     return staticDir(req, res); 
 });
+app.get("/static/json-template.js", function (req, res) {
+    req.url = "json-template.js";
+    return staticDir(req, res);
+});
 
 ["/services", "/addCommand", "/microblogUpdate", "/garage/*", "/houseActivity"
 ].forEach(function (url) {
     var dest = {host: 'localhost', port: 8006};
-    app.get(url, function (req, res) { proxy.proxyRequest(req, res, dest); });
-    app.post(url, function (req, res) { proxy.proxyRequest(req, res, dest); });
+    app.all(url, function (req, res) { proxy.proxyRequest(req, res, dest); });
 });
 
 app.get("/", function (req, res) {
@@ -128,7 +134,8 @@ app.get("/", function (req, res) {
 	    wifiTable: async.apply(httpGet, "http://bang:9070/table", hh),
 	    commands: async.apply(httpGet, "http://bang:8006/commands", hh),
 	    tempSection: async.apply(httpGet,"http://bang:8006/tempSection",hh),
-	    nagios: async.apply(httpGet, "http://bang:8012/", hh)
+	    nagios: async.apply(httpGet, "http://bang:8012/", hh),
+	    sensorGraphs: async.apply(httpGet, "http://bang:9071/ntGraphs", hh),
 	}, 
 	function (err, r) {
 	    if (err) {
@@ -147,6 +154,7 @@ app.get("/", function (req, res) {
 		salt: +new Date,
 		showMunin: true,
 		temps: JSON.parse(r.tempSection),
+		sensorDisplay: JSON.stringify(displayForSensorGraphs(r.sensorGraphs)),
 		bundleChecksum: am.cacheHashes['js'],
 		cssChecksum: am.cacheHashes['css']
 	    };
@@ -170,6 +178,47 @@ console.log('internal connections to http://localhost:8014/');
 
 internal.post("/frontDoorChange", function (req, res) {
     io.sockets.emit("frontDoorChange", req.body);
-    res.send("");
+    res.send("ok");
 });
 
+rdf.prefixes.addAll({
+    foaf: "http://xmlns.com/foaf/0.1/",
+    bigast: "http://bigasterisk.com/",
+    room: "http://projects.bigasterisk.com/room/",
+    dev: "http://projects.bigasterisk.com/device/",
+    env: "http://projects.bigasterisk.com/device/environment"
+});
+
+function displayForSensorGraphs(graphs) {
+    var g = rdf.createGraph();
+    rdf.parseNT(graphs.input, null, null, null, g)
+    rdf.parseNT(graphs.inferred, null, null, null, g)
+
+    var display = [];
+
+    [{subject: "dev:frontDoorMotion", normal: "room:noMotion", 
+      normalLabel: "no motion", activeLabel: "motion"},
+     {subject: "dev:frontDoorOpen", normal: "room:closed", 
+      normalLabel: "closed", activeLabel: "open"},
+     {subject: "dev:theaterDoorOutsideMotion", normal: "room:noMotion", 
+      normalLabel: "no motion", activeLabel: "motion"},
+     {subject: "dev:theaterDoorOpen", normal: "room:closed", 
+      normalLabel: "closed", activeLabel: "open"},
+    ].forEach(function (row) {
+	g.match(rdf.iri(row.subject)).forEach(function (t, g) {
+	    var isNormal = t.object.equals(rdf.iri(row.normal));
+	    display.push({
+		id: row.subject.replace(":", "-"), 
+		cssClass: isNormal ? "normal" : "active",
+		value: isNormal ? row.normalLabel : row.activeLabel
+	    });
+	});
+    });
+    return display;
+}
+
+internal.post("/reasoningChange", function (req, res) {
+    var display = displayForSensorGraphs(req.body);
+    io.sockets.emit("sensorChange", display);
+    res.send("ok");
+});
