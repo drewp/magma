@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta name="viewport" content="width=240; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
+    <meta name="viewport" content="width=480; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
     <title>magma</title>
     <link rel="Stylesheet" type="text/css" href="bundle.css?v={{cssChecksum}}" media="all"/>
 
@@ -32,7 +32,7 @@
   table.status { border: 1px solid gray; border-collapse: collapse; }
    </style>
 
-    <meta name="viewport" content="width=240; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
+    <meta name="viewport" content="width=480; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
   </head>
   <body>
 
@@ -53,8 +53,8 @@
 	<div class="imgFrame"> <a href="/cam/garage">garage         <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 -216px; width: 106px; height: 72px"/></a> </div>
 	<div class="imgFrame"> <a href="/cam/frontDoor">front door  <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 -288px; width: 106px; height: 72px"/></a> </div>
 	<div class="imgFrame"> <a href="/cam/ari">ari               <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 0px; width: 106px; height: 72px"/></a> </div>
-	<div class="imgFrame" style="text-align: center"> <a href="/cam/all">All cameras at once</a></div>
 	<div style="clear:both;"/>
+	<div > <a href="/cam/all">All cameras at once</a></div>
       </div>
 
       <div class="section">
@@ -162,7 +162,7 @@
     <div class="section">
       <div class="graph" style="height: 150px">
 	<h1>phone batteries</h1>
-	<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=400&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-56hours&amp;yMin=0&amp;fontSize=12&amp;lineWidth=6"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=keepLastValue(system.phone.drew.battery_mAh)&amp;target=keepLastValue(system.phone.kelsi.battery_mAh)&amp;from=-8hours&amp;yMin=0&amp;fontSize=7&amp;lineWidth=3&amp;salt={{salt}}" width="158" height="125"/></a>
+	<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=400&amp;target=keepLastValue(system.phone.drewepic.battery_pct)&amp;from=-56hours&amp;yMin=0&amp;yMax=100&amp;fontSize=12&amp;lineWidth=6"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=keepLastValue(system.phone.drewepic.battery_pct)&amp;from=-8hours&amp;yMin=0&amp;yMax=100&amp;fontSize=7&amp;lineWidth=3&amp;salt={{salt}}" width="158" height="125"/></a>
       </div>
 
       <div class="graph">

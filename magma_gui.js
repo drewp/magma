@@ -18,7 +18,7 @@ $(function () {
 	    graphImg.attr(
 		"src", "http://graphite.bigasterisk.com/render/?"+
 		    $.param({
-			width: "240", height: "250",
+			width: "400", height: "250",
 			target: ["system.house.temp.downstairs",
 				 "system.house.temp.ariroom",
 				 "keepLastValue(system.house.temp.bedroom)",
@@ -66,6 +66,7 @@ $(function () {
     function FrontDoor() {
 	var self = this;
 
+// goal is to make this much shorter and especially to stop the ringing effect where i get my own updates after a big delay. if i have sent an update that's later than the incoming one, ignore that incoming one (and wait for the echo of my own one). can we do this with version counters to avoid dealing with clock skew? i say i'm editing 15 to make 15.1, and if i receive 14 i can ignore it. Or just delay my updates?
 	this.message = ko.observable("...");
 /*
 	    read: function () {

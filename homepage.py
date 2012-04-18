@@ -118,7 +118,7 @@ class HomePage(rend.Page):
         returnValue(Page())
         
     @inlineCallbacks
-    def render_commands(self, ctx, data, columns=2):
+    def render_commands(self, ctx, data, columns=3):
         trs = [T.tr['']]
 
         response = yield fetch("http://bang:8007/commands",
@@ -145,7 +145,7 @@ class HomePage(rend.Page):
         returnValue(T.table[trs])
 
     def _buttonForm(self, cmd, score):
-
+        # note that this reads from sesame, while the cmd came from a fresh read of config.n3
         matches = self.graph.queryd("""
      SELECT DISTINCT ?label ?icon ?linksTo WHERE {
        ?user cl:seesCommand ?uri .

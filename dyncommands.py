@@ -17,8 +17,11 @@ from rdflib import Namespace, RDF, URIRef
 from sparqlhttp.graph2 import SyncGraph
 from FuXi.Rete.RuleStore import N3RuleStore
 from cycloneerr import PrettyErrorHandler
-from inference import parseTrig, infer
 from commandinference.db import NS
+
+sys.path.append("/my/proj/homeauto/service/reasoning")
+from inference import parseTrig, infer
+
 
 CL = Namespace("http://bigasterisk.com/ns/command/v1#")
 ROOM = Namespace("http://projects.bigasterisk.com/room/")
