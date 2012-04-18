@@ -82,6 +82,15 @@ cmd:heaterOn20Min a cmd:Heater;
   a cmd:TimedOn;
   :onForMins "20" .
 
+cmd:heaterOn40Min a cmd:Heater; 
+  :iconPath <http://bigasterisk.com/magma/static/heater.png>;
+  :buttonIcon "heaterOn";
+  rdfs:label "Heater on for 40min";
+  :verb :turnOn;
+  :activityObject :heater;
+  a cmd:TimedOn;
+  :onForMins "40" .
+
 :operates rdfs:label "operates" .
 
 :header rdfs:label "heater"; 
@@ -200,6 +209,7 @@ cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pand
 <http://bigasterisk.com/kelsi/foaf.rdf#kelsi> :seesCommand 
   cmd:heaterOff,
   cmd:heaterOn20Min,
+  cmd:heaterOn40Min,
   cmd:garageDoor,
   cmd:frontLightOn,
   cmd:frontLightOff,
@@ -211,6 +221,7 @@ cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pand
 #  cmd:deckLightOn, cmd:deckLightOff,
   cmd:heaterOff,
   cmd:heaterOn20Min,
+  cmd:heaterOn40Min,
   cmd:garageDoor,
   cmd:frontLightOn,
   cmd:frontLightOff,
