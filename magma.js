@@ -99,8 +99,8 @@ function httpGet(url, headers, cb) {
 		cb(null, response.getHeader('Content-Type') == "application/json" ? response.content.data : response.content.body);
 	    },
 	    response: function (response) {
-		inspect(response);
-		cb(null, "error: "+response);
+		console.log("error", url, response);
+		cb(null, "error from "+url);
 	    }
 	}
     });
@@ -145,7 +145,7 @@ app.get("/", function (req, res) {
 	    r.wifiTable = r.wifiTable.replace(/^[\s\S]*?<div/, "<div");
 
 	    var ctx = {
-		notPhone: !req.header("user-agent").match(/webOS|iPhone/),
+		notPhone: !req.header("user-agent").match(/webOS|iPhone|Mobile/),
 		loginBar: r.loginBar,
 		wifiTable: r.wifiTable,
 		commands: r.commands,

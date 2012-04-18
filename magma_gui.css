@@ -27,7 +27,7 @@ h2 {
     margin: 3px 3px 3px 0;
     padding: 3px 0;
     overflow: hidden;
-    width: 320px;
+    width: 480px;
     position: relative;
 } 
 
@@ -262,7 +262,7 @@ a img {
     padding: 4px;
 }
 .graphLayout {
-    width: 320px;
+    width: 480px;
     height: 300px;
 }
 .graphLayout > a > img {
