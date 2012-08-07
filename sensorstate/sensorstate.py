@@ -11,7 +11,7 @@ from twisted.web.client import getPage
 from twisted.python import log
 from rdflib.Graph import ConjunctiveGraph
 from rdflib import Namespace, Literal, URIRef, RDFS, RDF
-sys.path.extend(["../../room", "/my/proj/room"])
+sys.path.extend(["/my/proj/homeauto/service/reasoning"])
 from inference import parseTrig
 sys.path.extend(["../../ffg/ffg", '/my/proj/ffg/ffg'])
 from evtiming import logTime
