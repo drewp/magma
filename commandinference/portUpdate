@@ -8,7 +8,7 @@ This can run anywhere; it listens for command pings and PUTs pin settings to oth
 """
 import sys, time, atexit, logging, traceback, urllib, json
 
-sys.path.append('..') # for commandinference
+sys.path.append('.') # for commandinference
 from twisted.internet import reactor
 from rdflib import RDF, URIRef
 import restkit

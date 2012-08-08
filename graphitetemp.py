@@ -1,4 +1,4 @@
-import restkit, logging, jsonlib, sys, urllib
+import restkit, logging, sys, urllib
 log = logging.getLogger()
 
 def httpGet(url, params):

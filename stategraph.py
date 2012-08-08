@@ -1,7 +1,6 @@
 import datetime, os, inspect
 from dateutil.tz import tzlocal
-from rdflib.Graph import Graph
-from rdflib import Namespace, Literal
+from rdflib import Graph, Namespace, Literal
 DCTERMS = Namespace("http://purl.org/dc/terms/")
 
 class StateGraph(object):
