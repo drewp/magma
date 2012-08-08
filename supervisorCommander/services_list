@@ -75,6 +75,7 @@ def httpChecks(host, serviceName):
         ('bang', 'theaterArduino_9056')    : [('arduino ping', '/', '')],
         ('bang', 'theaterArduino_watchpins_9069') : [('theater arduino watchpins', '/graph', '')],
         ('bang', 'tomatoWifi_9070')        : [('tomatoWifi', '/', '')],
+        ('bang', 'dpms_9095')              : [('dpms', '/', '')],
         ('bang', 'webcam_9053')            : [('cam bedroom', '/0', NOMAIL)],
         }.get((host, serviceName), [])
     

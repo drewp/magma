@@ -69,6 +69,7 @@
 	<h2>Sensors</h2>
 	<div class="sensor">Front door: <span id="dev-frontDoorMotion"/> <span id="dev-frontDoorOpen"/></div>
 	<div class="sensor">Theater door: <span id="dev-theaterDoorOutsideMotion"/> <span id="dev-theaterDoorOpen"/></div>
+	<div class="sensor">Bedroom: <span id="dev-bedroomMotion"/></div>
       </div>
 
       <div class="section">

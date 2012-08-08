@@ -353,6 +353,11 @@ color: yellow;
  white-space: nowrap;
 }
 .transactions tr.recent { color: yellow; }
+.transactions tr.private td.amt { color: black; background: black; }
 
 th.status img { display: none; }
 th.status { white-space: nowrap; }
+.services :nth-child(6) { display: none;}
+.services :nth-child(5) { display: none;}
+.services :nth-child(4) { display: none;}
+.services td { padding: 1px 2px; }
