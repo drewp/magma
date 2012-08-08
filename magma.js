@@ -92,7 +92,7 @@ function httpGet(url, headers, cb) {
     shred.get({
 	url: url,
 	headers: headers,
-	//timeout: {seconds: 2},
+	timeout: {seconds: 2}, // no effect :( :(
 	on: {
 	    200: function (response) {
 		console.log(url, "in", +new Date() - t1);
@@ -138,6 +138,7 @@ app.get("/", function (req, res) {
 	    sensorGraphs: async.apply(httpGet, "http://bang:9071/ntGraphs", hh),
 	}, 
 	function (err, r) {
+	    console.log("async done")
 	    if (err) {
 		throw err;
 	    }
@@ -204,6 +205,8 @@ function displayForSensorGraphs(graphs) {
       normalLabel: "no motion", activeLabel: "motion"},
      {subject: "dev:theaterDoorOpen", normal: "room:closed", 
       normalLabel: "closed", activeLabel: "open"},
+     {subject: "dev:bedroomMotion", normal: "room:noMotion", 
+      normalLabel: "no motion", activeLabel: "motion"},
     ].forEach(function (row) {
 	g.match(rdf.iri(row.subject)).forEach(function (t, g) {
 	    var isNormal = t.object.equals(rdf.iri(row.normal));
