@@ -3,7 +3,7 @@
 var debug=true;
 var inspect = require('eyes').inspector({styles: {all: 'magenta'}, 
 					 maxLength: 20000});
-var Shred = require('shred');
+var request = require('request');
 var soupselect = require('soupselect');
 var htmlparser = require('htmlparser');
 var fs     = require('fs');
@@ -11,17 +11,20 @@ var Connect = require('connect');
 var assetManager = require('connect-assetmanager');
 var assetHandler = require('connect-assetmanager-handlers');
 var express = require('express'),
-    app = express.createServer(),
-    io = require('socket.io').listen(app);
+    app = express(),
+    http = require('http'),
+    server = http.createServer(app),
+    io = require('socket.io').listen(server);
 var Mu = require('Mu');
 var async = require('async');
 var httpProxy = require('http-proxy');
 var rdf = require('./rdf.js');
-
+var log = require('tracer').colorConsole();
+var getOpenvpnClients = require("./openvpnstatus.js").getOpenvpnClients;
 Mu.templateRoot = '.';
 var proxy = new httpProxy.RoutingProxy();
 
-app.listen(8010);
+server.listen(8010);
 
 //app.use(express.static(__dirname+"/static", {maxAge: 86400*10*1000})); // may never be used if i get everything into assetManager
 if (debug) app.use(Connect.logger());
@@ -64,7 +67,7 @@ var am = assetManager({
 app.use(am);
 
 
-console.log('serving on http://localhost:8010/');
+log.info('serving on http://localhost:8010/');
 
 io.configure(function () {
     io.set('transports', ['xhr-polling']);
@@ -79,30 +82,25 @@ io.configure(function () {
 });
 
 io.sockets.on('connection', function (socket) {
-    console.log("connect", socket.id)
+    log.info("connect", socket.id)
     socket.on('disconnect', function (reason) {
-	console.log("disconnect", socket.id);
+	log.info("disconnect", socket.id);
     });
 });
 
 function httpGet(url, headers, cb) {
     /* cb is called with (error, result) but i didn't implement errors yet */
-    var shred = new Shred;
+
     var t1 = +new Date();
-    shred.get({
+    request.get({
 	url: url,
 	headers: headers,
-	timeout: {seconds: 2}, // no effect :( :(
-	on: {
-	    200: function (response) {
-		console.log(url, "in", +new Date() - t1);
-		cb(null, response.getHeader('Content-Type') == "application/json" ? response.content.data : response.content.body);
-	    },
-	    response: function (response) {
-		console.log("error", url, response);
-		cb(null, "error from "+url);
-	    }
-	}
+	timeout: 1000,
+
+    }, function (error, response, body) {
+	log.info(url, "returned in", +new Date() - t1, error);
+	cb(error, body);
+	// old shred one: cb(null, response.getHeader('Content-Type') == "application/json" ? response.content.data : response.content.body);
     });
 }
 
@@ -172,10 +170,10 @@ app.get("/", function (req, res) {
 });    
 
 
-var internal = express.createServer();
+var internal = express();
 internal.listen(8014);
 internal.use(express.bodyParser());
-console.log('internal connections to http://localhost:8014/');
+log.info('internal connections to http://localhost:8014/');
 
 internal.post("/frontDoorChange", function (req, res) {
     io.sockets.emit("frontDoorChange", req.body);
