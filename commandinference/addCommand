@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!../buildout_bin/python
 """
 ./addCommand -c http://example.com/ -u "http://bigasterisk.com/foaf.rdf#drewp"
 
@@ -6,7 +6,6 @@ todo: check this command?
 "
 """
 import sys
-sys.path.append("..")
 from cmdline import prettyCommand, uriFromArg
 from dbclient import nowLiteral, getCommandLog
 import optparse, time

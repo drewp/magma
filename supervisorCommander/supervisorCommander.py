@@ -18,6 +18,7 @@ from optparse import OptionParser
 from twisted.python import log
 from twisted.internet import reactor
 from rdflib import URIRef, Literal, RDFS, RDF
+RDFS.uri = RDFS.RDFSNS
 from commandinference.dbclient import getCommandLog
 from commandinference.db import CMD, CL
 

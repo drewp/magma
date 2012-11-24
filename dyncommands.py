@@ -17,7 +17,9 @@ from rdflib import Namespace, RDF, URIRef
 from sparqlhttp.graph2 import SyncGraph
 from FuXi.Rete.RuleStore import N3RuleStore
 from cycloneerr import PrettyErrorHandler
-from commandinference.db import NS
+from rdflib import RDFS
+RDFS.uri = RDFS.RDFSNS # compat with rdflib 2.4.2
+from commandinference.db import NS, CMD
 
 sys.path.append("/my/proj/homeauto/service/reasoning")
 from inference import parseTrig, infer

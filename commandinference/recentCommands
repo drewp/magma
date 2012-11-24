@@ -1,7 +1,4 @@
-#!/usr/bin/python
-import sys
-sys.path.append("..")
-
+#!../buildout_bin/python
 from cmdline import getCommandLog, prettyCommand, uriFromArg
 import optparse
 

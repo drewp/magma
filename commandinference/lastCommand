@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!../buildout_bin/python
 from cmdline import getCommandLog, prettyCommand, uriFromArg
 import optparse
 
