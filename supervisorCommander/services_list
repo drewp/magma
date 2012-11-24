@@ -53,6 +53,7 @@ def httpChecks(host, serviceName):
         #('slash', 'webcam_9021') : [('cam laundry', '/laundry', NOMAIL)], # offline
         ('slash', 'webcam_9023') : [('cam frontDoor', '/frontDoor', NOMAIL)],
         ('slash', 'frontDoorArduino_9080') : [('front door arduino', '/', '')],
+        ('slash', 'usbReset_9100') : [('usbReset', '/', '')],
         ('dash', 'shiftweb_9014'): [('shiftweb', '/', '')],
         ('star', 'webcam_9016'): [('cam ari', '/0', '')],
         ('slash', 'websound_9049'): [('websound', '/', '')],
@@ -62,7 +63,6 @@ def httpChecks(host, serviceName):
         ('bang', 'freeway_8009')           : [('freeway root', '/', '')],
         ('bang', 'frontDoorMessage_9081')  : [('frontDoorMessage', '/', '')],
         ('bang', 'magma_dyncommands_8007') : [('commands', '/commands', '')],
-        ('bang', 'magma_old_8006')         : [('commands rendering', '/commands', '')],
         ('bang', 'nginx')                  : [('bigasterisk home page', '/', '')], # wrong vhost?
         ('bang', 'openid_proxy_9023')      : [('loginBar', '/_loginBar', '')],
         ('bang', 'photo_8030')             : [('photo', '/events', '')],
