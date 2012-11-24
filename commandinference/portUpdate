@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-watch for heater commands and send pin signals to io.solarisParport
+watch for heater commands and send pin signals to arduino servers
 
 also watch commands for the remote-controlled lights.
 
