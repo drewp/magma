@@ -21,7 +21,7 @@ class Cat(cyclone.web.RequestHandler):
         for i in desc['inputs']:
             response = restkit.request(i, headers={
                 "Cookie" : self.request.headers.get('Cookie', '')
-                })
+                }, follow_redirect=True)
             if response.status_int != 200:
                 raise ValueError("fetching %s -> %s" % (i, response.status))
             data = response.body_string()
@@ -37,6 +37,7 @@ class Cat(cyclone.web.RequestHandler):
             out.paste(i, (0, y))
             y = y + i.size[1]
 
+        self.set_header("content-type", "image/jpeg")
         out.save(self, which.split('.')[-1].replace('jpg', 'jpeg'), **desc.get('saveOpts', {}))
 
 if __name__ == '__main__':

@@ -138,6 +138,95 @@ class Commands(PrettyErrorHandler, cyclone.web.RequestHandler):
         d = pc.run()
         d.addCallback(lambda cmds: self.write(jsonlib.dumps(cmds)))
         return d
+
+class CommandsTable(PrettyErrorHandler, cyclone.web.RequestHandler):
+    @inlineCallbacks
+    def get(self):
+
+        pc = PickCommands(self.settings.graph, user(self.request))
+        cmds = yield pc.run()
+
+        tops = [[]] # rows of 3
+        belowZero = []
+
+        for (cmd, score) in cmds:
+            cmd = URIRef(cmd)
+            if score < 0:
+                belowZero.append(self._buttonData(cmd, score))
+                continue
+            if len(tops[-1]) >= 3:
+                tops.append([])
+            tops[-1].append(self._buttonData(cmd, score))
+
+        self.write(loader.load("dyncommandstable.html").generate(tops=tops, belowZero=belowZero).render('xhtml'))
+
+    def _buttonData(self, cmd, score):
+        # note that this reads from sesame, while the cmd came from a fresh read of config.n3
+        
+        matches = self.settings.graph.queryd("""
+     SELECT DISTINCT ?label ?icon ?linksTo WHERE {
+       ?user cl:seesCommand ?uri .
+       ?uri rdfs:label ?label .
+       OPTIONAL { ?uri cl:buttonIcon ?icon }
+       OPTIONAL { ?uri cl:linksTo ?linksTo }
+     } ORDER BY ?label 
+    """, initBindings={"uri" : cmd})
+        if len(matches) != 1:
+            raise ValueError("found %s matches for command %r" % (len(matches), cmd))
+            
+        row = matches[0]
+
+        row['cmd'] = cmd
+        row['score'] = score
+
+        isLink = self.settings.graph.queryd("ASK { ?cmd a cl:CommandLink }",
+                                   initBindings={"cmd" : cmd})
+
+        if row.get('linksTo') or isLink:
+            row['method'], row['action'] = "get", row['linksTo'] or cmd
+            row['isLink'] = True
+        else:
+            row['method'], row['action'] = 'post', 'addCommand'
+            row['isLink'] = False
+
+        buttonClass = ''
+        if cmd in [CMD.BabyStart, CMD.BabyStop]:
+            # needs to be fixed and replaced with something any command can use to return availability status
+            last, _, _ = self.cmdlog.lastCommandOfClass(CL.BabyStartStop)
+            if last == cmd:
+                buttonClass += " current"
+            else:
+                buttonClass += " recommend"
+        
+        return row
+
+
+    def more(self):
+
+        trs = [T.tr['']]
+
+        response = yield fetch("http://bang:8007/commands",
+                               headers={"X-Foaf-Agent":[str(self.user)]})
+        if not response:
+            raise ValueError('-H "X-Foaf-Agent: %s" http://bang:8007/commands failed' % str(self.user))
+        cmds = jsonlib.loads(response.body)
+
+        belowZero = []
+
+        for (cmd, score) in cmds:
+            cmd = URIRef(cmd)
+            if score < 0:
+                belowZero.append((cmd, score))
+                continue
+
+            if len(trs[-1].children) >= 1 + columns:
+                trs.append(T.tr[''])
+            trs[-1].children.append(T.td["\n", self._buttonForm(cmd, score)])
+
+        trs.append(T.tr[T.td(colspan=columns)])
+        for (cmd, score) in belowZero:
+            trs[-1].children[-1][self._buttonForm(cmd, score)]
+        returnValue(T.table[trs])
     
 if __name__ == '__main__':
     graph = SyncGraph("sesame",
@@ -148,5 +237,6 @@ if __name__ == '__main__':
     reactor.listenTCP(8007, cyclone.web.Application([
         (r"/", Index),
         (r"/commands", Commands),
+        (r'/commands/table', CommandsTable),
         ], graph=graph))
     reactor.run()

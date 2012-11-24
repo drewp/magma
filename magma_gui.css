@@ -361,3 +361,15 @@ th.status { white-space: nowrap; }
 .services :nth-child(5) { display: none;}
 .services :nth-child(4) { display: none;}
 .services td { padding: 1px 2px; }
+
+.vpn th {
+    font-size: 75%;
+}
+.vpn td {
+    text-align: center;
+    font-size: 75%;
+    color: #14A22B;
+}
+.vpn td a {
+    color: #5F5FDA;
+}

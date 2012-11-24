@@ -3,7 +3,9 @@
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta name="viewport" content="width=480; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; target-densitydpi=device-dpi; maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;" />
+    <meta name="viewport" content="width=device-width" />
+
     <title>magma</title>
     <link rel="Stylesheet" type="text/css" href="bundle.css?v={{cssChecksum}}" media="all"/>
 
@@ -32,7 +34,7 @@
   table.status { border: 1px solid gray; border-collapse: collapse; }
    </style>
 
-    <meta name="viewport" content="width=480; initial-scale=1.0; minimum-scale: .01; user-scalable=yes"/>
+
   </head>
   <body>
 
@@ -40,7 +42,10 @@
     <div id="sections"> 
 
       <div class="section">
-	<p id="disconnected">No live updates</p>
+
+	<div class="pageStatus">Live updates: <span id="socketStatus">...</span>. Sensor display: <span id="sensorDisplayStatus">...</span></div>
+
+
 	<p><a href="houseActivity" style="text-decoration: underline;">Activity feeds</a></p>
 {{^notPhone}}
 	<p><a href="#commands" style="text-decoration: underline; display: inline-block; padding: 30px">Skip to commands</a></p>
@@ -67,9 +72,9 @@
 
       <div class="section">
 	<h2>Sensors</h2>
-	<div class="sensor">Front door: <span id="dev-frontDoorMotion"/> <span id="dev-frontDoorOpen"/></div>
-	<div class="sensor">Theater door: <span id="dev-theaterDoorOutsideMotion"/> <span id="dev-theaterDoorOpen"/></div>
-	<div class="sensor">Bedroom: <span id="dev-bedroomMotion"/></div>
+	<div class="sensor">Front door: <span id="dev-frontDoorMotion">?</span> <span id="dev-frontDoorOpen">?</span></div>
+	<div class="sensor">Theater door: <span id="dev-theaterDoorOutsideMotion">?</span> <span id="dev-theaterDoorOpen">?</span></div>
+	<div class="sensor">Bedroom: <span id="dev-bedroomMotion">?</span></div>
       </div>
 
       <div class="section">
@@ -148,6 +153,26 @@
 	</div>
       </div>
 
+      <div class="section">
+	<h2>VPN users</h2>
+<table class="vpn">
+<tr>
+<th></th>
+<th>real</th>
+<th>bytes</th>
+<th>Connected for</th>
+</tr>
+	{{#vpnTable}}
+	<tr>
+<td><a href="http://{{virtAddress}}">{{commonName}}</a></td>
+<td>{{realAddressIpOnly}}</td>
+<td>&darr; {{bytesRecv}} &uarr; {{bytesSent}}</td>
+<td>{{connForPretty}}</td>
+</tr>
+	{{/vpnTable}}
+</table>
+      </div>
+
 {{#showMunin}}
     <div class="section">
       <div class="graph munin"><h1>bang mem</h1> <a href="/magma/munin/bang/bang/index.html"> <div style="background: url(imgCat/munin.jpg?salt={{salt}}) -13px -10px; height:154px"/> </a> </div>
@@ -208,7 +233,7 @@
   
   {{{loginBar}}}
 
-   <script type="text/javascript"> var notPhone=false; var initialSensorDisplay={{{sensorDisplay}}};</script>
+   <script type="text/javascript"> var notPhone=false; var initialSensorDisplay={{{initialSensorDisplay}}};</script>
 {{#notPhone}}
    <script type="text/javascript"> notPhone=true; </script>
 {{/notPhone}}
