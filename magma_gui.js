@@ -144,18 +144,13 @@ $(function () {
 
     var socket = io.connect('/magma/', {resource: "magma/socket.io"});
 
-    var disconnected = $("#disconnected");
+    var socketStatus = $("#socketStatus");
 
-    ["reconnect_failed", "error", "disconnect", "connect_failed"
-    ].forEach(function (disconnectEvent) {
-	socket.on(disconnectEvent, function (r) { 
-	    disconnected.show(); 
-	    $(window).trigger("relayout"); 
+    ["reconnect_failed", "error", "disconnect", "connect_failed", "connect", "connecting", "reconnect", "reconnecting"
+    ].forEach(function (ev) {
+	socket.on(ev, function (r) { 
+	    socketStatus.text(ev); 
 	});
-    });
-    socket.on("connecting", function (how) { 
-	disconnected.hide(); 
-	$(window).trigger("relayout"); 
     });
 
     socket.of("").on("frontDoorChange", function (r) {
@@ -165,6 +160,11 @@ $(function () {
     });
 
     function updateSensors(display) {
+	if ($.isEmptyObject(display)) {
+	    $("#sensorDisplayStatus").text("failed");
+	    return;
+	}
+	$("#sensorDisplayStatus").text("updated " + (+new Date()));
 	display.forEach(function (row) {
 	    $("#"+row.id).attr("class", row.cssClass).text(row.value);
 	});

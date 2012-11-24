@@ -125,38 +125,82 @@ app.get("/", function (req, res) {
 
     var ch = {"Cookie": req.header("cookie")};
     var hh = {"x-foaf-agent" : req.header("x-foaf-agent")};
-    async.parallel(
-	{
-	    loginBar: async.apply(httpGet, "http://bang:9023/_loginBar", ch),
-	    recentTransactions: async.apply(httpGet, "http://bang:9094/", hh),
-	    wifiTable: async.apply(httpGet, "http://bang:9070/table", hh),
-	    commands: async.apply(httpGet, "http://bang:8006/commands", hh),
-	    tempSection: async.apply(httpGet,"http://bang:8006/tempSection",hh),
-	    nagios: async.apply(httpGet, "http://bang:8012/", hh),
-	    sensorGraphs: async.apply(httpGet, "http://bang:9071/ntGraphs", hh),
+
+    var parts = {
+	loginBar: {
+	    url: "http://bang:9023/_loginBar", 
+	    headers: ch
+	},
+	recentTransactions: {
+	    url: "http://bang:9094/", 
+	    headers: hh
 	}, 
+  	wifiTable: {
+	    url: "http://bang:9070/table", 
+	    headers: hh, 
+	    convert: function (resp) { return resp.replace(/^[\s\S]*?<div/, "<div"); }
+	},
+	commands: { 
+	    url: "http://bang:8007/commands/table", 
+	    headers: hh
+	},
+	temps: {
+	    url: "http://bang:8006/tempSection",
+	    headers: hh, 
+	    convert: function (resp) { return JSON.parse(resp); },
+	    failed: {}
+	},
+	nagios: {
+	    url: "http://bang:8012/", 
+	    headers: hh
+	},
+	initialSensorDisplay: {
+	    url: "http://bang:9071/ntGraphs", 
+	    headers: hh,
+	    convert: function (resp) { return JSON.stringify(displayForSensorGraphs(JSON.parse(resp))); },
+	    failed: "{}",
+	}
+    };
+    var calls = {
+	vpnTable: getOpenvpnClients
+    };
+    Object.keys(parts).forEach(function (k) {
+	// debug // if (k != "commands") {return;}
+	calls[k] = async.apply(httpGet, parts[k].url, parts[k].headers);
+    });
+
+    async.series(
+	calls,
 	function (err, r) {
 	    console.log("async done")
 	    if (err) {
 		throw err;
 	    }
 	    
-	    r.wifiTable = r.wifiTable.replace(/^[\s\S]*?<div/, "<div");
-
 	    var ctx = {
 		notPhone: !req.header("user-agent").match(/webOS|iPhone|Mobile/),
-		loginBar: r.loginBar,
-		wifiTable: r.wifiTable,
-		commands: r.commands,
-		nagios: r.nagios,
-		recentTransactions: r.recentTransactions,
 		salt: +new Date,
 		showMunin: true,
-		temps: JSON.parse(r.tempSection),
-		sensorDisplay: JSON.stringify(displayForSensorGraphs(r.sensorGraphs)),
 		bundleChecksum: am.cacheHashes['js'],
 		cssChecksum: am.cacheHashes['css']
 	    };
+
+	    Object.keys(parts).forEach(function (k) {
+		if (r[k] === undefined) {
+		    ctx[k] = parts[k].failed || (k + " failed");
+		} else {
+		    if (parts[k].convert) {
+			r[k] = parts[k].convert(r[k]);
+		    }
+		    ctx[k] = r[k];
+		}
+	    });
+	    if (r['vpnTable'] !== undefined) {
+		ctx['vpnTable'] = r['vpnTable'];
+	    } else { 
+		ctx['vpnTable'] = 'failed';
+	    }
+
 	    Mu.render('./index.xhtml', ctx, {cached: !debug}, 
 		      function (err, output) {
 			  if (err) {
@@ -164,7 +208,10 @@ app.get("/", function (req, res) {
 			  }
 			  output.addListener('data', 
 					     function (c) { res.write(c); })
-			      .addListener('end', function () { res.end(); });
+			      .addListener('end', function () { 
+				  res.end(); 
+				  log.info("root request finish");
+			      });
 		      });
 	});
 });    
