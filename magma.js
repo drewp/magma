@@ -61,7 +61,7 @@ var am = assetManager({
 	route: /\/bundle\.css/,
 	dataType: 'css',
 	debug: debug,
-	files: ["static/nagios/status.css", "magma_gui.css"]
+	files: ["magma_gui.css"]
     }
 });
 app.use(am);
@@ -150,8 +150,8 @@ app.get("/", function (req, res) {
 	    convert: function (resp) { return JSON.parse(resp); },
 	    failed: {}
 	},
-	nagios: {
-	    url: "http://bang:8012/", 
+	sensu: {
+	    url: "http://bang:9101/table", 
 	    headers: hh
 	},
 	initialSensorDisplay: {
@@ -172,10 +172,7 @@ app.get("/", function (req, res) {
     async.series(
 	calls,
 	function (err, r) {
-	    console.log("async done")
-	    if (err) {
-		throw err;
-	    }
+	    log.info("async done", err)
 	    
 	    var ctx = {
 		notPhone: !req.header("user-agent").match(/webOS|iPhone|Mobile/),

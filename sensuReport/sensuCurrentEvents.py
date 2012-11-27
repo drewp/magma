@@ -5,7 +5,7 @@ argv has the port to serve on and the url to the sensu api server
 (might be http://localhost:4567)
 
 """
-import bottle, restkit, json, cgi, datetime, sys
+import bottle, restkit, json, cgi, time, sys
 
 sensu = restkit.Resource(sys.argv[2])
 
@@ -18,16 +18,17 @@ def table():
     esc = cgi.escape
     out = '<table class="sensuEvents">'
     for event in json.loads(sensu.get("events").body_string()):
-        issued = datetime.datetime.fromtimestamp(event['issued'])
+        withinMins = round((time.time() - event['issued']) / 60., 1)
         out += ('''
         <tr class="status%d">
-          <td class="last">At %s</td>
+          <td class="last">Within <span>%.1f %s</span></td>
           <td class="client">%s</td>
           <td class="check">%s</td>
           <td class="output">%s</td>
         </tr>''' % (
                     event['status'],
-                    esc(issued.isoformat()),
+                    withinMins,
+                    "min" if withinMins == 1.0 else "mins",
                     esc(event['client'].split('.')[0]),
                     esc(event['check']),
                     esc(event['output'])))

@@ -355,13 +355,6 @@ color: yellow;
 .transactions tr.recent { color: yellow; }
 .transactions tr.private td.amt { color: black; background: black; }
 
-th.status img { display: none; }
-th.status { white-space: nowrap; }
-.services :nth-child(6) { display: none;}
-.services :nth-child(5) { display: none;}
-.services :nth-child(4) { display: none;}
-.services td { padding: 1px 2px; }
-
 .vpn th {
     font-size: 75%;
 }
@@ -373,3 +366,19 @@ th.status { white-space: nowrap; }
 .vpn td a {
     color: #5F5FDA;
 }
+
+table.sensuEvents {
+    font-size: 60%;
+    border-collapse: collapse;
+}
+table.sensuEvents .last {
+    font-size: 85%;
+}
+table.sensuEvents .status1 { color: #000; background: rgb(247,247,161); }
+table.sensuEvents .status2 { color: #000; background: rgb(255, 161, 161); }
+table.sensuEvents .status3 { color: #000; background: rgb(206, 72, 72); }
+table.sensuEvents td {
+    padding: 2px 5px;
+    border-top: 1px solid gray;
+}
+table.sensuEvents .last span { white-space: nowrap; }
