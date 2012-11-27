@@ -9,8 +9,12 @@ import bottle, restkit, json, cgi, datetime, sys
 
 sensu = restkit.Resource(sys.argv[2])
 
-@bottle.route("/table")
+@bottle.route("/")
 def index():
+    return '<a href="table">table</a>'
+
+@bottle.route("/table")
+def table():
     esc = cgi.escape
     out = '<table class="sensuEvents">'
     for event in json.loads(sensu.get("events").body_string()):
