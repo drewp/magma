@@ -129,8 +129,8 @@
       </div>
 
       <div class="section">
-	<h2><a href="/nagios/cgi-bin/status.cgi?host=all">Service monitor</a></h2>
-	<div class="services">{{{nagios}}}</div>
+	<h2><a href="/sensu/report/">All services</a> | <a href="http://10.1.0.1:8082/">Sensu dashboard</a></h2>
+	<div class="services">{{{sensu}}}</div>
       </div>
 
       <div class="section">
