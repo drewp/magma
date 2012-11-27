@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>sensu</title>
+    <style type="text/css" media="all">
+      /* <![CDATA[ */
+      body {
+          font-family: sans-serif;
+          font-size: 10pt;
+      } 
+      thead tr:nth-child(odd) { background: rgb(141, 153, 153); }
+      tr:nth-child(even) {      background: rgb(201, 204, 204); }
+      tr:nth-child(odd) {       background: rgb(226, 236, 236); }
+      tr.hasEvent {             background: rgb(213, 149, 79); }
+      td.checkName, td.hostName, td.interval, td.lastIssue, td.request button {
+          white-space: nowrap;
+      }
+      table {
+          border-collapse: collapse;
+      }
+      table td {
+          border: 1px solid rgb(223,223,223);
+          padding: 1px 7px;
+      }
+      thead tr { display: table-row; }
+      tr.hasEvent {
+	  display: table-row;
+      }
+      button {
+	  padding: 0 5px;
+      } 
+      /* ]]> */
+    </style>
+
+  </head>
+  <body>
+
+    <h1>All checks on all clients</h1>
+
+    <form>
+      <input type="checkbox" data-bind="checked: showSuccessRows" id="showSuccessRows"> 
+      <label for="showSuccessRows">include success rows</label>
+    </form>
+    <style type="text/css" data-bind="ifnot: showSuccessRows"> tr { display: none; } </style>
+
+    <table>
+      <thead>
+	<tr>
+	  <th>check host</th>
+	  <th>check name</th>
+	  <th>interval</th>
+	  <th>last check</th>
+	  <th></th>
+	  <th>event</th>
+	</tr>
+      </thead>
+      <tbody data-bind="foreach: clientChecks">
+	<tr data-bind="css: {hasEvent: $data.currentEvent() !== null}">
+	  <td class="hostName" data-bind="text: client.shortName"></td>
+	  <td class="checkName" data-bind="text: name"></td>
+	  <td class="interval">
+	    <span data-bind="text: $root.displayInterval($data)"></span>
+	    
+	  </td>
+	  <td class="lastIssue">
+	    <!-- ko if: lastIssue() !== null -->
+	    <span data-bind="text: moment(lastIssue()).format('YYYY-MM-DDTHH:mm:ssZ')"></span>,
+	    <span data-bind="text: $root.durationFormat(($root.now() - lastIssue())/1000)"></span>
+	    <!-- /ko -->
+	  </td>
+	  <td class="request"><button data-bind="click: request">Run now</button></td>
+	  <td class="event" data-bind="if: currentEvent() !== null">
+	    <span data-bind="text: currentEvent().output"></span>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+
+    <!--
+todo: 
+sort events to the top. 
+checks could contain a 'type' for grouping here. 
+checks could contain dependencies that make a tree display here. 
+	
+where are the output lines from the successful tests? those have to be done as 'metric' stats or something? 'OK - STOPPED Not started' is an interesting supervisor response with no metric number to it.
+    -->
+
+    <script src="lib/jquery-1.8.3.min.js"></script>
+    <script src="lib/knockout-2.2.0.js"></script>
+    <script src="lib/underscore-min.js"></script>
+    <script src="lib/moment.min.js"></script>
+    <script src="lib/modernizr-custom.js"></script>
+    <script src="lib/async.js"></script>
+    <script src="report.js"></script>
+  </body>
+</html>
