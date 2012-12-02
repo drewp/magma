@@ -1,9 +1,8 @@
 #!/usr/bin/python
 """
 proxy that serves multiple images as one concatenated one
-
 """
-import cyclone.web, restkit
+import cyclone.web, restkit, urllib
 import json, Image
 from twisted.internet import reactor
 from StringIO import StringIO
@@ -12,6 +11,15 @@ class Index(cyclone.web.RequestHandler):
     def get(self):
         self.write("imgcat: %r" % self.settings.config)
 
+def urlFromDescription(desc):
+    params = []
+    for k,v in desc['params'].items():
+        if isinstance(v, list):
+            params.extend((k, x) for x in v)
+        else:
+            params.append((k, v))
+    return desc['uri'] + "?" + urllib.urlencode(params)
+
 class Cat(cyclone.web.RequestHandler):
     def get(self, which):
         desc = self.settings.config['output'][which]
@@ -19,6 +27,8 @@ class Cat(cyclone.web.RequestHandler):
         # should be parallel
         imgs = []
         for i in desc['inputs']:
+            if isinstance(i, dict):
+                i = urlFromDescription(i)
             response = restkit.request(i, headers={
                 "Cookie" : self.request.headers.get('Cookie', '')
                 }, follow_redirect=True)
@@ -37,7 +47,7 @@ class Cat(cyclone.web.RequestHandler):
             out.paste(i, (0, y))
             y = y + i.size[1]
 
-        self.set_header("content-type", "image/jpeg")
+        self.set_header("content-type", "image/jpeg" if not which.endswith('.png') else "image/png")
         out.save(self, which.split('.')[-1].replace('jpg', 'jpeg'), **desc.get('saveOpts', {}))
 
 if __name__ == '__main__':
