@@ -45,7 +45,6 @@
 
 	<div class="pageStatus">Live updates: <span id="socketStatus">...</span>. Sensor display: <span id="sensorDisplayStatus">...</span></div>
 
-
 	<p><a href="houseActivity" style="text-decoration: underline;">Activity feeds</a></p>
 {{^notPhone}}
 	<p><a href="#commands" style="text-decoration: underline; display: inline-block; padding: 30px">Skip to commands</a></p>
@@ -75,6 +74,11 @@
 	<div class="sensor">Front door: <span id="dev-frontDoorMotion">?</span> <span id="dev-frontDoorOpen">?</span></div>
 	<div class="sensor">Theater door: <span id="dev-theaterDoorOutsideMotion">?</span> <span id="dev-theaterDoorOpen">?</span></div>
 	<div class="sensor">Bedroom: <span id="dev-bedroomMotion">?</span></div>
+	<h2>Positions</h2>
+	{{#trails}}
+	<div>{{line}}</div>
+	{{/trails}}
+
       </div>
 
       <div class="section">

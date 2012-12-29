@@ -159,6 +159,38 @@ app.get("/", function (req, res) {
 	    headers: hh,
 	    convert: function (resp) { return JSON.stringify(displayForSensorGraphs(JSON.parse(resp))); },
 	    failed: "{}",
+	},
+	trails: {
+	    url: "http://bang:9099/graph",
+	    headers: hh,
+	    convert: function (resp) {
+		
+		var mapLines = [];
+
+		function ntFromTrig(trig) {
+		    // (for very simple trig)
+		    var i1 = trig.indexOf("\n"), i2 = trig.lastIndexOf("\n");
+		    return trig.substr(i1 + 1, i2 - i1 - 2);
+		}
+		var g = rdf.createGraph();
+		rdf.parseNT(ntFromTrig(resp), null, null, null, g);
+
+		[rdf.iri("http://bigasterisk.com/foaf.rdf#drewp"),
+		 rdf.iri("http://bigasterisk.com/kelsi/foaf.rdf#kelsi")].forEach(
+		     function (user) {
+			 g.match(user, rdf.iri("map:lastSeenAgo")).forEach(function (t) {
+			     g.match(user, rdf.iri("map:lastDesc")).forEach(function (t2) {
+				 var userLabel = user.toString().substr(
+				     user.toString().indexOf("#"));
+				 mapLines.push({line: 
+						userLabel + " last seen " + 
+						t.object.toString() + " ago " + 
+						t2.object.toString()});
+			     });
+			 });
+		     });
+		return mapLines;
+	    }
 	}
     };
     var calls = {
@@ -229,7 +261,8 @@ rdf.prefixes.addAll({
     bigast: "http://bigasterisk.com/",
     room: "http://projects.bigasterisk.com/room/",
     dev: "http://projects.bigasterisk.com/device/",
-    env: "http://projects.bigasterisk.com/device/environment"
+    env: "http://projects.bigasterisk.com/device/environment",
+    map: "http://bigasterisk.com/map#"
 });
 
 function displayForSensorGraphs(graphs) {
