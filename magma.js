@@ -31,6 +31,9 @@ if (debug) app.use(Connect.logger());
 //app.use(Connect.conditionalGet());
 //app.use(Connect.cache());
 //app.use(Connect.gzip());
+
+// chrome audit says 
+// The following publicly cacheable resources contain a Set-Cookie header. This security vulnerability can cause cookies to be shared by multiple users.
 var am = assetManager({
     'js' : {
 	path: __dirname + "/",
