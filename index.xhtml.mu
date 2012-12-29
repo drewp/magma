@@ -179,40 +179,34 @@
 
 {{#showMunin}}
     <div class="section">
-      <div class="graph munin"><h1>bang mem</h1> <a href="/magma/munin/bang/bang/index.html"> <div style="background: url(imgCat/munin.jpg?salt={{salt}}) -13px -10px; height:154px"/> </a> </div>
-      <div class="graph munin"><h1>cpu</h1>      <a href="/magma/munin/bang/bang/index.html"> <div style="background: url(imgCat/munin.jpg?salt={{salt}}) -13px -164px; height:154px"/> </a> </div> 
-      <div style="clear:both"/>
+      <div class="graph munin"><h1>bang mem</h1> <a href="/magma/munin/bang/bang/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -0px; height:104px"/> </a> </div>
+      <div class="graph munin"><h1>slash mem</h1><a href="/magma/munin/slash/slash/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -208px; height:104px"/> </a> </div>
 
-      <div class="graph munin"><h1>slash mem</h1><a href="/magma/munin/slash/slash/index.html"> <div style="background: url(imgCat/munin.jpg?salt={{salt}}) -13px -317px; height:154px"/> </a> </div>
-      <div class="graph munin"><h1>cpu</h1>      <a href="/magma/munin/slash/slash/index.html"> <div style="background: url(imgCat/munin.jpg?salt={{salt}}) -13px -479px; height:154px"/> </a> </div>
       <div style="clear:both"/>
+      <div class="graph munin"><h1>bang cpu</h1>      <a href="/magma/munin/bang/bang/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -104px; height:104px"/> </a> </div> 
+
+      <div class="graph munin"><h1>slash cpu</h1>      <a href="/magma/munin/slash/slash/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -312px; height:104px"/> </a> </div>
+
+      <div class="graph munin"><h1>eon load</h1>      <a href="#"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -416px; height:104px"/> </a> </div>
     </div>
 {{/showMunin}}
 
     <div class="section">
-      <div class="graph" style="height: 150px">
-	<h1>phone batteries</h1>
-	<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=400&amp;target=keepLastValue(system.phone.drewepic.battery_pct)&amp;from=-56hours&amp;yMin=0&amp;yMax=100&amp;fontSize=12&amp;lineWidth=6"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=keepLastValue(system.phone.drewepic.battery_pct)&amp;from=-8hours&amp;yMin=0&amp;yMax=100&amp;fontSize=7&amp;lineWidth=3&amp;salt={{salt}}" width="158" height="125"/></a>
-      </div>
-
+      
       <div class="graph">
 	<h1>inbox</h1>
-	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.msg.inbox_messages.drewp&amp;from=-60days&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0&amp;salt={{salt}}" width="158" height="75"/>
+	<div style="background: url(imgCat/stats.png?salt={{salt}}) 0 -0px; height:125px"/>
       </div>
-
-      <div style="clear:both"/>
 
       <div class="graph">
-	<h1>eon load</h1>
-	<img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=75&amp;target=system.host.eon.load&amp;from=-10hours&amp;areaMode=all&amp;hideLegend=true&amp;fontSize=7&amp;yMin=0&amp;salt={{salt}}" width="158" height="75"/>
+	<h1>dsl activity (<span style="color: #6464ff">in</span>/<span style="color: #00c800">out</span>)</h1>
+	<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=500&amp;target=system.net.bytesPerSec.in&amp;target=system.net.bytesPerSec.out&amp;from=-20minutes&amp;fontSize=11&amp;yMin=0&amp;yMax=300000"><div style="background: url(imgCat/stats.png?salt={{salt}}) 0 -125px; height:125px"/></a>
       </div>
 
-      <div class="graph" style="height: 150px">
-	<h1>dsl activity</h1>
-	<a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=500&amp;target=system.net.bytesPerSec.in&amp;target=system.net.bytesPerSec.out&amp;from=-20minutes&amp;fontSize=11&amp;yMin=0&amp;yMax=300000"><img src="http://graphite.bigasterisk.com/render/?width=158&amp;height=125&amp;target=system.net.bytesPerSec.in&amp;target=system.net.bytesPerSec.out&amp;from=-10minutes&amp;fontSize=7&amp;yMin=0&amp;yMax=300000&amp;salt={{salt}}" width="158" height="125"/></a>
+      <div class="graph">
+	<h1>wifi activity</h1>
+	<div style="background: url(imgCat/stats.png?salt={{salt}}) 0 -250px; height:125px"/>
       </div>
-
-      <div style="clear:both"/>
     </div>
     
     <div class="section">
