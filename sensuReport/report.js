@@ -101,7 +101,7 @@ $(function () {
     }
 
     var model = {
-	showSuccessRows: ko.observable(true),
+	showSuccessRows: ko.observable(false),
 	clientChecks: ko.observableArray([]),
 	now: ko.observable(+new Date()),
 	durationFormat: durationFormat,
@@ -118,6 +118,12 @@ $(function () {
     animLoop(function () { updateEvents(currentEvents); }, 5000);
     animLoop(function () { updateLastIssue(lastIssue); }, 5000);
     animLoop(function () { model.now(+new Date()); }, 1000);
+
+    model.runAllChecks = function () {
+	model.clientChecks()
+	    .filter(function (c) { return c.currentEvent() !== null; })
+	    .forEach(requestCheckNow);
+    };
 
     ko.applyBindings(model);
 });
