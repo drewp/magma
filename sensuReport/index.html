@@ -29,6 +29,11 @@
       button {
 	  padding: 0 5px;
       } 
+      pre {
+	  background: #C8A079;
+	  padding: 4px 2px;
+          border: 1px solid gray;
+      }
       /* ]]> */
     </style>
 
@@ -40,6 +45,7 @@
     <form>
       <input type="checkbox" data-bind="checked: showSuccessRows" id="showSuccessRows"> 
       <label for="showSuccessRows">include success rows</label>
+      <button data-bind="click: runAllChecks">Run failing checks now</button>
     </form>
     <style type="text/css" data-bind="ifnot: showSuccessRows"> tr { display: none; } </style>
 
@@ -71,6 +77,7 @@
 	  <td class="request"><button data-bind="click: request">Run now</button></td>
 	  <td class="event" data-bind="if: currentEvent() !== null">
 	    <span data-bind="text: currentEvent().output"></span>
+	    <pre data-bind="text: command"></pre>
 	  </td>
 	</tr>
       </tbody>
