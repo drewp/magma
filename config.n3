@@ -70,26 +70,32 @@ cmd:garageDoor a :Command; rdfs:label "Garage"; :verb :operates ; :activityObjec
 :linksTo <https://bigasterisk.com/magma/garage/> .
 
 cmd:heaterOff a cmd:Heater; 
+  :device dev:heater; :value :off;
   rdfs:label "Heater off";
   :buttonIcon "heaterOff" .
 
 cmd:heaterOn20Min a cmd:Heater; 
+  :device dev:heater; :value :on;
   :iconPath <http://bigasterisk.com/magma/static/heater.png>;
   :buttonIcon "heaterOn";
   rdfs:label "Heater on for 20min";
   :verb :turnOn;
   :activityObject :heater;
-  a cmd:TimedOn;
   :onForMins "20" .
 
 cmd:heaterOn40Min a cmd:Heater; 
+  :device dev:heater; :value :on;
   :iconPath <http://bigasterisk.com/magma/static/heater.png>;
   :buttonIcon "heaterOn";
   rdfs:label "Heater on for 40min";
   :verb :turnOn;
   :activityObject :heater;
-  a cmd:TimedOn;
   :onForMins "40" .
+
+cmd:heaterOn1Min a cmd:Heater; 
+  :device dev:heater; :value :on;
+  rdfs:label "Heater on for 1min";
+  :onForMins "1" .
 
 :operates rdfs:label "operates" .
 
@@ -107,18 +113,13 @@ cmd:slashPandoraPause :verb :pausePandora; :activityObject :pandora .
 :pausePandora rdfs:label "pauses" .
 :pandora rdfs:label "pandora" .
 
-cmd:heaterOn1Min a cmd:Heater; 
-  rdfs:label "Heater on for 1min";
-  a cmd:TimedOn;
-  :onForMins "1" .
-
 
 cmd:PollMe rdfs:comment "activates portUpdate polling. todo: the condition ought to be 'does portupdate need to keep this output port in sync'" .
 
-cmd:RedLight a cmd:PollMe .
-cmd:DeckLight a cmd:PollMe .
+#cmd:RedLight a cmd:PollMe .
+#cmd:DeckLight a cmd:PollMe .
 cmd:FrontLight a cmd:PollMe .
-
+cmd:Heater a cmd:PollMe .
 
 :bedroomRedLight rdfs:label "bedroom red light"; 
 :icon <http://bigasterisk.com/magma/tango/status/stock_dialog-info.png> .
@@ -136,14 +137,16 @@ cmd:bedroomRedLightOn a cmd:RedLight; rdfs:label "Bedroom red light on";
 :verb :turnOn; :activityObject :bedroomRedLight .
 
 cmd:frontLightOff a cmd:FrontLight; 
+  :device dev:frontLight;
   rdfs:label "Front yard light off"; 
-  :value "off"; 
+  :value :off;
   :buttonIcon "frontLightOff" ; 
   :verb :turnOff; 
   :activityObject :frontYardLight .
 cmd:frontLightOn a cmd:FrontLight;
+  :device dev:frontLight;
   rdfs:label "Front yard light on"; 
-  :value "on"; 
+  :value :on;
   :buttonIcon "frontLightOn" ; 
   :verb :turnOn; 
   :activityObject :frontYardLight .
