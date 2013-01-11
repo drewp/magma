@@ -73,11 +73,14 @@ class PickCommands(object):
                 traceback.print_exc()
 
         yield DeferredList(map(addData,
+            # compare to reasoning and reasoning/input/startup.n3
             ["http://bang:9072/bang/processStatus",
-            "http://bang:9055/graph", # heater, etc
-            "http://bang:9069/graph", # door/arduino inputs
-            "http://bang:9070/graph", # wifi
-            "http://bang:9075/graph", # env
+             "http://bang:9055/graph", # heater, etc
+             "http://bang:9069/graph", # door/arduino inputs
+             "http://bang:9070/graph", # wifi
+             "http://bang:9075/graph", # env
+             "http://slash:9080/graph", # frontdoor
+             "http://dash:9107/graph", # xidle
              ]))
 
         httpReading += time.time()
