@@ -68,7 +68,7 @@ def httpChecks(host, serviceName):
         ('bang', 'photo_8030')             : [('photo', '/events', {})],
         ('bang', 'photo_watchMail_9082')   : [('photo watchMail', '/', {})],
         ('bang', 'portUpdate_9055')        : [('heater update', '/', {})],
-        ('bang', 'reasoning_9071')         : [('reasoning', '/', {})],
+        ('bang', 'reasoning_9071')         : [('reasoning', '/status', {})],
         ('bang', 'recentTransactions_9094'): [('recentTransactions', '/', {})],
         ('bang', 'sba_9060')               : [('bedroom shiftbrite', '/', NOMAIL)],
         ('bang', 'sfd_9024')               : [], # in clients.json instead
@@ -78,6 +78,7 @@ def httpChecks(host, serviceName):
         ('bang', 'dpms_9095')              : [('dpms', '/', {})],
         ('bang', 'vist2rdf_9103')          : [('checkvist reader', '/', {})],
         ('bang', 'webcam_9053')            : [('cam bedroom', '/0', NOMAIL)],
+        ('bang', 'gcalendarwatch_9105')    : [('gcalendarwatch poller', '/', {})],
         }.get((host, serviceName), [])
     
     return []
@@ -88,7 +89,7 @@ def httpCheck(host, servicePort, path):
     return {'aggregate':True,
             'subscribers':['host-bang'],
             'interval':900,
-            'command':'/usr/lib/nagios/plugins/check_http -k "x-foaf-agent: http://bigasterisk.com/foaf/sensu" -H %(host)s -p %(servicePort)s --url %(path)s --warning=1' % vars()}
+            'command':'/usr/bin/lwp-request -t 1 -H "x-foaf-agent: http://bigasterisk.com/foaf/sensu" http://%(host)s:%(servicePort)s%(path)s' % vars()}
 
 checks = {}
 
@@ -98,7 +99,7 @@ for svc in svcs:
         'subscribers':['host-bang'], # sic- all checks can be run from here
         'aggregate' : True,
         'interval':900,
-        'command':'/etc/nagios3/conf.d/sup_check %(host)s %(supervisorPort)s %(name)s' % svc}
+        'command':'supervisor_check %(host)s %(supervisorPort)s %(name)s' % svc}
 
     for name, path, more in httpChecks(svc['host'], svc['name']):
         checks[name.replace(' ', '_')] = c = httpCheck(svc['host'], svc['servicePort'], path)
