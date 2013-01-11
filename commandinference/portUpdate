@@ -1,16 +1,21 @@
 #!/usr/bin/python
 """
-watch for heater commands and send pin signals to arduino servers
+A command issue has a command uri and a time. The command is
+in some commandClass. This service makes PUT requests according
+to the most recent command of each commandClass. The command describes what
+to put, whether there's a duration, and what to put after that
+duration expires.
 
-also watch commands for the remote-controlled lights.
-
-This can run anywhere; it listens for command pings and PUTs pin settings to other URIs according to the device configurations
+Updates happen at startup, in a slow background loop, and upon posts
+to /newCommand. 
 """
-import sys, time, atexit, logging, traceback, urllib, json
+import sys, time, atexit, logging, traceback, urllib, json, datetime
 
 sys.path.append('.') # for commandinference
 from twisted.internet import reactor
-from rdflib import RDF, URIRef
+from rdflib import RDF, URIRef, Namespace
+from dateutil.tz import tzlocal
+from dateutil.parser import parse
 import restkit
 from xml.utils import iso8601
 from cmdline import getCommandLog
@@ -25,167 +30,158 @@ log = logging.getLogger()
 logging.basicConfig(level=logging.INFO, format="%(created)s %(asctime)s %(levelname)-5s %(filename)s:%(lineno)d: %(message)s")
 logging.getLogger('restkit.client').setLevel(logging.WARN)
 
-commandLog = getCommandLog()
+DEV = Namespace("http://projects.bigasterisk.com/device/")
+CMD = Namespace("http://bigasterisk.com/magma/cmd/")
 
 def setOutputPins():
     # not sure where this config is going to go. Here is wrong, since an
     # arduinoport restart after portUpdate restart forgets everything!
-    restkit.request(method="PUT", url="http://bang:9056/pin/d4/mode", body="output")
-    restkit.request(method="PUT", url="http://bang:9056/pin/d5/mode", body="output")
-    restkit.request(method="PUT", url="http://bang:9056/pin/d6/mode", body="output")
-    restkit.request(method="PUT", url="http://bang:9056/pin/d7/mode", body="output")
-    restkit.request(method="PUT", url="http://bang:9056/pin/d8/mode", body="output")
+    for pin in ['d4', 'd5', 'd6', 'd7', 'd8']:
+        restkit.request(method="PUT",
+                        url="http://bang:9056/pin/%s/mode" % pin,
+                        body="output")
 
+class RunCommand(object):
+    def __init__(self, graph, commandClass, cmd, t):
+        """run this command, which is the latest one of its class
+
+        ?device :valueMapping
+          [ :value :on; :putUrl <http://something>; :putBody "on" ],
+          [ :value :off; :putUrl <http://something>; :putBody "off" ] .
+          
+        # maybe one of those mappings should be rdf:type Default so we
+        # know how to do expired durations
+
+        ?CmdClass a cmd:PollMe . # optional
+
+        ?cmd a ?CmdClass;
+          :device ?device;
+          :value :on;
+          :duration "10min" . # currently spelled :onForMins
+        """
+        self.graph = graph
+        log.debug("RunCommand %s command %s last issued at %s",
+                 commandClass, cmd, t)
+
+        try:
+            self.run(commandClass, cmd, t)
+        except Exception, e:
+            traceback.print_exc()
+            log.warn(repr(e))
+            return
+
+    def run(self, commandClass, cmd, t):
+        dev = self.graph.value(cmd, CL['device'])
+        if dev is None:
+            raise ValueError("command %s doesn't control any device" % cmd)
+
+        value = self.correctValue(cmd, t)
+
+        if lastSetting.get(dev, None) == value:
+            return
+
+        putUrl, putBody = self.httpPutDescription(dev, value)
+
+        log.info("set %s by putting %s to %s" % (dev, putBody, putUrl))
+
+        self.put(putUrl, putBody)
+        lastSetting[dev] = value
+
+    def correctValue(self, cmd, t):
+        duration = self.getDurationSecs(cmd)
+        if duration is not None and self.completed(t, duration):
+            return CL['off']
+
+        value = self.graph.value(cmd, CL['value'])
+        if value is None:
+            raise ValueError(
+                "command %s has no cl:value to set the device to" % cmd)
+        return value
+
+    def httpPutDescription(self, dev, value):
+        matches = list(self.graph.queryd(
+            """SELECT ?putUrl ?putBody WHERE {
+                 ?dev cl:valueMapping [
+                   cl:value ?value ;
+                   cl:putUrl ?putUrl ;
+                   cl:putBody ?putBody ]
+               }""",
+            initBindings=dict(dev=dev, value=value)))
+        if not matches:
+            raise ValueError("device %s has no valueMapping for value %s" %
+                             (dev, value))
+
+        putUrl = matches[0]['putUrl']
+        putBody = matches[0]['putBody']
+        return putUrl, putBody
+
+    def put(self, url, body):
+        setOutputPins()
+        r = restkit.request(method="PUT", url=url, body=body)
+        if not r.status.startswith('2'):
+            raise ValueError("%s returned %r" % (url, r.status))
+
+    def getDurationSecs(self, cmd):
+        s = self.graph.value(cmd, CL['onForMins'])
+        if s is None:
+            return None
+        # to be replaced with :duration "10min" or maybe "10"^^time:min
+        return float(s)*60
+
+    def completed(self, commandTime, durationSecs):
+        exp = parse(commandTime) + datetime.timedelta(seconds=durationSecs)
+        left = (exp - datetime.datetime.now(tzlocal())).total_seconds()
+        if left >= 0:
+            log.info("%s sec left", left)
+        return left < 0
+
+        
 class Loop(object):
     def __init__(self):
         self.lastPoll = 0
         self.lastMsg = None
         self.lastHeater = None
         self.lastLight = {} # cmdclass : value
-        self.heaterStmt = (URIRef("http://projects.bigasterisk.com/device/heater"), CL['state'], CL['off'])
-
+        self.heaterStmt = DEV['heater'], CL['state'], CL['off']
 
         self.pollClasses = [row['cls'] for row in commandLog.graph.queryd(
             "SELECT ?cls WHERE { ?cls a cmd:PollMe . }")]
                 
     def poll(self):
-        if 1:
-            for commandClass in self.pollClasses:
-                cmd, t, user = commandLog.lastCommandOfClass(commandClass)
-                log.debug("cls=%s cmd=%s t=%s", commandClass, cmd, t)
-                self.onCommand(commandClass, cmd)
+        for commandClass in self.pollClasses:
+            cmd, t, user = commandLog.lastCommandOfClass(commandClass)
+            log.debug("cls=%s cmd=%s t=%s", commandClass, cmd, t)
+            RunCommand(commandLog.graph, commandClass, cmd, t)
 
-        self.pollHeater()
         self.lastPoll = time.time()
 
     def ranRecently(self):
         dt = time.time() - self.lastPoll
         return dt < 30
 
-    def onCommand(self, commandClass, cmd):
-        if commandClass == URIRef("http://bigasterisk.com/magma/cmd/Heater"):
-            # legacy handler
-            self.pollHeater()
-            return
-        if commandClass == URIRef("http://bigasterisk.com/magma/cmd/TimedOn"):
-            # related to heater, redundant.
-            return
-        
-        value = commandLog.graph.value(cmd, CL['value'])
-        if value is None:
-            raise ValueError(
-                "command %s has no cl:value to set the light to" % cmd)
+commandLog = getCommandLog()
 
-        if self.lastLight.get(commandClass) == value:
-            return
-
-        try:
-            self.setLight(commandClass, cmd, value)
-        except Exception, e:
-            traceback.print_exc()
-            return
-        self.lastLight[commandClass] = value
-
-    def setLight(self, commandClass, cmd, value):
-        """
-        cmd:bedroomRedLightOff :oneShot [ a :ParportPin; :host "somehost"; :port "/dev/parport0"; :bit 1 ]
-
-        or
-
-        cmd:frontLightOff :clearPin [a :ParportPin; :host "slash"; :port "/dev/parport0"; :bit 1 . ]
-        
-        """
-        val = commandLog.graph.value
-        log.info("need to set %s to %s", commandClass, value)
-        outPinUri = val(cmd, ROOM['oneShot'])
-        if outPinUri:
-            log.info("oneshot on %s", outPinUri)
-            self.sendBit(outPinUri, 1)
-            time.sleep(float(val(cmd, ROOM['pulse'], default=.5)))
-            self.sendBit(outPinUri, 0)
-            return
-
-        setPin = val(cmd, ROOM['setPin'])
-        if setPin:
-            self.sendBit(setPin, 1)
-            return
-
-        clrPin = val(cmd, ROOM['clearPin'])
-        if clrPin:
-            self.sendBit(clrPin, 0)
-            return
-
-        raise NotImplementedError("don't know how to set %s" % cmd)
-
-    def pollHeater(self):
-        # this is a special case mostly because it was written
-        # first. Hopefully it can be folded into the more-general
-        # poller above.
-        try:
-            cmd, t, user = commandLog.lastCommandOfClass(CMD['Heater'])
-            now = time.time()
-            if cmd == CMD['heaterOff']:
-                self.sendHeater(False)
-            elif commandLog.graph.contains((cmd, RDF.type, CMD['TimedOn'])):
-                mins = float(commandLog.graph.value(cmd, CL['onForMins']))
-                endTime = iso8601.parse(str(t)) + mins * 60
-                if endTime > now:
-                    self.boringMsg("heater on, %s min left" %
-                                   ((endTime - now) / 60))
-                    self.sendHeater(True)
-                else:
-                    # last cmd expired; we should now look at previous ones
-                    self.sendHeater(False)
-        except Exception, e:
-            log.error("emergency off: %s" % e)
-            self.sendHeater(False)
-            raise
-
-    def boringMsg(self, msg, minInterval=120):
-        """throttled print"""
-        now = time.time()
-        if now - minInterval > self.lastMsg:
-            log.info(msg)
-            self.lastMsg = now
-
-    def sendBit(self, pinUri, value):
-        putUrl = commandLog.graph.value(pinUri, ROOM['putUrl'])
-        log.info("set %s by putting %s to %s" % (pinUri, value, putUrl))
-        if putUrl:
-            setOutputPins()
-            r = restkit.request(method="PUT", url=putUrl, body=str(int(value)))
-            if not r.status.startswith('2'):
-                raise ValueError("%s returned %r" % (putUrl, r.status))
-            return
-        
-    def sendHeater(self, on):
-        if on != self.lastHeater: # this assumes we're the only one
-                                # talking to the heater pin, which
-                                # might not be true
-            dev = URIRef("http://projects.bigasterisk.com/device/heater")
-            self.sendBit(
-                dev,
-                int(on))
-            self.heaterStmt = (dev, CL['state'], CL['on'] if on else CL['off'])
-        self.lastHeater = on
+lastSetting = {} # deviceUri : valueUri
 
 loop = Loop()
-atexit.register(lambda: loop.sendHeater(False))
 
 def postForm(url, kv):
     s = urllib.urlencode(kv)
     return getPage(url, method='POST', postdata=s,
-            headers={'Content-Type': 'application/x-www-form-urlencoded'})   
+            headers={'Content-Type': 'application/x-www-form-urlencoded'}).addErrback(log.error)
 
-postForm('http://bang:9030/subscribe',
-         {'hub.mode' : 'subscribe',
-          'hub.callback' : 'http://bang:9055/newCommand',
-          'hub.topic' : 'newCommand',
-          'hub.verify' : 'sync'})
+# pubsubhubbub is how I should learn about cmds, but it's not running
+# yet, so I'm on a hardcoded list of services to notify.
+## postForm('http://bang:9030/subscribe',
+##          {'hub.mode' : 'subscribe',
+##           'hub.callback' : 'http://bang:9055/newCommand',
+##           'hub.topic' : 'newCommand',
+##           'hub.verify' : 'sync'})
+
 
 # this matters only for initial state, and for the heater timeout, and
 # to catch commands we might have missed (?!)
-task.LoopingCall(loop.poll).start(30)
+task.LoopingCall(loop.poll).start(60)
 
 class Root(rend.Page):
     def renderHTTP(self, ctx):
@@ -193,6 +189,8 @@ class Root(rend.Page):
         return "portUpdate (poll loop is running)"
     
     def child_newCommand(self, ctx):
+        """I ignore most of the payload and re-fetch the current
+        lastCommandOfClass for the given class"""       
         request = inevow.IRequest(ctx)
         if ctx.arg('hub.mode') == 'subscribe':
             request.setResponseCode(202)
@@ -200,14 +198,22 @@ class Root(rend.Page):
 
         d = json.loads(request.content.read())
         log.debug("incoming command %s", d)
-        loop.onCommand(URIRef(d['commandClass']), URIRef(d['command']))
+
+        cmd, t, user = commandLog.lastCommandOfClass(URIRef(d['commandClass']))
+        RunCommand(commandLog.graph, URIRef(d['commandClass']), cmd, t)
         
         return "ok"
 
     def child_graph(self, ctx):
         from stategraph import StateGraph
         g = StateGraph(ctx=URIRef("http://bigasterisk.com/magma/portUpdate"))
-        g.add(loop.heaterStmt)
+
+        # this used to return a statement about the heater state, but
+        # you should get that its real IO service. This service at
+        # most knows the time left on the heater call.
+
+        # i do happen to have the state data in lastSetting, though
+        
         return str(g.asTrig())
 
 setOutputPins()
