@@ -40,7 +40,7 @@ var am = assetManager({
 	route: /\/bundle\.js/,
 	dataType: 'js',
 	files: ["static/jquery-1.7.1.js", 
-		"static/jquery.isotope-1.5.07.js", // 5k min+gzip
+		"static/jquery.isotope-1.5.23.js", // 5k min+gzip
 		debug ? "static/knockout-2.0.0.debug.js" : "static/knockout-2.0.0.js",
 		'parts/node/lib/node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.js',
 		"tomato_config.js",
@@ -124,6 +124,7 @@ app.get("/static/json-template.js", function (req, res) {
 });
 
 app.get("/", function (req, res) {
+    log.info("root request start");
     res.header("content-type", "application/xhtml+xml");
 
     var ch = {"Cookie": req.header("cookie")};
