@@ -10,32 +10,33 @@
 @prefix room:    <http://projects.bigasterisk.com/room/> .
 @prefix sup:     <http://supervisord.org/config#> .
 @prefix env:     <http://projects.bigasterisk.com/device/environment>.
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
 
-{ env: room:localHour 19 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 20 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 21 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 22 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 23 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 0 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 1 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 2 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 3 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 4 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 5 } => { :ari a :sleep . :outside a :dark } .
-{ env: room:localHour 6 } => { :ari a :sleep . :outside a :dark } .
+{ env: room:localHour 19 } => { :ari a :sleep .  } .
+{ env: room:localHour 20 } => { :ari a :sleep .  } .
+{ env: room:localHour 21 } => { :ari a :sleep .  } .
+{ env: room:localHour 22 } => { :ari a :sleep .  } .
+{ env: room:localHour 23 } => { :ari a :sleep .  } .
+{ env: room:localHour 0 } => { :ari a :sleep .  } .
+{ env: room:localHour 1 } => { :ari a :sleep .  } .
+{ env: room:localHour 2 } => { :ari a :sleep .  } .
+{ env: room:localHour 3 } => { :ari a :sleep .  } .
+{ env: room:localHour 4 } => { :ari a :sleep .  } .
+{ env: room:localHour 5 } => { :ari a :sleep .  } .
+{ env: room:localHour 6 } => { :ari a :sleep .  } .
 
-{ env: room:localHour 7 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 8 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 9 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 10 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 11 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 12 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 13 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 14 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 15 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 16 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 17 } => { :ari a :wake . :outside a :light } .
-{ env: room:localHour 18 } => { :ari a :wake . :outside a :light } .
+{ env: room:localHour 7 } => { :ari a :wake .   } .
+{ env: room:localHour 8 } => { :ari a :wake .   } .
+{ env: room:localHour 9 } => { :ari a :wake .   } .
+{ env: room:localHour 10 } => { :ari a :wake .  } .
+{ env: room:localHour 11 } => { :ari a :wake .  } .
+{ env: room:localHour 12 } => { :ari a :wake .  } .
+{ env: room:localHour 13 } => { :ari a :wake .  } .
+{ env: room:localHour 14 } => { :ari a :wake .  } .
+{ env: room:localHour 15 } => { :ari a :wake .  } .
+{ env: room:localHour 16 } => { :ari a :wake .  } .
+{ env: room:localHour 17 } => { :ari a :wake .  } .
+{ env: room:localHour 18 } => { :ari a :wake .  } .
 
 
 { 
@@ -51,10 +52,6 @@
 } .
 
 {:ari a :sleep .} =>  {cmd:slashPandoraToddler :ranking -1 .} .
-{:outside a :light } => { cmd:frontLightOn :ranking -1 . } .
-{:outside a :light } => { cmd:frontLightOff :ranking 10 . } .
-#{not on? } => { cmd:frontLightOff :ranking -1 . } .
-#{:outside a :dark } => { cmd:frontLightOff :ranking 0 . } .
 
 { 
   <http://projects.bigasterisk.com/device/heater> :state :off . 
@@ -62,3 +59,43 @@
   <http://bigasterisk.com/magma/cmd/heaterOff> :ranking -1 .
 } .
 
+
+{ ?user :near :home ;  a :CurrentUser . } => { cmd:garageDoor :ranking 1 . } .
+
+{
+  dev:frontYardLight room:state room:off .
+  dev:calendar room:twilight room:daytime .
+} => {
+  cmd:frontLightOn :ranking 0 .
+  cmd:frontLightOff :ranking -10 .
+} .
+
+{
+  dev:frontYardLight room:state room:off .
+  dev:calendar room:twilight room:withinTwilight .
+} => {
+  cmd:frontLightOn :ranking 1 .
+  cmd:frontLightOff :ranking -10 .
+} .
+
+{
+  dev:frontYardLight room:state room:on .
+} => {
+  cmd:frontLightOn :ranking -10 .
+  cmd:frontLightOff :ranking 10 .
+} .
+
+{
+  dev:calendar room:daysToLastFridayOfMonth ?offset . 
+  ?offset math:greaterThan -6 .
+  ?offset math:lessThan 4 .
+  # also ask sfd if there are no new entries yet
+} => {
+  <https://bigasterisk.com/sfd/> :ranking 0.5 .
+} .
+
+# propose heater if it's off and the temp is low
+# propose gasuse if it's been about the right number of days
+# propose whatsplayingnext if it's been used already today
+# propose diary if it's in nag mode
+# propose garage if my time on wifi is low
