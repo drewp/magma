@@ -156,5 +156,5 @@ urls = (
 )
 
 if __name__ == '__main__':
-    app = web.application(urls, globals(), autoreload=True)
+    app = web.application(urls, globals(), autoreload=False)
     app.run()
