@@ -16,7 +16,6 @@ from commandinference.dbclient import getCommandLog
 need ajaxy supervisor interface
 """
 
-CMD = Namespace("http://bigasterisk.com/ns/command/v1#")
 
 #os.chdir("/my/site/magma")
 
