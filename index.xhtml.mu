@@ -74,6 +74,14 @@
 	<div class="sensor">Front door: <span id="dev-frontDoorMotion">?</span> <span id="dev-frontDoorOpen">?</span></div>
 	<div class="sensor">Theater door: <span id="dev-theaterDoorOutsideMotion">?</span> <span id="dev-theaterDoorOpen">?</span></div>
 	<div class="sensor">Bedroom: <span id="dev-bedroomMotion">?</span></div>
+
+        <div class="sensor">star/ari     <span id="host-star-monitor">?</span></div>
+        <div class="sensor">slash/garage <span id="host-slash-monitor">?</span></div>
+        <div class="sensor">dash/middle  <span id="host-dash-monitor">?</span></div>
+        <div class="sensor">bang/theater <span id="host-bang-monitor">?</span></div>
+        
+        <h2>Outputs</h2>
+        <div class="sensor">Heater: <span id="dev-heater">?</span></div>
 	<h2>Positions</h2>
 	{{#trails}}
 	<div>{{line}}</div>
@@ -138,7 +146,7 @@
       </div>
 
       <div class="section">
-	<h2>USAA Transactions:</h2>
+	<h2><a href="/heist/transactions">USAA Transactions</a>:</h2>
 	{{{recentTransactions}}}
       </div>
 

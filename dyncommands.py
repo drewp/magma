@@ -81,6 +81,11 @@ class PickCommands(object):
              "http://bang:9075/graph", # env
              "http://slash:9080/graph", # frontdoor
              "http://dash:9107/graph", # xidle
+             "http://dash:9095/graph", # dpms
+             "http://bang:9095/graph", # dpms
+             "http://star:9095/graph", # dpms
+             "http://slash:9095/graph", # dpms
+
              ]))
 
         httpReading += time.time()
