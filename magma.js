@@ -271,30 +271,43 @@ rdf.prefixes.addAll({
 
 function displayForSensorGraphs(graphs) {
     var g = rdf.createGraph();
-    rdf.parseNT(graphs.input, null, null, null, g)
-    rdf.parseNT(graphs.inferred, null, null, null, g)
+    rdf.parseNT(graphs.input, null, null, null, g);
+    rdf.parseNT(graphs.inferred, null, null, null, g);
 
     var display = [];
 
-    [{subject: "dev:frontDoorMotion", normal: "room:noMotion", 
-      normalLabel: "no motion", activeLabel: "motion"},
-     {subject: "dev:frontDoorOpen", normal: "room:closed", 
-      normalLabel: "closed", activeLabel: "open"},
-     {subject: "dev:theaterDoorOutsideMotion", normal: "room:noMotion", 
-      normalLabel: "no motion", activeLabel: "motion"},
-     {subject: "dev:theaterDoorOpen", normal: "room:closed", 
-      normalLabel: "closed", activeLabel: "open"},
-     {subject: "dev:bedroomMotion", normal: "room:noMotion", 
-      normalLabel: "no motion", activeLabel: "motion"},
+    function mon(host) {
+      return {subject: "host:"+host+"/monitor", 
+              predicate: "room:powerStateMeasured",
+              normal: "room:off", 
+              normalLabel: "monitor off", 
+              activeLabel: "monitor on"
+             };
+    }
+    
+    [{subject: "dev:frontDoorMotion", predicate:"room:state", 
+      normal: "room:noMotion", normalLabel: "no motion", activeLabel: "motion"},
+     {subject: "dev:frontDoorOpen", predicate: "room:state", 
+      normal: "room:closed", normalLabel: "closed", activeLabel: "open"},
+     {subject: "dev:theaterDoorOutsideMotion", predicate: "room:state", 
+      normal: "room:noMotion", normalLabel: "no motion", activeLabel: "motion"},
+     {subject: "dev:theaterDoorOpen", predicate: "room:state", 
+      normal: "room:closed", normalLabel: "closed", activeLabel: "open"},
+     {subject: "dev:bedroomMotion", predicate: "room:state",
+      normal: "room:noMotion", normalLabel: "no motion", activeLabel: "motion"},
+     {subject: "dev:heater", predicate: "room:state", 
+      normal: "room:off", normalLabel: "off", activeLabel: "on"},
+     mon("bang"), mon("slash"), mon("dash"), mon("star")
     ].forEach(function (row) {
-	g.match(rdf.iri(row.subject)).forEach(function (t, g) {
-	    var isNormal = t.object.equals(rdf.iri(row.normal));
-	    display.push({
-		id: row.subject.replace(":", "-"), 
-		cssClass: isNormal ? "normal" : "active",
-		value: isNormal ? row.normalLabel : row.activeLabel
+	g.match(rdf.iri(row.subject), rdf.iri(row.predicate)).forEach(
+            function (t, g) {
+	        var isNormal = t.object.equals(rdf.iri(row.normal));
+	        display.push({
+		    id: row.subject.replace(":", "-").replace("/", "-"), 
+		    cssClass: isNormal ? "normal" : "active",
+		    value: isNormal ? row.normalLabel : row.activeLabel
+	        });
 	    });
-	});
     });
     return display;
 }

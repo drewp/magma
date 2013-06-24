@@ -1,4 +1,12 @@
 <div xmlns="http://www.w3.org/1999/xhtml" class="graphLayout">
+
+  <p id="thermostat">
+     Thermostat set: <input type="text" data-bind="value: requestF"/>
+     <button data-bind="click: up">&#8593;</button>
+     <button data-bind="click: down">&#8595;</button>
+     <span data-bind="visible: syncing">sync</span>
+  </p>
+
   <a href="http://graphite.bigasterisk.com/render/?width=720&amp;height=500&amp;target=system.house.temp.downstairs&amp;target=system.house.temp.ariroom&amp;target=keepLastValue(system.house.temp.bedroom)&amp;target=system.house.temp.livingRoom&amp;target=system.noaa.ksql.temp_f&amp;target=system.house.temp.frontDoor&amp;from=-100hours&amp;hideAxes=false&amp;hideLegend=false&amp;lineWidth=1.5&amp;yMin=35&amp;yMax=90">
     <img src="" width="400" height="250"/>
   </a>
