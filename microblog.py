@@ -130,7 +130,7 @@ def postTwitter(graph, openid, msg):
     oauthFilter = makeOauthFilter(graph, openid)
     resp = restkit.request(
         method="POST",
-        url="http://api.twitter.com/1/statuses/update.json",
+        url="http://api.twitter.com/1.1/statuses/update.json",
         filters=[oauthFilter],
         body={'status' : msg})
     if resp.status_int != 200:
