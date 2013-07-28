@@ -383,3 +383,22 @@ table.sensuEvents td {
     border-top: 1px solid gray;
 }
 table.sensuEvents .last span { white-space: nowrap; }
+
+#thermostat button {
+    padding: 2px 20px;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 19px;
+}
+#thermostat input {
+    color: #BF7BDF;
+    background: black;
+    text-align: center;
+    padding: 2px 1px;
+    width: 23pt;
+}
+
+.sending {
+    background: rgb(172, 156, 42);
+    color: rgb(75, 75, 75);
+}
