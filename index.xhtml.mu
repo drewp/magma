@@ -75,10 +75,22 @@
 	<div class="sensor">Theater door: <span id="dev-theaterDoorOutsideMotion">?</span> <span id="dev-theaterDoorOpen">?</span></div>
 	<div class="sensor">Bedroom: <span id="dev-bedroomMotion">?</span></div>
 
-        <div class="sensor">star/ari     <span id="host-star-monitor">?</span></div>
-        <div class="sensor">slash/garage <span id="host-slash-monitor">?</span></div>
-        <div class="sensor">dash/middle  <span id="host-dash-monitor">?</span></div>
-        <div class="sensor">bang/theater <span id="host-bang-monitor">?</span></div>
+        <div class="sensor">star/ari     <span id="host-star-monitor">?</span> 
+          <button data-method="PUT" data-action="/dpms/star/monitor" data-payload="on">on</button> 
+          <button data-method="PUT" data-action="/dpms/star/monitor" data-payload="off">off</button> 
+        </div>
+        <div class="sensor">slash/garage <span id="host-slash-monitor">?</span>
+          <button data-method="PUT" data-action="/dpms/slash/monitor" data-payload="on">on</button> 
+          <button data-method="PUT" data-action="/dpms/slash/monitor" data-payload="off">off</button> 
+        </div>
+        <div class="sensor">dash/middle  <span id="host-dash-monitor">?</span>
+          <button data-method="PUT" data-action="/dpms/dash/monitor" data-payload="on">on</button> 
+          <button data-method="PUT" data-action="/dpms/dash/monitor" data-payload="off">off</button> 
+        </div>
+        <div class="sensor">bang/theater <span id="host-bang-monitor">?</span>
+          <button data-method="PUT" data-action="/dpms/bang/monitor" data-payload="on">on</button> 
+          <button data-method="PUT" data-action="/dpms/bang/monitor" data-payload="off">off</button> 
+        </div>
         
         <h2>Outputs</h2>
         <div class="sensor">Heater: <span id="dev-heater">?</span></div>

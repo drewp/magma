@@ -10,6 +10,27 @@ $(function () {
 	$("#blogChars").text("("+chars+")");
     });
 
+
+      function initFormButtons() {
+	  $("button[data-action]").click(
+	      function (ev) {
+		  $(ev.target).addClass("sending");
+		  $.ajax({
+    			     url: ev.target.getAttribute("data-action"),
+			     type: ev.target.getAttribute("data-method"),
+			     data: ev.target.getAttribute("data-payload"),
+			     contentType: "text/plain",
+			     success: function () {
+				 $(ev.target).removeClass("sending");
+			     }
+			 });
+	      });
+      }
+ 
+      initFormButtons();
+
+
+
     function TempGraph() {
 	var self=this;
 	var graphImg = $(".graphLayout img");
