@@ -94,7 +94,7 @@
         
         <h2>Outputs</h2>
         <div class="sensor">Heater: <span id="dev-heater">?</span></div>
-	<h2>Positions</h2>
+	<h2>Positions (<a href="/map/">map</a>)</h2>
 	{{#trails}}
 	<div>{{line}}</div>
 	{{/trails}}

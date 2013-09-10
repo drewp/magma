@@ -184,12 +184,20 @@ app.get("/", function (req, res) {
 		     function (user) {
 			 g.match(user, rdf.iri("map:lastSeenAgo")).forEach(function (t) {
 			     g.match(user, rdf.iri("map:lastDesc")).forEach(function (t2) {
-				 var userLabel = user.toString().substr(
+                               var phrase1 = "";
+                               g.match(user, rdf.iri("map:distanceToHomeM")).forEach(function (metersFromHome) {
+
+                                 var milesFromHome = parseFloat(metersFromHome.object.toString()) * 0.000621371;
+                                 phrase1 = " " + Math.round(milesFromHome) + "mi from home";
+});
+                                 var userLabel = user.toString().substr(
 				     user.toString().indexOf("#"));
-				 mapLines.push({line: 
-						userLabel + " last seen " + 
+                                 mapLines.push({line: 
+						userLabel + 
+                                                phrase1 + ", last seen " + 
 						t.object.toString() + " ago " + 
 						t2.object.toString()});
+                                
 			     });
 			 });
 		     });
