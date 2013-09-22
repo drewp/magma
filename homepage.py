@@ -338,7 +338,6 @@ class HomePage(rend.Page):
     
 
 setattr(HomePage, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
-setattr(HomePage, "child_dojo-0.4.2-ajax", static.File("dojo-0.4.2-ajax"))
 setattr(HomePage, "child_tomato_config.js", static.File("/my/site/magma/tomato_config.js"))
 
 class Running(rend.Page):
