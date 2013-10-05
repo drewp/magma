@@ -3,8 +3,7 @@
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; target-densitydpi=device-dpi; maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=482" />
 
     <title>magma</title>
     <link rel="Stylesheet" type="text/css" href="bundle.css?v={{cssChecksum}}" media="all"/>
@@ -59,6 +58,8 @@
 	<div class="imgFrame"> <a href="/cam/ari">ari               <div style="background: url(imgCat/cam.jpg?salt={{salt}}) 0 0px; width: 106px; height: 72px"/></a> </div>
 	<div style="clear:both;"/>
 	<div > <a href="/cam/all">All cameras at once</a></div>
+        <div>Ari room audio</div>
+        <div><a href="http://graphite.bigasterisk.com/render/?width=800&amp;height=500&amp;from=-60minutes&amp;yMax=1&amp;target=system.house.audio.star.avg&amp;target=system.house.audio.star.max"><img width="340" height="120" src="http://graphite.bigasterisk.com/render/?width=340&amp;height=120&amp;from=-15minutes&amp;yMax=1&amp;target=system.house.audio.star.avg&amp;target=system.house.audio.star.max&amp;hideLegend=true&amp;salt={{salt}}"/></a></div>
       </div>
 
       <div class="section">
@@ -105,7 +106,6 @@
 
       <div class="section">
 	<h2>Power meter</h2>
-	Units don't seem to be in watts, yet.
 
 	<div><a href="http://graphite.bigasterisk.com/render/?width=900&amp;height=583&amp;target=keepLastValue(system.house.powerMeter_w)&amp;from=-15hours&amp;yMin=0&amp;hideLegend=true"><div style="background: url(imgCat/power.png?salt={{salt}}) 0 0px; width: 240px; height: 150px"/></a></div>
 	<div style="clear: both"/>
@@ -136,7 +136,7 @@
 	    <a href="/music/slash/playlist">living room</a> 	  
 	    <form style="display:inline" method="post" action="http://10.1.0.21:9049/speak"><input type="input" name="say"/><input type="submit" value="Speak"/></form>
 	  </div>
-	  <div><a href="/music/bang/playlits">bedroom</a> </div>
+	  <div><a href="/music/bang/playlist">bedroom</a> </div>
 	  <div><a href="/music/star/playlist">ari's room</a> </div>
 	  <div><a href="http://10.1.0.1:9041/">gnump3d music server (internal net only)</a></div>
 	</div>
@@ -197,12 +197,12 @@
 {{#showMunin}}
     <div class="section">
       <div class="graph munin"><h1>bang mem</h1> <a href="/magma/munin/bang/bang/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -0px; height:104px"/> </a> </div>
-      <div class="graph munin"><h1>slash mem</h1><a href="/magma/munin/slash/slash/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -208px; height:104px"/> </a> </div>
+      <div class="graph munin"><h1>slash mem</h1><a href="http://graphite.bigasterisk.com/render/?width=842&amp;height=730&amp;_salt=1369648854.65&amp;target=host.slash.memory.apps&amp;target=host.slash.memory.page_tables&amp;target=host.slash.memory.swap_cache&amp;target=host.slash.memory.slab&amp;target=host.slash.memory.cached&amp;target=host.slash.memory.buffers&amp;target=host.slash.memory.free&amp;target=host.slash.memory.swap&amp;areaMode=stacked&amp;from=-200hours"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -208px; height:104px"/> </a> </div>
 
       <div style="clear:both"/>
       <div class="graph munin"><h1>bang cpu</h1>      <a href="/magma/munin/bang/bang/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -104px; height:104px"/> </a> </div> 
 
-      <div class="graph munin"><h1>slash cpu</h1>      <a href="/magma/munin/slash/slash/index.html"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -312px; height:104px"/> </a> </div>
+      <div class="graph munin"><h1>slash cpu</h1>      <a href="http://graphite.bigasterisk.com/render/?width=830&amp;height=435&amp;_salt=1369649013.014&amp;areaMode=stacked&amp;target=derivative(host.slash.cpu.system)&amp;target=derivative(host.slash.cpu.user)&amp;target=derivative(host.slash.cpu.nice)&amp;target=derivative(host.slash.cpu.idle)&amp;target=derivative(host.slash.cpu.iowait)&amp;target=derivative(host.slash.cpu.irq)&amp;target=derivative(host.slash.cpu.softirq)&amp;from=-200hours"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -312px; height:104px"/> </a> </div>
 
       <div class="graph munin"><h1>eon load</h1>      <a href="#"> <div style="background: url(imgCat/hostStats.png?salt={{salt}}) 0 -416px; height:104px"/> </a> </div>
     </div>
@@ -241,6 +241,7 @@
       <a href="/supervisor/dash/">dash</a> 
       <a href="/supervisor/slash/">slash</a> 
       <a href="/supervisor/star/">star</a></div>
+      <div><a href="/magma/bedroom/">bedroom arduino</a></div>
 
       <div><a href="/supervisor/bang/index.html?action=restart&amp;processname=ajaxterm_8022">restart ajaxterm</a></div>
     </div>
