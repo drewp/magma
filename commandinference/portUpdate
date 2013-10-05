@@ -217,6 +217,10 @@ class Root(rend.Page):
         # most knows the time left on the heater call.
 
         # i do happen to have the state data in lastSetting, though
+        heaterPin = bool(int(restkit.Resource("http://bang:9056/").get("/pin/d4").body_string()))
+
+        g.add((DEV['heater'], ROOM['state'],
+               ROOM['on'] if heaterPin else ROOM['off']))
         
         return str(g.asTrig())
 
