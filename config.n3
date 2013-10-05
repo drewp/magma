@@ -218,7 +218,7 @@ cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pand
 <https://bigasterisk.com/bathroomLight/>         a :CommandLink; rdfs:label "bathroom light";        :buttonIcon "bathroomLight" .
 <http://whatsplayingnext.com/upcoming>          a :CommandLink; rdfs:label "whats playing next";    :buttonIcon "whatsplayingnext" .
 <https://bigasterisk.com/gasuse/submitFillUp>    a :CommandLink; rdfs:label "gasuse submit";         :buttonIcon "gasuse" .
-<http://checkvist.com/checklists/27179-family>  a :CommandLink; rdfs:label "family list";           :buttonIcon "familyList" .
+<http://checkvist.com/checklists/422518>  a :CommandLink; rdfs:label "family list";           :buttonIcon "familyList" .
 <https://bigasterisk.com/ari/openidAccess>       a :CommandLink; rdfs:label "openid access control for ari blog"; :buttonIcon "access" .
 <https://bigasterisk.com/search/files/>          a :CommandLink; rdfs:label "file search" .
 
@@ -239,7 +239,7 @@ cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pand
 <https://bigasterisk.com/bathroomLight/>		,
 <http://whatsplayingnext.com/upcoming>		,
 <http://bigasterisk.com/freeway>		,
-<http://checkvist.com/checklists/27179-family>	
+<http://checkvist.com/checklists/422518>	
 
  .
 <http://bigasterisk.com/foaf.rdf#drewp> :seesCommand 
@@ -261,7 +261,7 @@ cmd:slashPandoraLullabye   a :Command, cmd:SupervisorStart;  rdfs:label "LR pand
 <https://bigasterisk.com/bathroomLight/>		,
 <http://whatsplayingnext.com/upcoming>		,
 <http://bigasterisk.com/freeway>		,
-<http://checkvist.com/checklists/27179-family>	
+<http://checkvist.com/checklists/422518>	
 
 
 
