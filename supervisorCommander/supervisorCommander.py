@@ -93,7 +93,16 @@ class ProcessStatus(cyclone.web.RequestHandler):
         """run state of all processes on this supervisor"""
         serv = getConnection(self.settings.xmlrpcConnections,
                              self.settings.addresses[addr])
-        infos = serv.supervisor.getAllProcessInfo()
+        for tries in range(3):
+            try:
+                infos = serv.supervisor.getAllProcessInfo()
+            except Exception, e:
+                pass
+            else:
+                break
+        else:
+            raise e
+            
         graph = StateGraph(ctx=CL['supervisors'])
         for p in infos:
             # this uri design is not very good yet. should just be
