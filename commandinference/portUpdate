@@ -148,11 +148,15 @@ class Loop(object):
             "SELECT ?cls WHERE { ?cls a cmd:PollMe . }")]
                 
     def poll(self):
-        for commandClass in self.pollClasses:
-            cmd, t, user = commandLog.lastCommandOfClass(commandClass)
-            log.debug("cls=%s cmd=%s t=%s", commandClass, cmd, t)
-            RunCommand(commandLog.graph, commandClass, cmd, t)
-
+        try:
+            for commandClass in self.pollClasses:
+                cmd, t, user = commandLog.lastCommandOfClass(commandClass)
+                log.debug("cls=%s cmd=%s t=%s", commandClass, cmd, t)
+                RunCommand(commandLog.graph, commandClass, cmd, t)
+        except:
+            traceback.print_exc()
+            log.warn("continuing...")
+            
         self.lastPoll = time.time()
 
     def ranRecently(self):
