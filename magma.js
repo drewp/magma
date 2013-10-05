@@ -116,6 +116,13 @@ app.get("/static/json-template.js", function (req, res) {
     req.url = "json-template.js";
     return staticDir(req, res);
 });
+app.get("/static/garage-bundle.js", function (req, res) {
+    // set cache forever..
+    res.write(fs.readFileSync("static/jquery-1.9.1.min.js"));
+    res.write(fs.readFileSync("static/jquery-ui-1.10.1.custom/js/jquery-ui-1.10.1.custom.min.js"));
+    res.write(fs.readFileSync("static/jquery.ui.touch-punch.min.js"));
+    res.end();
+});
 
 ["/services", "/addCommand", "/microblogUpdate", "/garage/*", "/houseActivity"
 ].forEach(function (url) {
@@ -274,7 +281,8 @@ rdf.prefixes.addAll({
     room: "http://projects.bigasterisk.com/room/",
     dev: "http://projects.bigasterisk.com/device/",
     env: "http://projects.bigasterisk.com/device/environment",
-    map: "http://bigasterisk.com/map#"
+    map: "http://bigasterisk.com/map#",
+    host: "http://bigasterisk.com/host/"
 });
 
 function displayForSensorGraphs(graphs) {

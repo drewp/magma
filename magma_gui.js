@@ -110,6 +110,52 @@ $(function () {
     var frontDoor = new FrontDoor
     ko.applyBindings(frontDoor, document.getElementById("frontDoor"));
 
+
+    function Thermostat() {
+        var self = this;
+        self.requestF = ko.observable('');
+        self.syncing = ko.observable(true);
+        self.up = function () { self.requestF(parseFloat(self.requestF()) + 1); }
+        self.down = function () { self.requestF(parseFloat(self.requestF()) - 1); }
+        var enablePut = false;
+        function readReq() {
+            enablePut = false;
+            self.syncing(true);
+            $.getJSON("/thermostat/requestedTemperature", function (data) {
+                self.requestF(data.tempF);
+                enablePut = true;
+                self.syncing(false);
+            });
+        }
+
+        var onChange = ko.computed(function() {
+            if (self.requestF() == '' || !enablePut) {
+                return;
+            }
+            console.log("PUT", self.requestF());
+            self.syncing(true);
+            $.ajax({
+                url: "/thermostat/requestedTemperature",
+                type: "PUT",
+                data: JSON.stringify({tempF: parseFloat(self.requestF())}),
+                success: function () {
+                    self.syncing(false);
+                }
+                
+            });
+        });
+        
+
+        function bgloop() {
+            readReq();
+            // this would be nice with requestanimationframe
+            setTimeout(bgloop, 30000);
+        }
+        bgloop();
+
+    }
+    ko.applyBindings(new Thermostat, document.getElementById("thermostat"));
+    
     var loading = false;
 
     var pendingUpdate = null;
