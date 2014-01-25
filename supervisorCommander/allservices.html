@@ -1,0 +1,13 @@
+<h1>All services on {{host}}</h1>
+
+<section class="services">
+  <button ng-click="refreshState()">refresh</button>
+  <table>
+    <tr ng-repeat="svc in services" class="">
+      <td><a href="{{svc.name}}/">{{svc.name}}</a></td>
+      <td class="state-{{svc.statename}}">{{svc.statename}}</td>
+      <td>{{svc.description}}</td>
+    </tr>
+  </table>
+</section>
+

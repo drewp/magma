@@ -1,0 +1,32 @@
+<h1>Service on <a href="..">{{host}}</a>: {{name}}</h1>
+
+<section class="status">
+  <h2>Status</h2>
+  <p>As of {{dataTime}}</p>
+  <p>Current:
+    <span class="state-{{processInfo.statename}}">{{processInfo.statename}}</span>
+    {{processInfo.description}}</p>
+  <div>
+    <button ng-click="sendCommand('startProcess')">Start</button>
+    <button ng-click="sendCommand('stopProcess')">Stop</button>
+  </div>
+  <div>Last result: {{lastResult | json}}</div>
+</section>
+
+<section class="config">
+  <h2>Config</h2>
+  <div>To run this:</div>
+  <pre>
+    cd {{config.directory}}; <!-- env/user goes here --> {{config.command}}
+  </pre>
+  <div>Full config: <span class="boring">{{config | json}}</span></div>
+</section>
+
+<section class="logs">
+  <h2>Logs</h2>
+  <h3>stderr {{processInfo.stderr_logfile}}</h3>
+  <div ng-repeat="line in log.stderrTail track by $index"><code>{{line}}</code></div>
+  <h3>stdout {{processInfo.stdout_logfile}}</h3>
+  <div ng-repeat="line in log.stdoutTail track by $index"><code>{{line}}</code></div>
+
+</section>
