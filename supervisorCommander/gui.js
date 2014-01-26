@@ -67,5 +67,39 @@ function AllServicesCntl($scope, $route, $routeParams, $location, $http) {
             });
     };
     $scope.refreshState();
+    
+    $scope.sendCommand = function (svc, cmd) {
+        var process = svc.name + "/processCommand";
+        if (cmd == 'restart') {
+            $http.post(process, {cmd: 'stopProcess'})
+            .then(function () {
+                $scope.refreshState();
+                $http.post(process, {cmd: 'startProcess'})
+                .then($scope.refreshState, $scope.refreshState);
+            }, $scope.refreshState);
+        } else {
+            $http.post(process, {cmd: cmd})
+            .then($scope.refreshState, $scope.refreshState);
+        }
+    };
 
+    $scope.currentlySwiping = {};
+    var firstDragButton = null;
+    $scope.mouseDown = function (event) {
+        firstDragButton = event.target.textContent;
+    };
+    $scope.mouseUp = function () {
+        firstDragButton = null;
+        $scope.currentlySwiping = {}
+    };
+    $scope.swipe = function (rowIndex, svc, event) {
+        var buttonLabel = event.target.textContent
+        if (event.which == 1 && buttonLabel == firstDragButton) {
+            setTimeout(function () { event.target.click(); }, 1);
+            if ($scope.currentlySwiping[buttonLabel] === undefined) {
+                $scope.currentlySwiping[buttonLabel] = {};
+            }
+            $scope.currentlySwiping[buttonLabel][rowIndex] = true;
+        }
+    };
 }
