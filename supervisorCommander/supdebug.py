@@ -14,7 +14,8 @@ try:
     sys.path.append("/my/proj/homeauto/lib")
     from cycloneerr import PrettyErrorHandler
 except ImportError:
-    PrettyErrorHandler = object
+    class PrettyErrorHandler(object):
+        pass
 
 from twisted.web import xmlrpc
 from twisted.internet.defer import inlineCallbacks
