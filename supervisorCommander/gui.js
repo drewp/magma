@@ -95,11 +95,13 @@ function AllServicesCntl($scope, $route, $routeParams, $location, $http) {
     $scope.swipe = function (rowIndex, svc, event) {
         var buttonLabel = event.target.textContent
         if (event.which == 1 && buttonLabel == firstDragButton) {
-            setTimeout(function () { event.target.click(); }, 1);
             if ($scope.currentlySwiping[buttonLabel] === undefined) {
                 $scope.currentlySwiping[buttonLabel] = {};
             }
-            $scope.currentlySwiping[buttonLabel][rowIndex] = true;
+            if (!$scope.currentlySwiping[buttonLabel][rowIndex]) {
+                setTimeout(function () { event.target.click(); }, 1);
+                $scope.currentlySwiping[buttonLabel][rowIndex] = true;
+            }
         }
     };
 }
