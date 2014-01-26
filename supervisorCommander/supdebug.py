@@ -42,8 +42,13 @@ class Status(PrettyErrorHandler, cyclone.web.RequestHandler):
         }
         t1 = time.time()
         # supervisor also has xmlrpc and modules for this
-        out['log']['stdoutTail'] = tailer.tail(open(result['stdout_logfile']), 20)
-        out['log']['stderrTail'] = tailer.tail(open(result['stderr_logfile']), 20)
+        for chan in ['stdout', 'stderr']:
+            try:
+                out['log'][chan + 'Tail'] = tailer.tail(
+                    open(result[chan + '_logfile']), 20)
+            except IOError as e:
+                out['log'][chan + 'Tail'] = [repr(e)]
+
         print "log tails in %.3f" % (time.time() - t1)
         self.write(out)
 
@@ -77,6 +82,7 @@ class Config(PrettyErrorHandler, cyclone.web.RequestHandler):
         self.write(out)
 
 class ProcessCommand(PrettyErrorHandler, cyclone.web.RequestHandler):
+    @inlineCallbacks
     def post(self, service):
         req = json.loads(self.request.body)
         if req['cmd'] not in ['startProcess', 'stopProcess']:

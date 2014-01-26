@@ -21,5 +21,10 @@ section.status, section.config {
 .state-FATAL { background: gray; }
 .state-EXITED { background: lightgray; }
 
-                          
-    
+button.swiped { background: rgb(248, 248, 149); }
+
+td.buttons {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
