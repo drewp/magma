@@ -10,8 +10,12 @@ http://bigasterisk.com/supervisor/{host}/{service}/
 import sys, cyclone.web, socket, json, xmlrpclib, pwd, time
 from twisted.internet import reactor
 
-sys.path.append("/my/proj/homeauto/lib")
-from cycloneerr import PrettyErrorHandler
+try:
+    sys.path.append("/my/proj/homeauto/lib")
+    from cycloneerr import PrettyErrorHandler
+except ImportError:
+    PrettyErrorHandler = object
+
 from twisted.web import xmlrpc
 from twisted.internet.defer import inlineCallbacks
 import tailer
