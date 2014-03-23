@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    script(src="bower_components/platform/platform.js")
+    script(src="gui.js")
+
+    // just here for the nodefront reloads; please remove
+    script(src="magma-chat.js")
+    link(rel="stylesheet", href="style.css")
+    link(rel="import", href="magma-chat.html")
+  body
+
+    div.col
+      div.cell(style="background: red")
+        | cell1
+    div.col
+      div.cell(style="background: purple")
+        | cell2
+      div.cell.chat
+        magma-chat.chat()  
+    div.col
+      div.cell(style="background: pink")
+        | cell4
+      div.cell(style="background: green")
+        | cell5
+      div.cell(style="background: yellow")
+        | cell6
+      div.cell(style="background: blue")
+        | cell7
+    

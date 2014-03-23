@@ -1,0 +1,35 @@
+link(rel="import", href="../bower_components/polymer/polymer.html")
+script(src="bower_components/reconnecting-websocket/index.js")
+
+polymer-element(name="magma-chat")
+  template
+    style.
+      #top {
+        border: 1px solid gray;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      form {
+        position: absolute;
+        bottom: 0;
+      }
+      .mine { font-style: italic; }
+
+
+      
+    #top
+      #history
+        template(repeat="{{row in history}}")
+          div(class="{{row.layout.classes}}")
+            | {{row.t}} {{row.sender}}: {{row.html}}
+
+      form(on-submit="{{submitLine}}")
+        | new msg:
+        input(type='text', value="{{newMsg}}")
+      
+      
+
+  script(src="magma-chat.js")
