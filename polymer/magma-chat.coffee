@@ -1,23 +1,34 @@
 Polymer 'magma-chat',
   history: []
   historyRevision: null
+  foaf: null
+  mePrompt: "Me"
   
   ready: () ->
     console.log("chat ready")
-    @socket = new ReconnectingWebSocket('ws://dash:3002/chat')
+    @socket = new ReconnectingWebSocket('wss://bigasterisk.com/magma/chat/')
+    @socket.reconnectInterval = 2000;
     @socket.onmessage = @onMessage.bind(this)
-    @newMsg = "writing..."
+    @newMsg = ""
     
   sendLine: (msg) ->
-    row = {type: 'newLine', uri: @newUri(), msg: msg, clientTime: +new Date()}
-    @asyncFire('newLine', {msg: row})
-    @sendWithRetry(row)
+    row = {uri: @newUri(), t: (new Date()).toJSON(), html: msg}
+    @asyncFire('newLine', row)
+    @sendWithRetry({type: 'post', row: row})
     console.log('send')
 
   layoutRow: (row) ->
     # redo row.layout
     row.layout = 
-      classes: 'mine'
+      classes: if @foaf == row.creator then 'mine' else 'friend'
+      shortTime: moment(row.t).format('ddd H:mm:ss')
+      shortSender: @shortName(row.creator)
+
+  shortName: (uri) ->
+    switch uri
+      when "http://bigasterisk.com/foaf.rdf#drewp" then "Drew"
+      when "http://bigasterisk.com/kelsi/foaf.rdf#kelsi" then "Kelsi"
+      else uri
 
   sendWithRetry: (js) ->
     try
@@ -42,15 +53,22 @@ Polymer 'magma-chat',
     console.log('nmc', newValue)
 
   reloadHistory: () ->
-    @sendWithRetry({req: 'reloadHistory'})
+    @sendWithRetry({type: 'reloadHistory'})
     
   onMessage: (msg) ->
     console.log('onmsg', msg)
     msg = JSON.parse(msg.data)
     if msg.type == 'history'
+      @foaf = msg.you
+      @mePrompt = @shortName(@foaf)
       @history = msg.history
       @layoutRow(r) for r in @history
       console.log('assigned', @history.length)
+    if msg.type == 'append' # temporary type
+      @history.push(msg.row)
+      
+    # needs to be after the add
+    setTimeout(( => @$.histArea.scrollTop = @$.histArea.scrollHeight), 100)
     # we could receive appends in many cases, but this sample doesn't cover the case that prev/last match but a past line's data was edited. I think this should be 'patchHistory' which says how to get from past version to this one (often an append but sometimes more edits)
     #if msg.type == 'appendHistory'
     #  if msg.prev.uri != @history[@history.length - 1].uri
