@@ -6,7 +6,9 @@ Polymer 'magma-chat',
   
   ready: () ->
     console.log("chat ready")
-    @socket = new ReconnectingWebSocket('wss://bigasterisk.com/magma/chat/')
+    @socket = new ReconnectingWebSocket(
+      window.location.origin.replace(/^https:/, 'wss:').replace(/^http:/, 'ws:') + 
+      '/magma/chat/')
     @socket.reconnectInterval = 2000;
     @socket.onmessage = @onMessage.bind(this)
     @newMsg = ""
