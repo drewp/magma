@@ -1,0 +1,14 @@
+link(rel="import", href="bower_components/polymer/polymer.html")
+
+polymer-element(name="magma-plot")
+  style.
+    #top {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+  template
+    #top
+      img(src="https://graphite.bigasterisk.com/render/?width={{imgWidth}}&height={{imgHeight}}&_salt={{salt}}&from=-5days&target=alias(system.noaa.rcmc1.temp_f%2C%22richmond%22)&target=alias(system.noaa.ksql.temp_f%2C%22ksql%22)&target=alias(system.noaa.koak.temp_f%2C%22oakland%22)&target=alias(system.noaa.ftpc1.temp_f%2C%22sf%22)&target=alias(system.noaa.aamc1.temp_f%2C%22alameda%22)&target=alias(system.noaa.ksfo.temp_f%2C%22sfo%22)")
+  script(src="magma-plot.js")

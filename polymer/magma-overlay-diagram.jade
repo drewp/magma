@@ -1,0 +1,28 @@
+link(rel="import", href="bower_components/polymer/polymer.html")
+
+polymer-element(name="magma-overlay-diagram")
+  style.
+    svg {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      -webkit-filter: drop-shadow(5px 5px 1px rgba(0,0,0,.3));
+    }
+    marker path {
+      fill: rgb(252, 252, 177);
+    }
+    .arrow {
+      stroke-width: 4px;
+      stroke: rgb(252, 252, 177);
+    }
+  template
+    svg(xmlns='http://www.w3.org/2000/svg', version='1.1')
+      defs
+        marker(id="triangle", viewBox="0 0 10 10", refX="0", refY="5", markerUnits="strokeWidth", markerWidth="4", markerHeight="3", orient="auto")
+          path(d="M 0 0 L 10 5 L 0 10 z")
+      line.arrow(x1="500", y1="500", x2="700", y2="600", marker-end="url(#triangle)")
+
+  script(src="magma-overlay-diagram.js")
