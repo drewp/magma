@@ -1,4 +1,4 @@
-import sys, logging
+import os, sys, logging
 from twisted.python import log as twlog
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
@@ -19,7 +19,10 @@ class Chat(cyclone.websocket.WebSocketHandler):
     @inlineCallbacks
     def connectionMade(self):
         Chat.waiters.add(self)
-        self.agent = self.request.headers['x-foaf-agent']
+        self.agent = os.environ.get('X_FOAF_AGENT',
+                                    self.request.headers.get('x-foaf-agent'))
+        if not self.agent:
+            raise ValueError("connection with no x-foaf-agent")
         log.info("connect from %s", self.agent)
         yield self.sendHistory()
 
