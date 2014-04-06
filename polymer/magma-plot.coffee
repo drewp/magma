@@ -4,29 +4,31 @@ Polymer 'magma-plot',
   salt: 0
   refreshSec: 60 * 10
   attached: () ->
-    setInterval((() =>
-      @changeWhenVisible =>
-        @salt = Math.round((+new Date()) / (1000 * @refreshSec))
-    ), @refreshSec * 1000)
+    @_changeWhenVisible()
     
-    @resize()
-
     window.addEventListener('resize', (() =>
-      @resize()
+      @_onResize()
     ))
+    @_onResize()
 
-  resize: () ->
-    @changeWhenVisible =>
-      elem = @$.top
-      @imgWidth = elem.offsetWidth
-      @imgHeight = elem.offsetHeight
+  _onResize: () ->
+    @_changeWhenVisible =>
+      @resize(@$.top.offsetWidth, @$.top.offsetHeight)
 
-  changeWhenVisible: (cb) ->
+  _changeWhenVisible: (cb) ->
     if (document.hidden ||
         document.mozHidden ||
         document.msHidden ||
         document.webkitHidden)
-      setTimeout(@changeWhenVisible, 5000)
+      setTimeout(@_changeWhenVisible, 5000)
       return
-    cb()
+    @periodicReload()
+    setTimeout(@_changeWhenVisible, @refreshSec * 1000)
+
+
+  periodicReload: () ->
+    @salt = Math.round((+new Date()) / (1000 * @refreshSec))    
+      
+  resize: (w, h) ->
+    [@imgWidth, @imgHeight] = [w, h]
     
