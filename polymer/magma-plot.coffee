@@ -13,7 +13,11 @@ Polymer 'magma-plot',
         targets.push(v.value)
       else if v.name? and v.value?
         others.push(v)
-    ("target="+encodeURIComponent(t) for t in targets).concat(o.name.replace('ymax', 'yMax') + "=" + encodeURIComponent(o.value) for o in others).join('&')
+    ("target="+encodeURIComponent(t) for t in targets).concat(
+      o.name
+        .replace('ymax', 'yMax')
+        .replace('areamode', 'areaMode') +
+        "=" + encodeURIComponent(o.value) for o in others).join('&')
                   
   resize: (w, h) ->
     [@imgWidth, @imgHeight] = [w, h]
