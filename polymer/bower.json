@@ -11,7 +11,7 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "~0.2.1",
+    "polymer": "0.2.2",
     "reconnecting-websocket": "https://raw.githubusercontent.com/drewp/reconnecting-websocket/master/reconnecting-websocket.js"
   }
 }
