@@ -10,6 +10,7 @@ html
 
     link(rel="import", href="magma-chat.html")
     link(rel="import", href="magma-plot.html")
+    link(rel="import", href="magma-photo.html")
     link(rel="import", href="magma-overlay-diagram.html")
     link(rel="import", href="magma-refreshing-widget.html")
   body
@@ -18,18 +19,21 @@ html
       div.cell(style="background-color: #c86866")
         | cell1
     div.col
-      div.cell(style="background-color: #c04d4a")
-        | cell2
+      div.cell
+        magma-photo(uri="http://photo.bigasterisk.com/digicam/dl-2011-09-16/DSC_3992.JPG")
       div.cell.chat
         magma-chat.chat()  
     div.col
       div.cell(style="background-color: #ad3230")
         | cell4
-      div.cell(style="background-color: #882a29")
-        | cell5
-      div.cell(style="background-color: #3a1212")
-        | c6
-      div.cell(style="background-color: #c04d4a")
+      div.cell
+        magma-plot(from="-15min", yMax="1",
+          target="alias(system.house.audio.star.max,\"ari room audio\")")
+      div.cell
+        magma-plot(from="-15min",
+          target0="system.net.bytesPerSec.in",
+          target1="system.net.bytesPerSec.out")
+      div.cell
         magma-plot(from="-5days", 
           target0="alias(system.noaa.rcmc1.temp_f,\"richmond\")",
           target1="alias(system.noaa.ksql.temp_f,\"ksql\")",

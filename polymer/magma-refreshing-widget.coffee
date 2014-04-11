@@ -8,7 +8,7 @@ Polymer 'magma-refreshing-widget',
   _reloadLoop: () ->
     @_changeWhenVisible =>
       @periodicReload()
-      setTimeout((=> @_reloadLoop()), @refreshSec * 1000)
+      setTimeout((=> @_reloadLoop()), @refreshSec * 1000) if @refreshSec
 
   _lastWidgetSize: [0, 0]
   _onResize: () ->

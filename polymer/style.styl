@@ -11,7 +11,6 @@ body
   -webkit-align-items: stretch
   align-items: stretch
   .col
-    border: 3px solid black
     -webkit-flex: 1 0 1%
     flex: 1 0 1%
     -webkit-flex-grow: 1
@@ -25,8 +24,19 @@ body
       -webkit-flex: 1 0 1%
       flex: 1 0 1%
       position: relative
-      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.39) 100%);
+
+// --- only page layout above this line -----------------------
 
 body
   font-family: sans
   font-size: 10pt
+  background: #cecece
+
+.cell
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.39) 100%);
+  margin: 4px;
+  border: 1px outset gray;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 1px 1px 8px rgba(39, 37, 104, 0.68);
+  
