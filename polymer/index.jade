@@ -17,8 +17,28 @@ html
   body
 
     div.col
-      div.cell(style="background-color: #c86866")
-        | cell1
+      div.cell.crammedFrame(style="background-color: #c86866")
+        div: a(href="/ruler/analysis/") ruler failing checks
+        iframe(src="/ruler/analysis/")
+      div.cell.crammedFrame(style="background-color: #15743c")
+        div: a(href="http://bang:9070/table") wifi users and recent visitors
+        iframe(src="http://bang:9070/table")
+      div.cell(style="background-color: #13818e")
+        | home bandwidth report
+      div.cell(style="background-color: #e3c334")
+        | server load graphs
+      div.cell(style="background-color: #876853")
+        a.otherPage(href="/sfd/") SFD
+        a.otherPage(href="/search/") Search
+        a.otherPage(href="/search/files/") File search
+        a.otherPage(href="/map/") Map
+        a.otherPage(href="/gasuse/submitFillUp") gasuse submit
+        a.otherPage(href="//checkvist.com/checklists/422518") family checkvist
+        a.otherPage(href="https://whatsplayingnext.com/upcoming") whatsplayingnext
+        
+      div.cell.crammedFrame(style="background-color: #989c2e")
+        div: a(href="/diary/") diarybot new entries
+        iframe(src="/diary/")
     div.col
       div.cell
         magma-photo(uri="http://photo.bigasterisk.com/digicam/dl-2011-09-16/DSC_3992.JPG")
@@ -27,6 +47,8 @@ html
     div.col
       div.cell(style="background-color: #ad3230")
         heist-recent-transactions()
+      div.cell(style="background-color: #c10e2c")
+        | leaf battery data
       div.cell
         magma-plot(from="-15min", yMax="1", areaMode="all",
           target="alias(system.house.audio.star.max,\"ari room audio\")")
