@@ -30,7 +30,7 @@ html
         | server load graphs
       div.cell.crammedFrame(style="background-color: #989c2e")
         div: a(href="/diary/") diarybot new entries
-        iframe(src="/diary/")
+        iframe(src="/diary/", style="flex: 1 0 auto")
     div.col
       div.cell.flexFit(style="background-color: #876853")
         a.otherPage(href="//checkvist.com/checklists/422518") Family checkvist
@@ -48,7 +48,7 @@ html
     div.col
       div.cell.flexFit(style="background-color: #ad3230")
         heist-recent-transactions()
-      div.cell(style="background-color: #c10e2c")
+      div.cell(style="background-color: #c10e2c; flex-basis: 300px")
         leaf-report()
       div.cell
         magma-plot(from="-15min", yMax="1", areaMode="all",
