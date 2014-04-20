@@ -54,7 +54,7 @@ html
         magma-plot(from="-15min", yMax="1", areaMode="all",
           target="alias(system.house.audio.star.max,\"ari room audio\")")
       div.cell
-        magma-plot(from="-15min",
+        magma-plot(from="-15min", yMax="1000000",
           target0="system.net.bytesPerSec.in",
           target1="system.net.bytesPerSec.out")
       div.cell
