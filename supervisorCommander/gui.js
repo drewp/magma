@@ -1,11 +1,12 @@
+var pagePrefix = '/supdebug/[^/]+';
 angular
     .module('app', ['ngRoute'])
     .config(function($routeProvider, $locationProvider) {
-        $routeProvider.when('/:serviceName/', {
+        $routeProvider.when(pagePrefix + '/:serviceName/', {
             templateUrl: 'service.html',
             controller: ServiceCntl,
         });
-        $routeProvider.when('/', {
+        $routeProvider.when(pagePrefix + '/', {
             templateUrl: 'allservices.html',
             controller: AllServicesCntl,
         });

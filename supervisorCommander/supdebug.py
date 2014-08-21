@@ -7,7 +7,7 @@ http://bigasterisk.com/supervisor/{host}/{service}/
                                         ^^^^^^^^^^^^^
                                         we receive this part
 """
-import sys, cyclone.web, socket, json, xmlrpclib, pwd, time
+import sys, cyclone.web, socket, json, xmlrpclib, pwd, time, argparse
 from twisted.internet import reactor
 
 try:
@@ -25,7 +25,15 @@ import supervisor.options
 supervisorOptions = supervisor.options.ServerOptions()
 supervisorOptions.realize(args=['-c', '/etc/supervisord.conf'])
 
-supervisor = xmlrpc.Proxy('http://localhost:9001/RPC2')
+parser = argparse.ArgumentParser()
+parser.add_argument('--port', default=10004, type=int, help="port for this http server")
+parser.add_argument("--supervisor", default="http://localhost:9001/",
+                  help="url to supervisor, with trailing slash")
+
+opts = parser.parse_args()
+
+
+supervisor = xmlrpc.Proxy('%sRPC2' % opts.supervisor)
 
 class Status(PrettyErrorHandler, cyclone.web.RequestHandler):
     @inlineCallbacks
@@ -109,7 +117,7 @@ class Services(PrettyErrorHandler, cyclone.web.RequestHandler):
 if __name__ == '__main__':
     from twisted.python.log import startLogging
     startLogging(sys.stderr)
-    reactor.listenTCP(10004, cyclone.web.Application([
+    reactor.listenTCP(opts.port, cyclone.web.Application([
         (r"/(|gui.js|style.css|allservices.html|service.html)", cyclone.web.StaticFileHandler,
          {"path": ".", "default_filename": "supdebug.html"}),
         (r"/.[^/]+/(|gui.js|style.css|service.html)", cyclone.web.StaticFileHandler,
