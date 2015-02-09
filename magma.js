@@ -131,11 +131,11 @@ app.get("/static/garage-bundle.js", function (req, res) {
 });
 
 app.get("/", function (req, res) {
-    log.info("root request start");
     res.header("content-type", "application/xhtml+xml");
 
     var ch = {"Cookie": req.header("cookie")};
     var hh = {"x-foaf-agent" : req.header("x-foaf-agent")};
+    log.info("root request start", ch, hh);
 
     var parts = {
 	loginBar: {
