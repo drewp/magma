@@ -24,9 +24,20 @@ class StateGraph(object):
     def add(self, *args, **kw):
         self.g.add(*args, **kw)
 
-    def asTrig(self):
+    def ntLines(self):
         nt = self.g.serialize(format='nt')
         # this canonical order is just for debugging, so the lines are
         # stable when you refresh the file repeatedly
-        ntOrder = '\n'.join(sorted(nt.splitlines()))
-        return "%s {\n%s\n}\n" % (self.ctx.n3(), ntOrder)
+        return sorted(filter(None, nt.splitlines()))
+        
+    def asTrig(self):
+        return "%s {\n%s\n}\n" % (self.ctx.n3(), ''.join(self.ntLines()))
+
+    def asAccepted(self, acceptHeader):
+        if acceptHeader == 'application/nquads':
+            return 'application/nquads', '\n'.join(
+                line.strip().rstrip('.') + '%s .' % self.ctx.n3()
+                for line in self.ntLines())
+        else:
+            return 'application/x-trig', self.asTrig()
+    
