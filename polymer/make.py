@@ -18,7 +18,7 @@ for src in glob('*.coffee') + glob('*.jade') + glob('*.styl'):
     if '.styl' in src:
        subprocess.call('node_modules/stylus/bin/stylus -u autoprefixer-stylus < %(src)s > %(dest)s' % vars(), shell=True)
     elif '.jade' in src:
-       subprocess.call('node_modules/jade/bin/jade.js < %(src)s > %(dest)s' % vars(), shell=True)
+       subprocess.call('node_modules/jade/bin/jade.js --pretty < %(src)s > %(dest)s' % vars(), shell=True)
     elif '.coffee' in src:
        subprocess.call(['coffee', '-o', 'build/', '-c', src])
 
