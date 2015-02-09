@@ -15,6 +15,7 @@ html
     link(rel="import", href="magma-refreshing-widget.html")
     link(rel="import", href="/heist/heist-recent-transactions.html")
     link(rel="import", href="/leaf/leaf-report.html")
+    link(rel="import", href="/countdown/countdown-view.html")
   body
 
     div.col
@@ -46,10 +47,13 @@ html
       div.cell.chat
         magma-chat.chat()  
     div.col
-      div.cell.flexFit(style="background-color: #ad3230")
+      div.cell.flexFit(style="background-color: #ec8281")
         heist-recent-transactions()
       div.cell(style="background-color: #c10e2c; flex-basis: 300px")
+        div: a(href="/leaf/") Leaf report
         leaf-report()
+      div.cell.flexFit(style="background-color: #bdbdbd")
+        countdown-view()
       div.cell
         magma-plot(from="-15min", yMax="1", areaMode="all",
           target="alias(system.house.audio.star.max,\"ari room audio\")")
