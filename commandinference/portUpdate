@@ -161,7 +161,7 @@ class Loop(object):
 
     def ranRecently(self):
         dt = time.time() - self.lastPoll
-        return dt < 30
+        return dt < 120
 
 commandLog = getCommandLog()
 

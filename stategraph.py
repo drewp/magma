@@ -15,9 +15,12 @@ class StateGraph(object):
         self.g = Graph()
         self.ctx = ctx
 
-        requestingFile = inspect.stack()[1][1]
-        self.g.add((ctx, DCTERMS['creator'], 
-                    Literal(os.path.abspath(requestingFile))))
+        try:
+            requestingFile = inspect.stack()[1][1]
+            self.g.add((ctx, DCTERMS['creator'], 
+                        Literal(os.path.abspath(requestingFile))))
+        except IndexError:
+            pass
         self.g.add((ctx, DCTERMS['modified'],
                Literal(datetime.datetime.now(tzlocal()))))
 
@@ -31,7 +34,7 @@ class StateGraph(object):
         return sorted(filter(None, nt.splitlines()))
         
     def asTrig(self):
-        return "%s {\n%s\n}\n" % (self.ctx.n3(), ''.join(self.ntLines()))
+        return "%s {\n%s\n}\n" % (self.ctx.n3(), '\n'.join(self.ntLines()))
 
     def asAccepted(self, acceptHeader):
         if acceptHeader == 'application/nquads':

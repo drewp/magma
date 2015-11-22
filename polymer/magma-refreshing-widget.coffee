@@ -1,3 +1,6 @@
+# updated in /my/proj/countdown/
+
+
 Polymer 'magma-refreshing-widget',
   refreshSec: 60 * 10
   attached: () ->
