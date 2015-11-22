@@ -162,7 +162,7 @@ app.get("/", function (req, res) {
 	    failed: {}
 	},
 	sensu: {
-	    url: "http://bang:9101/table", 
+	    url: "http://bang:8103/table", 
 	    headers: hh
 	},
 	initialSensorDisplay: {

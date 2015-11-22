@@ -1,4 +1,4 @@
-import urllib, simplejson
+import urllib, json as simplejson
 from nevow.tags import Tag
 from nevow import flat, rend, inevow
 
