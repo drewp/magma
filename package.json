@@ -4,11 +4,11 @@
   "description": "",
   "main": " ",
   "dependencies": {
-    "autoprefixer": "~1.1.20140410",
-    "bower": "~1.3.1",
-    "autoprefixer-stylus": "0.0.4",
-    "stylus": "^0.43.1",
-    "jade": "^1.3.1"
+    "autoprefixer-stylus": "^0.8.1",
+    "bower": "^1.7.2",
+    "coffee-script": "^1.10.0",
+    "jade": "^1.11.0",
+    "stylus": "^0.53.0"
   },
   "devDependencies": {},
   "scripts": {
