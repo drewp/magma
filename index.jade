@@ -1,24 +1,30 @@
 doctype html
 html
   head
-    script(src="/lib/platform/0.2.3/platform.js")
-    script(src="gui.js")
+    script(src="/lib/polymer/1.0.9/webcomponentsjs/webcomponents.min.js")
     meta(name="viewport", content="width=device-width")
     meta(name="mobile-web-app-capable", content="yes")
-    link(rel="shortcut icon", sizes="196x196", href="/icon.png")
-    link(rel="stylesheet", href="style.css")
+    title magma
+    link(rel="shortcut icon", sizes="90x90", href="icon-90.png")
+    //link(rel="stylesheet", href="style.css")
 
-    link(rel="import", href="magma-chat.html")
-    link(rel="import", href="magma-plot.html")
-    link(rel="import", href="magma-photo.html")
-    link(rel="import", href="magma-overlay-diagram.html")
-    link(rel="import", href="magma-refreshing-widget.html")
-    link(rel="import", href="/heist/heist-recent-transactions.html")
-    link(rel="import", href="/leaf/leaf-report.html")
-    link(rel="import", href="/countdown/countdown-view.html")
+    //link(rel="import", href="magma-chat.html")
+    //link(rel="import", href="magma-plot.html")
+    //link(rel="import", href="magma-photo.html")
+    //link(rel="import", href="magma-overlay-diagram.html")
+    //link(rel="import", href="magma-refreshing-widget.html")
+    //link(rel="import", href="/heist/heist-recent-transactions.html")
+    //link(rel="import", href="/leaf/leaf-report.html")
+    //link(rel="import", href="/countdown/countdown-view.html")
+    link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-register.html")
+    link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-cache.html")
   body
+    platinum-sw-register(auto-register)
+      platinum-sw-cache(default-cache-strategy="fastest")
 
     div.col
+      div
+        | v2
       div.cell.crammedFrame(style="background-color: #c86866")
         div: a(href="/ruler/analysis/") ruler failing checks
         iframe(src="/ruler/analysis/")
