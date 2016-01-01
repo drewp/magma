@@ -1,0 +1,6 @@
+!jade = |> node_modules/jade/bin/jade.js --pretty < %f > %o |> %o
+!coffee = |> coffee -c %f -p > %o |> %o
+!stylus = |> node_modules/stylus/bin/stylus -u autoprefixer-stylus < %f > %o |> %o
+
+: index.jade |> !jade |> build/index.html
+
