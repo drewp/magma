@@ -1,0 +1,58 @@
+Used https://en.wikipedia.org/wiki/Shield_volcano
+https://en.wikipedia.org/wiki/Shield_volcano#/media/File:Aa_large.jpg
+
+---------
+you were working on adding Lupy to the mail rdf
+---------
+
+
+magma web ui and others call CommandLog.addCommand(uri, time, user),
+which records the new issue to sesame and sends pings to the hub, one
+for every commandclass:
+
+  (topic: 'newCommand')
+  issue: uri
+  commandClass: uri (you probably filter on this one)
+  command: uri
+  created: datetime
+  creator: uri
+
+listeners receive POST calls with a json object of those same
+keys. Strictly, they only need the issue uri, and they get the rest
+from the graph.
+
+
+
+arduino REST api:
+/pin/d0 PUT '0' or '1', or GET
+/pin/d0/mode PUT 'output'
+
+
+---------------------
+
+how does the data come together for reasoning?
+
+we update some statements about the latest versions of things, then
+retrigger the rules and consider the output.
+
+kelsi position is within 100m of house + nighttime [+ kelsi not at home] -> kelsi coming home -> front lights on
+
+goodnight button pressed -> lights off
+
+--------------
+to fix egg imports, i put
+http://www.doughellmann.com/PyMOTW/pkgutil/ lines into many __init__.py
+
+--------------
+extend env to say where i'm reading from, like my desk
+
+gps map should be suggested if someone's logging now or recently
+
+POST pops a message which fades
+
+
+--------------
+art styles:
+http://elusive.deviantart.com/art/Interface-Atom-51829774
+http://vega0ne.deviantart.com/art/VEGAONE-DE-2008-74572058
+
