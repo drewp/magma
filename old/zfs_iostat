@@ -6,7 +6,7 @@
 import sys
 from zfsparse import toBytes
 for line in sys.stdin:
-    if not line.startswith('stor3'):
+    if not line.startswith('stor6'):
         continue
     pool, used, avail, readop, writeop, readbyte, writebyte = toBytes(line).split()
     div = 300000
