@@ -36,6 +36,9 @@ class StateGraph(object):
     def asTrig(self):
         return "%s {\n%s\n}\n" % (self.ctx.n3(), '\n'.join(self.ntLines()))
 
+    def asJsonLd(self):
+        return self.g.serialize(format='json-ld')
+
     def asAccepted(self, acceptHeader):
         if acceptHeader == 'application/nquads':
             return 'application/nquads', '\n'.join(
