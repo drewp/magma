@@ -1,0 +1,20 @@
+{
+    "src": "./",
+    "dest": "build/",
+    "patterns": "*{.jade,.coffee,.styl} components/*{.coffee,.styl,.jade}",
+    "copy": "*.css *.svg *.png",
+    "jade": {
+        "pretty": true
+    },
+    "coffee": {
+        "bare": true
+    },
+    "styl": {
+        "u": "autoprefixer-stylus",
+        "compress": false,
+        "nib": true
+    },
+    "delete": true,
+    static: false,
+    livereload: false
+}
