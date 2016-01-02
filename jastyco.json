@@ -1,7 +1,7 @@
 {
     "src": "./",
     "dest": "build/",
-    "patterns": "*{.jade,.coffee,.styl} components/*{.coffee,.styl,.jade}",
+    "patterns": "[a-z]*{.jade,.coffee,.styl} components/[a-z]*{.coffee,.styl,.jade}",
     "copy": "*.css *.svg *.png",
     "jade": {
         "pretty": true
