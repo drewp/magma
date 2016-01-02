@@ -1,9 +1,11 @@
-html
-  height: 100%
-  
-body
-  margin: 0
-  height: 100%
+.body2
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+   
+.body2
   display: -webkit-flex
   display: flex
   -webkit-flex-flow: row
@@ -27,10 +29,12 @@ body
 
 // --- only page layout above this line -----------------------
 
-body
+.body2
+
   font-family: sans
   font-size: 10pt
   background: #cecece
+  outline: 2px dashed red;
 
 .cell
   background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.39) 100%);
@@ -55,6 +59,7 @@ body
     flex: 0 0 auto
   > iframe
     background: rgba(255, 255, 255, 0.67)
+    flex: 1 1
 
 .flexFit
   flex: 0 0 auto
