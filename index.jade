@@ -8,7 +8,7 @@ html
 
     title magma
     link(rel="shortcut icon", sizes="90x90", href="icon-90.png")
-    link(rel="stylesheet", href="style.css?v=TIMESTAMP")
+    link(rel="stylesheet", href="style.css")
 
     //link(rel="import", href="magma-chat.html")
     link(rel="import", href="components/magma-plot.html")
@@ -19,9 +19,17 @@ html
     //link(rel="import", href="/countdown/countdown-view.html")
     link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-register.html")
     link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-cache.html")
+    script.
+      window.NS = {
+        dev: 'http://projects.bigasterisk.com/device/',
+        room: 'http://projects.bigasterisk.com/room/',
+        rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
+        sensor: 'http://bigasterisk.com/homeauto/sensor/',
+        b0: 'http://bigasterisk.com/homeauto/board0/',
+      };
   body
-    //platinum-sw-register(auto-register)
-    //  platinum-sw-cache(default-cache-strategy="fastest", disabled="true")
+    platinum-sw-register(auto-register)
+      platinum-sw-cache(default-cache-strategy="fastest")
     div.body2
       div.col
         div.cell.crammedFrame(style="background-color: #c86866")
@@ -31,7 +39,8 @@ html
           div: a(href="https://bigasterisk.com/wifi/") wifi users and recent visitors
           iframe(src="https://bigasterisk.com/wifi/table")
         div.cell(style="background-color: #13818e")
-          | all light controls
+          link(rel="import", href="/arduino/brace/static/output-widgets.html")
+          output-slider(min="0", max="1", element="output-slider", step="0.00392156862745098", pred="http://projects.bigasterisk.com/room/brightness", subj="http://projects.bigasterisk.com/room/starTrekLight") 
         div.cell(style="background-color: #e3c334")
           | 
         div.cell.crammedFrame(style="background-color: #989c2e")
@@ -49,10 +58,27 @@ html
           a.otherPage(href="/search/files/") File search
           a.otherPage(href="/sfd/") SFD
           a.otherPage(href="https://whatsplayingnext.com/upcoming") Whatsplayingnext
+          a.otherPage(href="https://docs.google.com/spreadsheets/d/1dT-hzFMcpmhgwNlec22LG_N74HgRc8xWzifHpCbCv7k/edit#gid=0") Whopickedthis
         div.cell.flexFit
           magma-photo(uri="http://photo.bigasterisk.com/digicam/dl-2011-09-16/DSC_3992.JPG")
         div.cell.chat
-          magma-chat.chat()  
+          magma-chat.chat()
+          pre
+            | todo:
+            | support multiple light controls from multiple hosts
+            | sync light control values
+            | surface some supervisor buttons, like minetest
+            | decompose power to known components: heater, fridge, computers, screens
+            | show screen power, turn off screens remotely
+            | master light controls, like 'all lights off'
+            | make wifi widget smaller, show useful info
+            | make ruler summarize better
+            | fix heist to show txns
+            | unfold/expand sections as they become ready
+            | touch section to zoom it to full screen
+            | chat support
+            | music player widget
+            
       div.col
         div.cell.flexFit(style="background-color: #ec8281")
           heist-recent-transactions()
@@ -78,11 +104,15 @@ html
           magma-plot(from="-60min",
             target0='alias(system.house.temp.greenhouse, "greenhouse")',
             target1='alias(system.house.temp.workshop, "workshop")',
+            target2='alias(system.house.temp.storage, "storage")',
+            target3='alias(system.house.temp.ariUnderBed, "ariUnderBed")',
             )
         div.cell
           magma-plot(from="-5days",
             target0='alias(system.house.temp.greenhouse, "greenhouse")',
             target1='alias(system.house.temp.workshop, "workshop")',
+            target2='alias(system.house.temp.storage, "storage")',
+            target3='alias(system.house.temp.ariUnderBed, "ariUnderBed")',
             )
         div.cell
           magma-plot(from="-5days", 
