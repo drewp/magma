@@ -63,21 +63,21 @@ html
           magma-photo(uri="http://photo.bigasterisk.com/digicam/dl-2011-09-16/DSC_3992.JPG")
         div.cell.chat
           magma-chat.chat()
-          pre
-            | todo:
-            | support multiple light controls from multiple hosts
-            | sync light control values
-            | surface some supervisor buttons, like minetest
-            | decompose power to known components: heater, fridge, computers, screens
-            | show screen power, turn off screens remotely
-            | master light controls, like 'all lights off'
-            | make wifi widget smaller, show useful info
-            | make ruler summarize better
-            | fix heist to show txns
-            | unfold/expand sections as they become ready
-            | touch section to zoom it to full screen
-            | chat support
-            | music player widget
+          ol
+            li todo:
+            li support multiple light controls from multiple hosts
+            li sync light control values
+            li surface some supervisor buttons, like minetest
+            li decompose power to known components: heater, fridge, computers, screens
+            li show screen power, turn off screens remotely
+            li master light controls, like 'all lights off'
+            li make wifi widget smaller, show useful info
+            li make ruler summarize better
+            li fix heist to show txns
+            li unfold/expand sections as they become ready
+            li touch section to zoom it to full screen
+            li chat support
+            li music player widget
             
       div.col
         div.cell.flexFit(style="background-color: #ec8281")
@@ -106,6 +106,7 @@ html
             target1='alias(system.house.temp.workshop, "workshop")',
             target2='alias(system.house.temp.storage, "storage")',
             target3='alias(system.house.temp.ariUnderBed, "ariUnderBed")',
+            target4='alias(system.house.temp.kitchenCounter, "kitchenCounter")',
             )
         div.cell
           magma-plot(from="-5days",
@@ -113,6 +114,7 @@ html
             target1='alias(system.house.temp.workshop, "workshop")',
             target2='alias(system.house.temp.storage, "storage")',
             target3='alias(system.house.temp.ariUnderBed, "ariUnderBed")',
+            target4='alias(system.house.temp.kitchenCounter, "kitchenCounter")',
             )
         div.cell
           magma-plot(from="-5days", 
