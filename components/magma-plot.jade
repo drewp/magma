@@ -16,6 +16,14 @@ dom-module(id="magma-plot")
         bottom: 0;
         width: 100%;
       }
+      .jumbo {
+        height: 1000px !important;
+        width: 1000px !important;
+        position: fixed !important;
+        left: 0;
+        top: 0;
+        z-index: 1;
+      }
     #top
       img.graphite(src="//graphite.bigasterisk.com/render/?width={{imgWidth}}&height={{imgHeight}}&bgcolor=00000000&_salt={{salt}}&{{params}}")
       div#title [[title]]
