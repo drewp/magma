@@ -21,6 +21,19 @@ Polymer
     title: {type: String, notify: true}
   refreshSec: 60 * 10
 
+  ready: () ->
+    @jumbo = false
+    top = @.querySelector("#top")
+    top.addEventListener "click", =>
+      @jumbo = !@jumbo
+      if @jumbo
+        top.classList.add('jumbo')
+        @resize(1000,1000)
+      else
+        top.classList.remove('jumbo')
+        @refreshSize()
+        # all other sizes are not updating right
+
   periodicReload: () ->
     @params = @paramsFromAttrs(@attributes)
     @salt = Math.round((+new Date()) / (1000 * @refreshSec))    

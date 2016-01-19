@@ -34,6 +34,9 @@ RefreshingWidgetBehaviorImpl =
     # contents during such a transition so they appear to scale right
     # until the new contents are ready.
 
+  refreshSize: () ->
+    @_onResize()
+
   _changeWhenVisible: (cb) ->
     if (document.hidden ||
         document.mozHidden ||
