@@ -21,7 +21,18 @@
     display: flex
     -webkit-flex-flow: column
     flex-flow: column
-   
+
+.body2 > div 
+  outline: none
+
+/* for phone taps */
+a
+  display: inline-block
+  min-width: 50px
+  min-height: 50px
+  padding: 4px
+  background: rgba(0, 0, 250, .15)
+    
 .cell
   -webkit-flex: 1 0 1%
   flex: 1 0 1%
@@ -49,7 +60,6 @@
 
 .otherPage
   display: inline-block;
-  padding: 0.2cm;
   background: rgba(255, 255, 255, 0.28);
   margin: 3px;
   border: 2px outset rgba(165, 165, 165, 0.61);
@@ -73,3 +83,10 @@ table
     text-align: left
     font-weight: normal
     background: #00000017
+
+.who
+  display: inline-block
+  padding: 2px
+  background: #eef
+  margin: 2px
+  border-radius: 5px
