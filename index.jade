@@ -31,16 +31,33 @@ html
     platinum-sw-register(auto-register)
       platinum-sw-cache(default-cache-strategy="fastest")
     div.body2
-      div.col
+      div
+        div.cell
+          | chat goes here
+        div.cell
+          | Locations
+          div
+            span.who person1
+            | near daly city bart, ETA home at 19:21 (51 minutes)
+          div 
+            span.who person2 phone
+            | phone is home, on wifi; keys by front door
+          div 
+            span.who Apollo
+            | living room couch (for 12 minutes)
+          div 
+            span.who person3
+            | phone last seen on wifi 8 minutes ago
+          div
+            span.who person4
+            | computer last used at 07:14
+            
         div.cell.crammedFrame(style="background-color: #c86866")
           div: a(href="/ruler/analysis/") ruler failing checks
           iframe(src="/ruler/analysis/")
         div.cell.crammedFrame(style="background-color: #15743c")
           div: a(href="https://bigasterisk.com/wifi/") wifi users and recent visitors
           iframe(src="https://bigasterisk.com/wifi/table")
-        div.cell.flexFit(style="background-color: #13818e")
-          link(rel="import", href="/arduino/brace/static/output-widgets.html")
-          output-slider(min="0", max="1", element="output-slider", step="0.00392156862745098", pred="http://projects.bigasterisk.com/room/brightness", subj="http://projects.bigasterisk.com/room/starTrekLight") 
         div.cell.flexFit(style="background-color: #e3c334")
           | HA nodes
           div(style="overflow-y: auto; height: 100%")
@@ -77,13 +94,17 @@ html
           
         div.cell.flexFit(style="background-color: #ec8281")
           heist-recent-transactions()
-        div.cell.crammedFrame(style="background-color: #989c2e")
-          div: a(href="/diary/") diarybot new entries
-          iframe(src="/diary/", style="flex: 1 0 auto")
-       div.col
+
         div.cell.flexFit(style="background-color: #876853")
+          a.otherPage(href="/grafana/") Grafana
+          ul
+            li: a.otherPage(href="/grafana/dashboard/db/temperatures") Temperatures
+            li: a.otherPage(href="/grafana/dashboard/db/power") Power
+            li: a.otherPage(href="/grafana/dashboard/db/presence") Presence
           a.otherPage(href="//checkvist.com/checklists/422518") Family checkvist
           a.otherPage(href="/gasuse/submitFillUp") Gasuse submit
+          a.otherPage(href="/diary/") Diarybot
+          
           a.otherPage(href="/map/") Map
           a.otherPage(href="/search/") Search
           a.otherPage(href="/search/files/") File search
@@ -115,50 +136,9 @@ html
             li chat support
             li music player widget
             
-      div.col
+
         div.cell.flexFit(style="background-color: #c10e2c")
           countdown-view()
-        div.cell
-          magma-plot(from="-15min", y-max="6250000",
-            target0='alias(system.net.bytesPerSec.in, "ISP bytes in")',
-            target1='alias(system.net.bytesPerSec.out, "out")')
-        div.cell
-          magma-plot(from="-60min", y-min="0",
-            title="House CPUs",
-            hide-legend="true",
-            area-mode="all",
-            computed-target="houseCpu")
-        div.cell
-          magma-plot(from="-60min", y-min="0",
-            hide-legend="true",
-            area-mode="all",
-            title="House power (W)",
-            target0="system.house.powerEagle.demand_w")
-        div.cell
-          magma-plot(from="-60min",
-            target0='alias(system.house.temp.greenhouse, "greenhouse")',
-            target1='alias(system.house.temp.workshop, "workshop")',
-            target2='alias(system.house.temp.storage, "storage")',
-            target3='alias(system.house.temp.ariUnderBed, "ariUnderBed")',
-            target4='alias(system.house.temp.kitchenCounter, "kitchenCounter")',
-            )
-        div.cell
-          magma-plot(from="-5days",
-            target0='alias(system.house.temp.greenhouse, "greenhouse")',
-            target1='alias(system.house.temp.workshop, "workshop")',
-            target2='alias(system.house.temp.storage, "storage")',
-            target3='alias(system.house.temp.ariUnderBed, "ariUnderBed")',
-            target4='alias(system.house.temp.kitchenCounter, "kitchenCounter")',
-            )
-        div.cell
-          magma-plot(from="-5days", 
-            target0='alias(system.noaa.rcmc1.temp_f, "richmond")',
-            target1='alias(system.noaa.ksql.temp_f, "ksql")',
-            target2='alias(system.noaa.koak.temp_f, "oakland")',
-            target3='alias(system.noaa.ftpc1.temp_f, "sf")',
-            target4='alias(system.noaa.aamc1.temp_f, "alameda")',
-            target5='alias(system.noaa.ksfo.temp_f, "sfo")')
-          | ruler.stats.totalChecks vs ruler.stats.failingChecks
         div.cell(style="flex: 0 0")
           | Root page rendered at SERVE_TIME
     magma-overlay-diagram()
