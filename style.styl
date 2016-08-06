@@ -27,6 +27,9 @@
   flex: 1 0 1%
   position: relative
 
+.cell.flexFit
+  flex: 0 0 auto
+  
 // --- only page layout above this line -----------------------
 
 .body2
@@ -61,5 +64,12 @@
     background: rgba(255, 255, 255, 0.67)
     flex: 1 1
 
-.flexFit
-  flex: 0 0 auto
+
+table
+  border-collapse: collapse
+  tr:nth-child(odd)
+    background: #00000021
+  th
+    text-align: left
+    font-weight: normal
+    background: #00000017

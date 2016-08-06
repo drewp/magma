@@ -16,7 +16,7 @@ html
     //link(rel="import", href="magma-overlay-diagram.html")
     link(rel="import", href="/heist/heist-recent-transactions.html")
     link(rel="import", href="/leaf/leaf-report.html")
-    //link(rel="import", href="/countdown/countdown-view.html")
+    link(rel="import", href="/countdown/countdown-view.html")
     link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-register.html")
     link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-cache.html")
     script.
@@ -38,18 +38,49 @@ html
         div.cell.crammedFrame(style="background-color: #15743c")
           div: a(href="https://bigasterisk.com/wifi/") wifi users and recent visitors
           iframe(src="https://bigasterisk.com/wifi/table")
-        div.cell(style="background-color: #13818e")
+        div.cell.flexFit(style="background-color: #13818e")
           link(rel="import", href="/arduino/brace/static/output-widgets.html")
           output-slider(min="0", max="1", element="output-slider", step="0.00392156862745098", pred="http://projects.bigasterisk.com/room/brightness", subj="http://projects.bigasterisk.com/room/starTrekLight") 
-        div.cell(style="background-color: #e3c334")
-          | 
+        div.cell.flexFit(style="background-color: #e3c334")
+          | HA nodes
+          div(style="overflow-y: auto; height: 100%")
+            table
+              tr
+                th: a(href="/pi/living/") living
+                td: a(href="/supdebug/living/") supdebug
+                td: a(href="") pandora
+              tr
+                th: a(href="/pi/kitchen/") kitchen
+                td: a(href="/supdebug/kitchen/") supdebug
+                td: a(href="") pandora
+              tr
+                th: a(href="/pi/bed/") bed
+                td: a(href="/supdebug/bed/") supdebug
+              tr
+                th: a(href="/pi/changing/") changing
+                td: a(href="/supdebug/changing/") supdebug
+              tr  
+                th: a(href="") dash
+                td: a(href="/supdebug/dash/") supdebug
+                td: a(href="/music/dash/#/0") music
+              tr
+                th: a(href="/arduino/bang/") bang
+                td: a(href="/supdebug/bang/") supdebug
+              tr
+                th: a(href="/arduino/slash/") slash
+                td: a(href="/supdebug/slash/") supdebug
+                td: a(href="/music/slash/#/0") music
+              tr
+                th: a(href="/arduino/brace/") ariroom
+                td: a(href="/supdebug/brace/") supdebug
+                td: a(href="/music/brace/#/0") music
+          
+        div.cell.flexFit(style="background-color: #ec8281")
+          heist-recent-transactions()
         div.cell.crammedFrame(style="background-color: #989c2e")
           div: a(href="/diary/") diarybot new entries
           iframe(src="/diary/", style="flex: 1 0 auto")
-        div.cell(style="background-color: #c10e2c;")
-          div: a(href="/leaf/") Leaf report
-          leaf-report(layout="mini")
-      div.col
+       div.col
         div.cell.flexFit(style="background-color: #876853")
           a.otherPage(href="//checkvist.com/checklists/422518") Family checkvist
           a.otherPage(href="/gasuse/submitFillUp") Gasuse submit
@@ -59,6 +90,11 @@ html
           a.otherPage(href="/sfd/") SFD
           a.otherPage(href="https://whatsplayingnext.com/upcoming") Whatsplayingnext
           a.otherPage(href="https://docs.google.com/spreadsheets/d/1dT-hzFMcpmhgwNlec22LG_N74HgRc8xWzifHpCbCv7k/edit#gid=0") Whopickedthis
+
+          a.otherPage(href="http://10.2.0.47:8080/") stream note2 intercom
+          a.otherPage(href="/beacon/") beacon map
+          a.otherPage(href="/logins/") logins 
+
         div.cell.flexFit
           magma-photo(uri="http://photo.bigasterisk.com/digicam/dl-2011-09-16/DSC_3992.JPG")
         div.cell.chat
@@ -80,9 +116,7 @@ html
             li music player widget
             
       div.col
-        div.cell.flexFit(style="background-color: #ec8281")
-          heist-recent-transactions()
-        div.cell.flexFit(style="background-color: #bdbdbd")
+        div.cell.flexFit(style="background-color: #c10e2c")
           countdown-view()
         div.cell
           magma-plot(from="-15min", y-max="6250000",
@@ -124,6 +158,7 @@ html
             target3='alias(system.noaa.ftpc1.temp_f, "sf")',
             target4='alias(system.noaa.aamc1.temp_f, "alameda")',
             target5='alias(system.noaa.ksfo.temp_f, "sfo")')
+          | ruler.stats.totalChecks vs ruler.stats.failingChecks
         div.cell(style="flex: 0 0")
           | Root page rendered at SERVE_TIME
     magma-overlay-diagram()
