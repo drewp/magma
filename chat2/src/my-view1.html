@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/chat-window/chat-window.html">
+
+<dom-module id="my-view1">
+  <template>
+    <style include="shared-styles">
+     :host {
+         display: block;
+         padding: 10px;
+     }
+     chat-window {
+         --chat-messages-height: 30em;
+         --paper-input-container-input: {
+             margin: 0 2px;
+         }
+         --chat-message-text: {
+             background-color: #f0f0f0;
+             padding: 6px 8px;
+             margin: 4px 0;
+             border-radius: 6px;
+         };
+     }
+    </style>
+    <div class="card">
+      <h1>Room one</h1>
+      <p>People: Ari, Drew, Kelsi</p>
+      <chat-window
+          id="chat"
+          input-text="{{text}}"
+          on-send="sendMsg"
+          messages="[[messages]]"
+          author="me"
+          single-line>
+      </chat-window> 
+    </div>
+  </template>
+
+  <script>
+   class MyView1 extends Polymer.Element {
+       static get is() { return 'my-view1'; }
+       ready() {
+           super.ready();
+           this.messages = [{author:'me', text: 'hi', created: Date.now()}];
+       }
+       sendMsg(ev) {
+           let msg = {author:'cur', text: this.text, created: Date.now()};
+           this.text = '';
+           this.push('messages', msg);
+       }
+   }
+
+   window.customElements.define(MyView1.is, MyView1);
+
+  </script>
+</dom-module>
