@@ -121,7 +121,7 @@ resource = WebSocketResource(factory)
 @klein.route('/messages')
 def ws(request):
     return resource
-    
+
 @klein.route('/', branch=True)
 def root(request):
     if b'.' not in request.path:
@@ -129,8 +129,8 @@ def root(request):
         request.path = b'/'
         request.uri = b'/'
         request.postpath = [b'']
-    root = './'
-    if os.path.exists('build/es6-bundled%s' % request.path):
+    root = b'./'
+    if os.path.exists(b'build/es6-bundled%s' % request.path):
         return File('./build/es6-bundled/')
     return File('./')
 
