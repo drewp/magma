@@ -134,5 +134,5 @@ def root(request):
         return File('./build/es6-bundled/')
     return File('./')
 
-klein.run('localhost', port)
+klein.run('0.0.0.0', port)
 
