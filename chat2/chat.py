@@ -1,3 +1,4 @@
+import os
 import json
 import traceback
 import klein
@@ -128,6 +129,9 @@ def root(request):
         request.path = b'/'
         request.uri = b'/'
         request.postpath = [b'']
+    root = './'
+    if os.path.exists('build/es6-bundled%s' % request.path):
+        return File('./build/es6-bundled/')
     return File('./')
 
 klein.run('localhost', port)
