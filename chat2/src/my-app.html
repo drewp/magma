@@ -1,12 +1,12 @@
 <!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+     @license
+     Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+     This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+     The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+     The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+     Code distributed by Google as part of the polymer project is also
+     subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+   -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
@@ -89,8 +89,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <hr>
 
           <template is="dom-repeat" items="[[rooms]]">
-            
-            <a name="[[uri]]" href="[[rootPath]][[uri]]">[[item.label]]</a>
+            <a name="[[item.uri]]" href="[[rootPath]][[item.uri]]">[[item.label]]</a>
           </template>
 
           <hr>
@@ -113,7 +112,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
+          <template is="dom-repeat" items="[[rooms]]">
+            <my-view1 name="[[item.uri]]"></my-view1>
+          </template>
+
           <my-view1 name="view1"></my-view1>
+
           <my-view2 name="view2"></my-view2>
           <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
@@ -149,17 +153,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
        ready() {
            super.ready();
-           //from graph
-           this.rooms = [
-               {label: 'Room one', uri: 'view1'},
-               {label: 'Room MC', uri: 'view1'},
-           ];x
+           window.app = this;
+           this.rooms = [];
+           this.currentRoomMessages = [];
+           this.reconnect();
+       }
+
+       reconnect() {
+           this.ws = new WebSocket('wss://bigasterisk.com/chat/messages')
+           this.ws.addEventListener('message', (ev) => {
+               const msg = JSON.parse(ev.data);
+               if (msg.rooms) {
+                   this.rooms = msg.rooms;
+               }
+               if (msg.messages) {
+                   this.currentRoomMessages = msg.messages.rows;
+               }
+               if (msg.me) {
+                   this.me = msg.me;
+               }
+           });
+           this.ws.addEventListener('close', (ev) => {
+               setTimeout(this.reconnect.bind(this), 3000);
+           });
+       }
+
+       post(room, message) {
+           this.ws.send(JSON.stringify({post: {
+               room: room,
+               text: message,
+           }}));
        }
        
        _routePageChanged(page) {
            // If no page was found in the route data, page will be an empty string.
-           // Default to 'view1' in that case.
-           this.page = page || 'view1';
+           this.page = page || 'view2';
 
            // Close a non-persistent drawer when the page & route are changed.
            if (!this.$.drawer.persistent) {
@@ -169,6 +197,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
        _pageChanged(page) {
            // Load page import on demand. Show 404 page if fails
+           if (page != 'view2' && page != 'view3') {
+               console.log(`force from ${page} to view1`); 
+               page = 'view1';
+           } 
            var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
            Polymer.importHref(
                resolvedPageUrl,
