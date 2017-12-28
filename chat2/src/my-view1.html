@@ -23,14 +23,14 @@
      }
     </style>
     <div class="card">
-      <h1>Room one</h1>
-      <p>People: Ari, Drew, Kelsi</p>
+      <h1>[[roomLabel]]</h1>
+      <p>People: [[people]]</p>
       <chat-window
           id="chat"
           input-text="{{text}}"
           on-send="sendMsg"
           messages="[[messages]]"
-          author="me"
+          author="[[me.foafName]]"
           single-line>
       </chat-window> 
     </div>
@@ -41,12 +41,23 @@
        static get is() { return 'my-view1'; }
        ready() {
            super.ready();
-           this.messages = [{author:'me', text: 'hi', created: Date.now()}];
+           this.room = 'one';
+           this.people = '...';
+           this.messages = [];
+           setInterval(() => { // todo with bindings
+               this.me = window.app.me;
+               this.messages = window.app.currentRoomMessages;
+               const rm = this.people = window.app.rooms.filter((r) => { return r.uri == this.room })[0];
+               this.people = rm.users;
+               this.roomLabel = rm.label;               
+           }, 300);
        }
        sendMsg(ev) {
-           let msg = {author:'cur', text: this.text, created: Date.now()};
-           this.text = '';
-           this.push('messages', msg);
+           if (!this.text || this.text.match(/^\s*$/)) {
+               return;
+           }
+           window.app.post(this.room, this.text);
+           this.text = '';// only on success
        }
    }
 
