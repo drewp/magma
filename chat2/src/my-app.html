@@ -108,7 +108,7 @@
         <app-header slot="header" condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>Magma Chat</div>
+            <div main-title>Magma Chat - [[connectionStatus]]</div>
           </app-toolbar>
         </app-header>
 
@@ -159,6 +159,7 @@
        ready() {
            super.ready();
            window.app = this;
+           this.connectionStatus = "launching...";
            this.rooms = [];
            this.currentRoomMessages = [];
            this.reconnect();
@@ -167,6 +168,7 @@
        reconnect() {
            this.ws = new WebSocket('wss://bigasterisk.com/chat/messages');
            this.ws.addEventListener('message', (ev) => {
+               this.connectionStatus = "connected";
                const msg = JSON.parse(ev.data);
                if (msg.rooms) {
                    this.rooms = msg.rooms;
@@ -184,6 +186,7 @@
            this.ws.addEventListener('close', (ev) => {
                console.log('cl',ev);
                setTimeout(this.reconnect.bind(this), 3000);
+               this.connectionStatus = "dropped, reconnecting...";
            });
        }
 
