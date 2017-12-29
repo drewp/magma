@@ -5,6 +5,7 @@ import klein
 import datetime
 from autobahn.twisted.websocket import WebSocketServerProtocol, WebSocketServerFactory
 from autobahn.twisted.resource import WebSocketResource
+from autobahn.websocket.types import ConnectionDeny
 from twisted.web.static import File
 import pymongo.mongo_client
 
@@ -73,7 +74,10 @@ class MessagesSocketProtocol(WebSocketServerProtocol):
         self.sendMessage(j.encode('utf8'), isBinary=False)
         
     def onConnect(self, request):
-        self.agent = request.headers['x-foaf-agent']
+        try:
+            self.agent = request.headers['x-foaf-agent']
+        except KeyError:
+            raise ConnectionDeny(code=401, reason='login required')
         print('WS connection from agent ', self.agent)
         listeners.add(self)
         
@@ -113,6 +117,7 @@ class MessagesSocketProtocol(WebSocketServerProtocol):
         
 chats = Chats()
 port = 8011
+loginPage = 'https://bigasterisk.com/chat/login?redir=https://bigasterisk.com/chat/'
         
 factory = WebSocketServerFactory(u"ws://127.0.0.1:%s" % port)
 factory.protocol = MessagesSocketProtocol
@@ -124,6 +129,11 @@ def ws(request):
 
 @klein.route('/', branch=True)
 def root(request):
+    if not request.getHeader('x-foaf-agent'):
+        request.setResponseCode(307)
+        request.setHeader('location', loginPage)
+        return
+    
     if b'.' not in request.path:
         print('%r appears to be a polymer route' % request.path)
         request.path = b'/'
