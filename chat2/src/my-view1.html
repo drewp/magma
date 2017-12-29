@@ -6,11 +6,19 @@
   <template>
     <style include="shared-styles">
      :host {
-         display: block;
+         display: flex;
+         flex-direction: column;
+         height: 100%;
+         background: white;
+     }
+     #outer {
          padding: 10px;
+         display: flex; 
+         flex-direction: column; 
+         height: 100%;
      }
      chat-window {
-         --chat-messages-height: 30em;
+         flex: 1 1;
          --paper-input-container-input: {
              margin: 0 2px;
          }
@@ -22,7 +30,7 @@
          };
      }
     </style>
-    <div class="card">
+    <div id="outer">
       <h1>[[roomLabel]]</h1>
       <p>People: [[people]]</p>
       <chat-window
