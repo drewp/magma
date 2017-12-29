@@ -115,13 +115,11 @@
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
-            fallback-selection="view404"
+            xxfallback-selection="view404"
             role="main">
           <template is="dom-repeat" items="[[rooms]]">
-            <my-view1 name="[[item.uri]]"></my-view1>
+            <my-view1 name$="[[item.uri]]"></my-view1>
           </template>
-
-          <my-view1 name="view1"></my-view1>
 
           <my-view2 name="view2"></my-view2>
           <my-view3 name="view3"></my-view3>
@@ -181,10 +179,9 @@
                }
            });
            this.ws.addEventListener('error', (ev) => {
-               console.log('err', ev);
+               this.connectionStatus = "connection error";
            });
            this.ws.addEventListener('close', (ev) => {
-               console.log('cl',ev);
                setTimeout(this.reconnect.bind(this), 3000);
                this.connectionStatus = "dropped, reconnecting...";
            });
@@ -196,8 +193,12 @@
                text: message,
            }}));
        }
+
+       // page: url path route, including chat room ids
+       // pageType: url path route, or 'view1' if it's a chat room
        
        _routePageChanged(page) {
+           console.log('_routePageChanged', page);
            // If no page was found in the route data, page will be an empty string.
            this.page = page || 'view2';
 
@@ -208,12 +209,12 @@
        }
 
        _pageChanged(page) {
+           console.log('_pageChanged', page);
            // Load page import on demand. Show 404 page if fails
-           if (page != 'view2' && page != 'view3') {
-               console.log(`force from ${page} to view1`); 
-               page = 'view1';
-           } 
-           var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+
+           const pageType = (page == 'view2' || page == 'view3' || page == 'view404') ? page : 'view1';
+
+           var resolvedPageUrl = this.resolveUrl('my-' + pageType + '.html');
            Polymer.importHref(
                resolvedPageUrl,
                null,
