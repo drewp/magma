@@ -39,6 +39,8 @@ class Chats(object):
         return self.access.foafName(rdfaccess.AgentUri(uri))
         
     def messages(self, room):
+        if not room:
+            return {}
         rows = [
             {
                 'author': self.foafName(m['creator']),
@@ -83,12 +85,12 @@ class MessagesSocketProtocol(WebSocketServerProtocol):
         
     def onOpen(self):
         print("WebSocket connection open.")
+        self.focusRoom = None
         self.sendJson({
             'me': {'agent': self.agent,
                    'foafName': chats.foafName(self.agent),
                    },
             'rooms': chats.rooms(),
-            'messages': chats.messages('one'),
         })
 
     def onMessage(self, payload, isBinary):
@@ -99,16 +101,15 @@ class MessagesSocketProtocol(WebSocketServerProtocol):
         self.onParsedMessage(json.loads(payload.decode('utf8')))
 
     def onParsedMessage(self, msg):
-        if 'messages' in msg:
-            self.sendJson(chats.messages(msg['messages']))
-        elif 'post' in msg:
+        if 'focusRoom' in msg:
+            self.focusRoom = msg['focusRoom']
+            self.sendJson({'messages': chats.messages(self.focusRoom)})
+        if 'post' in msg:
             self.sendJson(chats.post(self.agent, msg['post']))
 
             m = chats.messages(msg['post']['room'])
             for l in listeners:
                 l.sendJson({'messages': m})
-        else:
-            raise NotImplementedError()
 
     def onClose(self, wasClean, code, reason):
         print("WebSocket connection closed: {0}".format(reason))

@@ -39,6 +39,7 @@
           on-send="sendMsg"
           messages="[[messages]]"
           author="[[me.foafName]]"
+          auto-scroll
           single-line>
       </chat-window> 
     </div>
@@ -47,15 +48,21 @@
   <script>
    class MyView1 extends Polymer.Element {
        static get is() { return 'my-view1'; }
+       static get properties() {
+           return {
+               name: { type: String }, // = room id
+               people: { type: String },
+               roomLabel: { type: String },
+           };
+       }
        ready() {
            super.ready();
-           this.room = 'one';
            this.people = '...';
            this.messages = [];
            setInterval(() => { // todo with bindings
                this.me = window.app.me;
                this.messages = window.app.currentRoomMessages;
-               const rm = this.people = window.app.rooms.filter((r) => { return r.uri == this.room })[0];
+               const rm = window.app.rooms.filter((r) => { return r.uri == this.name })[0];
                this.people = rm.users;
                this.roomLabel = rm.label;               
            }, 300);
@@ -64,7 +71,7 @@
            if (!this.text || this.text.match(/^\s*$/)) {
                return;
            }
-           window.app.post(this.room, this.text);
+           window.app.post(this.name, this.text);
            this.text = '';// only on success
        }
    }
