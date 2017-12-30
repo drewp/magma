@@ -115,7 +115,6 @@
         <iron-pages
             selected="[[page]]"
             attr-for-selected="name"
-            xxfallback-selection="view404"
             role="main">
           <template is="dom-repeat" items="[[rooms]]">
             <my-view1 name$="[[item.uri]]"></my-view1>
@@ -165,6 +164,11 @@
 
        reconnect() {
            this.ws = new WebSocket('wss://bigasterisk.com/chat/messages');
+           this.ws.addEventListener('open', (ev) => {
+               if (this.page != 'view2' && this.page != 'view3') {
+                   this.ws.send(JSON.stringify({focusRoom: this.page}));
+               }
+           });
            this.ws.addEventListener('message', (ev) => {
                this.connectionStatus = "connected";
                const msg = JSON.parse(ev.data);
@@ -214,6 +218,10 @@
 
            const pageType = (page == 'view2' || page == 'view3' || page == 'view404') ? page : 'view1';
 
+           if (pageType == 'view1' && this.ws) {
+               this.ws.send(JSON.stringify({focusRoom: page}));
+           }
+           
            var resolvedPageUrl = this.resolveUrl('my-' + pageType + '.html');
            Polymer.importHref(
                resolvedPageUrl,
