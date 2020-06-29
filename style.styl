@@ -1,92 +1,121 @@
-.body2
+.body2 {
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-   
-.body2
-  display: -webkit-flex
-  display: flex
-  -webkit-flex-flow: row
-  flex-flow: row
-  -webkit-align-items: stretch
-  align-items: stretch
-  .col
-    -webkit-flex: 1 0 1%
-    flex: 1 0 1%
-    -webkit-flex-grow: 1
-    flex-grow: 1
-    display: -webkit-flex
-    display: flex
-    -webkit-flex-flow: column
-    flex-flow: column
+}
 
-.body2 > div 
-  outline: none
+.body2 {
+  display: flex;
+  -webkit-flex-flow: row;
+  flex-flow: row;
+  -webkit-align-items: stretch;
+  align-items: stretch;
+
+  .col {
+    flex: 1 0 1%;
+    flex-grow: 1;
+    display: -webkit-flex;
+    display: flex;
+    flex-flow: column;
+  }
+}
+
+.body2 > div {
+  outline: none;
+}
 
 /* for phone taps */
-a
-  display: inline-block
-  min-width: 50px
-  min-height: 50px
-  padding: 4px
-  background: rgba(0, 0, 250, .15)
-    
-.cell
-  -webkit-flex: 1 0 1%
-  flex: 1 0 1%
-  position: relative
+a {
+  display: inline-block;
+  min-width: 50px;
+  padding: 9px;
+}
 
-.cell.flexFit
-  flex: 0 0 auto
-  
+button {
+  min-width: 50px;
+  min-height: 30px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.cell {
+  flex: 1 0 1%;
+  position: relative;
+}
+
+.cell.flexFit {
+  flex: 0 0 auto;
+}
+
 // --- only page layout above this line -----------------------
+a {
+  background: rgba(0, 0, 250, 0.15);
+  border: 1px outset #4c4c4c;
+}
 
-.body2
-
-  font-family: sans
-  font-size: 10pt
-  background: #cecece
+.body2 {
+  font-family: sans;
+  font-size: 10pt;
+  background: #cecece;
   outline: 2px dashed red;
+  touch-action: manipulation;
+}
 
-.cell
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%,rgba(0,0,0,0.39) 100%);
+.cell {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.39) 100%);
   margin: 4px;
   border: 1px outset gray;
   border-radius: 6px;
   overflow: hidden;
   box-shadow: 1px 1px 8px rgba(39, 37, 104, 0.68);
+}
 
-.otherPage
+.otherPage {
   display: inline-block;
   background: rgba(255, 255, 255, 0.28);
   margin: 3px;
   border: 2px outset rgba(165, 165, 165, 0.61);
   border-radius: 6px;
+}
 
-.crammedFrame
-  display: flex
-  flex-direction: column
-  > div
-    flex: 0 0 auto
-  > iframe
-    background: rgba(255, 255, 255, 0.67)
-    flex: 1 1
+.crammedFrame {
+  display: flex;
+  flex-direction: column;
 
+  > div {
+    flex: 0 0 auto;
+  }
 
-table
-  border-collapse: collapse
-  tr:nth-child(odd)
-    background: #00000021
-  th
-    text-align: left
-    font-weight: normal
-    background: #00000017
+  > iframe {
+    background: rgba(255, 255, 255, 0.67);
+    flex: 1 1;
+  }
+}
 
-.who
-  display: inline-block
-  padding: 2px
-  background: #eef
-  margin: 2px
-  border-radius: 5px
+table {
+  border-collapse: collapse;
+
+  tr:nth-child(odd) {
+    background: #00000021;
+  }
+
+  th {
+    text-align: left;
+    font-weight: normal;
+    background: #00000017;
+  }
+}
+
+.who {
+  display: inline-block;
+  padding: 2px;
+  background: #eef;
+  margin: 2px;
+  border-radius: 5px;
+}
+
+.hidden {
+  display: none;
+}

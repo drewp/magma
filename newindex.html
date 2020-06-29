@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/lib/polymer/1.0.9/webcomponentsjs/webcomponents.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>magma</title>
+    <link rel="shortcut icon" sizes="90x90" href="icon-90.png" />
+    <link rel="stylesheet" href="style.css?STYLE_MTIME" />
+    <link rel="import" href="/countdown/countdown-view.html" />
+  </head>
+  <body>
+    <div class="body2">
+      <div>
+        <div style="background-color: #876853" class="cell flexFit">
+          <button id="frontDoorUnlock">unlock now 6 sec</button>
+          <a href="/frontDoorLock/" class="otherPage">Front door lock</a>
+          <a href="/cam/crib" class="otherPage">Crib cam</a>
+          <a href="/cam/livingRoom" class="otherPage">Living cam</a>
+          <a href="/homeauto/spectro/" class="otherPage">Big bed live audio</a>
+          <a href="https://bigasterisk.slack.com/messages" class="otherPage"
+            >Slack chat</a
+          >
+          <a href="/ntop/lua/local/flows_json.lua" class="otherPage"
+            >ntop summary</a
+          >
+          <div style="display: flex">
+            <a href="/timebank/" class="otherPage">Timebank</a>:
+            <form
+              method="POST"
+              action="/timebank/firewall/unblock?macs=7c:b0:c2:83:31:0f,c8:1f:66:13:9b:6d&t=60m"
+            >
+              <button>unblock Ari net for 30min</button>
+            </form>
+          </div>
+          <div>
+            <a href="/grafana/" class="otherPage">Grafana</a>:
+            <a
+              href="/grafana/d/YHeQgAbWk/power-usage?orgId=1&from=now-24h&to=now"
+              class="otherPage"
+              >House power</a
+            >
+            <a
+              href="/grafana/d/q8PF_6Biz/air-particles?orgId=1&from=now-10d&to=now"
+              class="otherPage"
+              >Air quality</a
+            >
+            <a
+              href="/grafana/d/u4JrSaBiz/audio-level?orgId=1&from=now-1h&to=now"
+              class="otherPage"
+              >Audio levels</a
+            >
+            <a
+              href="/grafana/d/eBftoOqik/who?orgId=1&from=now-12h&to=now"
+              class="otherPage"
+              >Who</a
+            >
+            <a
+              href="/grafana/d/000000011/crib?orgId=1&from=now-12h&to=now"
+              class="otherPage"
+              >Baby room</a
+            >
+            <a
+              href="/grafana/d/sFeQgAxWz/temperatures?orgId=1"
+              class="otherPage"
+              >House temperatures</a
+            >
+          </div>
+          <div>
+            More:
+            <a href="//checkvist.com/checklists/422518" class="otherPage"
+              >Family checkvist</a
+            >
+            <a href="/gasuse/submitFillUp" class="otherPage">Gasuse submit</a>
+            <a href="/diary/" class="otherPage">Diarybot</a>
+            <a href="/map/" class="otherPage">Map</a>
+            <a href="/search/" class="otherPage">Search</a>
+            <a href="/search/files/" class="otherPage">File search</a>
+            <a href="/sfd/" class="otherPage">SFD</a>
+            <a
+              href="https://docs.google.com/spreadsheets/d/1dT-hzFMcpmhgwNlec22LG_N74HgRc8xWzifHpCbCv7k/edit#gid=0"
+              class="otherPage"
+              >Whopickedthis</a
+            >
+            <a href="/logins/" class="otherPage">logins </a>
+          </div>
+        </div>
+        <div style="background-color: #ffe4e8" class="cell flexFit">
+          <countdown-view></countdown-view>
+        </div>
+
+        <div style="background-color: #e3c334" class="cell flexFit">
+          HA nodes
+          <div style="overflow-y: auto; height: 100%">
+            <div>
+              <button id="livingLampsOn">living lamps on</button
+              ><button id="livingLampsOff">living lamps off</button>
+            </div>
+
+            <div id="to_mqtt">
+              <div>
+                <button
+                  data-post="/rdf_to_mqtt/output?s=:theater&p=:inputSelector"
+                  data-body="bd"
+                >
+                  Theater to chromecast
+                </button>
+                <button
+                  data-post="/rdf_to_mqtt/output?s=:theater&p=:inputSelector"
+                  data-body="game"
+                >
+                  Theater to PS4
+                </button>
+                <button
+                  data-post="/rdf_to_mqtt/output?s=:theater&p=:inputSelector"
+                  data-body="pc"
+                >
+                  Theater to VR
+                </button>
+                <button
+                  data-post="/rdf_to_mqtt/output?s=:theater&p=:inputSelector"
+                  data-body="cbl"
+                >
+                  Theater to PS3
+                </button>
+              </div>
+              <div>
+                <button
+                  data-post="/rdf_to_mqtt/output?s=:theater&p=:volumeChange"
+                  data-body="3"
+                >
+                  Theater volume up
+                </button>
+                <button
+                  data-post="/rdf_to_mqtt/output?s=:theater&p=:volumeChange"
+                  data-body="-3"
+                >
+                  Theater volume down
+                </button>
+              </div>
+            </div>
+            <table>
+              <tr>
+                <th><a href="/tradfri/">ikea light hub</a></th>
+              </tr>
+              <tr>
+                <th><a href="/pi/kitchen/">kitchen</a></th>
+                <td><a href="/supdebug/kitchen/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/pi/bed/">bed</a></th>
+                <td><a href="/supdebug/bed/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/pi/changing/">changing</a></th>
+                <td><a href="/supdebug/changing/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="">dash</a></th>
+                <td><a href="/supdebug/dash/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/arduino/bang/">bang</a></th>
+                <td><a href="/supdebug/bang/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/arduino/slash/">slash</a></th>
+                <td><a href="/supdebug/slash/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/pi/frontbed/">front bed</a></th>
+                <td><a href="/supdebug/frontbed/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/pi/garage/">garage</a></th>
+                <td><a href="/supdebug/garage/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/pi/workshop/">workshop</a></th>
+                <td><a href="/supdebug/workshop/">supdebug</a></td>
+              </tr>
+              <tr>
+                <th><a href="/pi/frontdoor/">front door</a></th>
+                <td><a href="/supdebug/frontdoor/">supdebug</a></td>
+              </tr>
+            </table>
+
+            <script>
+              const setLivingTo = level => {
+                for (let s of [
+                  "/rdf_to_mqtt/output?s=:livingLampShelf&p=:brightness",
+                  "/rdf_to_mqtt/output?s=:livingLampMantleEntry&p=:brightness",
+                  "/rdf_to_mqtt/output?s=:livingLampMantleChair&p=:brightness",
+                  "/rdf_to_mqtt/output?s=:livingLampToyShelf&p=:brightness",
+                  "/rdf_to_mqtt/output?s=:livingLampPiano&p=:brightness",
+                  "/pi/living/output?s=http%3A%2F%2Fprojects.bigasterisk.com%2Froom%2FlivingRoomLamp3&p=http%3A%2F%2Fprojects.bigasterisk.com%2Froom%2Fbrightness"
+                ]) {
+                  setTimeout(() => {
+                    fetch(s, { method: "PUT", body: level });
+                  }, Math.random() * 1500);
+                }
+              };
+              document
+                .querySelector("#livingLampsOn")
+                .addEventListener("click", () => {
+                  setLivingTo("1.0");
+                });
+
+              document
+                .querySelector("#livingLampsOff")
+                .addEventListener("click", () => {
+                  setLivingTo("0.0");
+                });
+
+              document
+                .querySelector("#frontDoorUnlock")
+                .addEventListener("click", () => {
+                  fetch("/frontDoorLock/output", {
+                    headers: {
+                      "content-type": "text/n3"
+                    },
+                    body:
+                      "<http://projects.bigasterisk.com/room/frontDoorLock> <http://projects.bigasterisk.com/room/state> <http://projects.bigasterisk.com/room/unlocked> .",
+                    method: "POST",
+                    mode: "cors",
+                    credentials: "include"
+                  });
+                });
+
+              Array.from(document.querySelectorAll("#to_mqtt button")).forEach(
+                el => {
+                  el.addEventListener("click", ev => {
+                    fetch(el.dataset.post, {
+                      method: "PUT",
+                      body: el.dataset.body
+                    });
+                  });
+                }
+              );
+            </script>
+          </div>
+        </div>
+        <div style="background-color: #ec8281" class="cell flexFit">
+          <heist-recent-transactions></heist-recent-transactions>
+        </div>
+
+        <div style="flex: 0 0" class="cell">
+          Root page rendered at SERVE_TIME
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

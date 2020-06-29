@@ -3,23 +3,22 @@
 
 
 """
-import sys, datetime, cyclone.web, time
+import datetime, cyclone.web, time
+from pathlib import Path
 from twisted.internet import reactor
-#from dateutil.tz import tzlocal
-#from dateutil.relativedelta import relativedelta, FR
-from rdflib import Namespace, Literal
-from stategraph import StateGraph
-sys.path.append("/my/proj/homeauto/lib")
+from rdflib import Namespace
 from cycloneerr import PrettyErrorHandler
-from logsetup import log, enableTwistedLog
+from standardservice.logsetup import log
 
 ROOM = Namespace("http://projects.bigasterisk.com/room/")
 DEV = Namespace("http://projects.bigasterisk.com/device/")
 
-class Index(cyclone.web.RequestHandler):
+class Index(PrettyErrorHandler, cyclone.web.RequestHandler):
     def get(self):
         self.set_header('Content-type', 'text/html')
-        body = open('build/index.html').read()
+        body = open('newindex.html').read()
+        body = body.replace('STYLE_MTIME', 
+          str(Path("./build/style.css").stat().st_mtime))
         body = body.replace('SERVE_TIME', datetime.datetime.now().isoformat())
         body = body.replace('TIMESTAMP', str(time.time()))
         self.write(body)
@@ -35,6 +34,5 @@ class Application(cyclone.web.Application):
         cyclone.web.Application.__init__(self, handlers)
 
 if __name__ == '__main__':
-    enableTwistedLog()
     reactor.listenTCP(8010, Application())
     reactor.run()

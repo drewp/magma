@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    script(src="/lib/polymer/1.0.9/webcomponentsjs/webcomponents.min.js")
+    
     meta(name="viewport", content="width=1000, initial-scale=1")
     meta(name="mobile-web-app-capable", content="yes")
     meta(name="apple-mobile-web-app-capable", content="yes")
@@ -12,11 +12,17 @@ html
 
     //link(rel="import", href="magma-chat.html")
     link(rel="import", href="components/magma-plot.html")
+    link(rel="import", href="components/strip-charts.html")
     //link(rel="import", href="magma-photo.html")
     //link(rel="import", href="magma-overlay-diagram.html")
     link(rel="import", href="/heist/heist-recent-transactions.html")
-    link(rel="import", href="/leaf/leaf-report.html")
     link(rel="import", href="/countdown/countdown-view.html")
+    
+    link(rel="import", href="/rdf/rdf-oneshot.html")
+    link(rel="import", href="/rdf/rdf-uri.html")
+    link(rel="import", href="/rdf/graph-view.html")
+    link(rel="import", href="/rdf/streamed-graph.html")
+    
     link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-register.html")
     link(rel="import", href="/lib/polymer/1.0.9/platinum-sw/platinum-sw-cache.html")
     script.
@@ -32,10 +38,47 @@ html
       platinum-sw-cache(default-cache-strategy="fastest")
     div.body2
       div
-        div.cell
-          | chat goes here
-        div.cell
+        streamed-graph(url="graph/events", graph="{{graph}}")
+
+        div.cell.flexFit(style="background-color: #876853")
+          a.otherPage(href='/frontDoorLock/') Front door lock
+          a.otherPage(href='/cam/crib') Crib cam
+          a.otherPage(href='/cam/livingRoom') Living cam
+          a.otherPage(href='/homeauto/spectro/') Big bed live audio
+          a.otherPage(href='https://bigasterisk.slack.com/messages') Slack chat
+          a.otherPage(href='/ntop/lua/local/flows_json.lua') ntop summary
+          
+          div(style="display: flex")
+            form(method="POST", action="/timebank/block"): button: | block Ari net
+            form(method="POST", action="/timebank/unblock?t=30m"): button: | unblock Ari net for 30min
+            a.otherPage(href='/timebank/') Timebank
+           
+        
+          a.otherPage(href="/grafana/") Grafana
+          ul
+            li: a.otherPage(href="/grafana/d/E719Safiz/temperatures") Temperatures
+            li: a.otherPage(href="/grafana/d/QM19I-fik/power-usage") Power
+            li: a.otherPage(href="/grafana/d/eBftoOqik/who?orgId=1&from=now-24h&to=now") Who
+            li: a.otherPage(href="/grafana/d/fgJ9I-Bmz/presence") Presence
+          a.otherPage(href="//checkvist.com/checklists/422518") Family checkvist
+          a.otherPage(href="/gasuse/submitFillUp") Gasuse submit
+          a.otherPage(href="/diary/") Diarybot
+          
+          a.otherPage(href="/map/") Map
+          a.otherPage(href="/search/") Search
+          a.otherPage(href="/search/files/") File search
+          a.otherPage(href="/sfd/") SFD
+          a.otherPage(href="https://docs.google.com/spreadsheets/d/1dT-hzFMcpmhgwNlec22LG_N74HgRc8xWzifHpCbCv7k/edit#gid=0") Whopickedthis
+
+          a.otherPage(href="/logins/") logins 
+          
+        div.cell.flexFit(style="background-color: #ffe4e8")
+          countdown-view()
+
+        div.cell.hidden
           | Locations
+          div
+            strip-charts
           div
             span.who person1
             | near daly city bart, ETA home at 19:21 (51 minutes)
@@ -52,24 +95,23 @@ html
             span.who person4
             | computer last used at 07:14
             
-        div.cell.crammedFrame(style="background-color: #c86866")
+        div.cell.crammedFrame(style="")
           div: a(href="/ruler/analysis/") ruler failing checks
           iframe(src="/ruler/analysis/")
+          
         div.cell.crammedFrame(style="background-color: #15743c")
           div: a(href="https://bigasterisk.com/wifi/") wifi users and recent visitors
           iframe(src="https://bigasterisk.com/wifi/table")
+          
         div.cell.flexFit(style="background-color: #e3c334")
           | HA nodes
           div(style="overflow-y: auto; height: 100%")
             table
               tr
-                th: a(href="/pi/living/") living
-                td: a(href="/supdebug/living/") supdebug
-                td: a(href="") pandora
+                th: a(href="/tradfri/") ikea light hub
               tr
                 th: a(href="/pi/kitchen/") kitchen
                 td: a(href="/supdebug/kitchen/") supdebug
-                td: a(href="") pandora
               tr
                 th: a(href="/pi/bed/") bed
                 td: a(href="/supdebug/bed/") supdebug
@@ -79,42 +121,19 @@ html
               tr  
                 th: a(href="") dash
                 td: a(href="/supdebug/dash/") supdebug
-                td: a(href="/music/dash/#/0") music
               tr
                 th: a(href="/arduino/bang/") bang
                 td: a(href="/supdebug/bang/") supdebug
               tr
                 th: a(href="/arduino/slash/") slash
                 td: a(href="/supdebug/slash/") supdebug
-                td: a(href="/music/slash/#/0") music
               tr
-                th: a(href="/arduino/brace/") ariroom
-                td: a(href="/supdebug/brace/") supdebug
-                td: a(href="/music/brace/#/0") music
+                th: a(href="/pi/frontbed/") front bed
+                td: a(href="/supdebug/frontbed/") supdebug
           
         div.cell.flexFit(style="background-color: #ec8281")
           heist-recent-transactions()
 
-        div.cell.flexFit(style="background-color: #876853")
-          a.otherPage(href="/grafana/") Grafana
-          ul
-            li: a.otherPage(href="/grafana/dashboard/db/temperatures") Temperatures
-            li: a.otherPage(href="/grafana/dashboard/db/power") Power
-            li: a.otherPage(href="/grafana/dashboard/db/presence") Presence
-          a.otherPage(href="//checkvist.com/checklists/422518") Family checkvist
-          a.otherPage(href="/gasuse/submitFillUp") Gasuse submit
-          a.otherPage(href="/diary/") Diarybot
-          
-          a.otherPage(href="/map/") Map
-          a.otherPage(href="/search/") Search
-          a.otherPage(href="/search/files/") File search
-          a.otherPage(href="/sfd/") SFD
-          a.otherPage(href="https://whatsplayingnext.com/upcoming") Whatsplayingnext
-          a.otherPage(href="https://docs.google.com/spreadsheets/d/1dT-hzFMcpmhgwNlec22LG_N74HgRc8xWzifHpCbCv7k/edit#gid=0") Whopickedthis
-
-          a.otherPage(href="http://10.2.0.47:8080/") stream note2 intercom
-          a.otherPage(href="/beacon/") beacon map
-          a.otherPage(href="/logins/") logins 
 
         div.cell.flexFit
           magma-photo(uri="http://photo.bigasterisk.com/digicam/dl-2011-09-16/DSC_3992.JPG")
@@ -137,8 +156,6 @@ html
             li music player widget
             
 
-        div.cell.flexFit(style="background-color: #c10e2c")
-          countdown-view()
         div.cell(style="flex: 0 0")
-          | Root page rendered at SERVE_TIME
+          | Root page rendered at SERVE_TIME background-color: #c86866
     magma-overlay-diagram()
