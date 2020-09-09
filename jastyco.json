@@ -2,7 +2,7 @@
     "src": "./",
     "dest": "build/",
     "patterns": "[a-z]*{.jade,.coffee,.styl} components/[a-z]*{.coffee,.styl,.jade}",
-    "copy": "*.css *.svg *.png",
+    "copy": "*.css *.svg *.png *.jpg *.js",
     "jade": {
         "pretty": true
     },
@@ -15,6 +15,6 @@
         "nib": true
     },
     "delete": true,
-    static: false,
-    livereload: false
+    "static": false,
+    "livereload": false
 }

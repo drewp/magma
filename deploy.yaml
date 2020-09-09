@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: magma
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: magma
+  template:
+    metadata:
+      labels:
+        app: magma
+    spec:
+      containers:
+        - name: magma
+          image: bang5:5000/magma_image
+          imagePullPolicy: "Always"
+          ports:
+          - containerPort: 8010
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "kubernetes.io/hostname"
+                operator: In
+                values: ["bang"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: magma
+spec:
+  ports:
+  - {port: 8010, targetPort: 8010, name: http}
+  selector:
+    app: magma
+
+    
