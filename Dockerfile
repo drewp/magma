@@ -19,13 +19,9 @@ RUN node /opt/nodejs/bin/npm install -g pnpm
 
 COPY requirements.txt ./
 RUN pip3 install --index-url https://projects.bigasterisk.com/ --extra-index-url https://pypi.org/simple -r requirements.txt
-# not sure why this doesn't work from inside requirements.txt
-RUN pip3 install --index-url https://projects.bigasterisk.com/ --extra-index-url https://pypi.org/simple -U 'https://github.com/drewp/cyclone/archive/python3.zip?v2'
-
 
 COPY package.json ./
 RUN pnpm install
-
 
 COPY *.py req* *.n3 *.js *.html *.styl *.json *.jpg *.png ./
 RUN mkdir build

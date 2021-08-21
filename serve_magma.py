@@ -34,10 +34,12 @@ class Application(cyclone.web.Application):
             (r"/", Index),
             (r'/metrics', Metrics),
             (r"/(sw-import\.js)", cyclone.web.StaticFileHandler, {"path": "./"}),
-            (r"/((?:components/)?[a-zA-Z0-9-]+\.(?:png|js|css|html))", cyclone.web.StaticFileHandler, {"path": "./build/"}),
+            (r'/icons/(.*\.svg)', cyclone.web.StaticFileHandler, {"path": "node_modules/.pnpm/flat-color-icons@1.1.0/node_modules/flat-color-icons/svg/"}),
+            (r"/((?:components/)?[a-zA-Z0-9-]+\.(?:png|jpg|js|css|html))", cyclone.web.StaticFileHandler, {"path": "./build/"}),
         ]
         cyclone.web.Application.__init__(self, handlers)
 
 if __name__ == '__main__':
+    verboseLogging(True)
     reactor.listenTCP(8010, Application())
     reactor.run()
