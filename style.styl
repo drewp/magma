@@ -1,121 +1,56 @@
-.body2 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-}
+body
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  background-image: url('vines-blur1.jpg')
+  background-attachment: fixed
+  background-size: cover
+  color: white
+  text-align: justify
+  text-shadow: 1px 1px 1px black
+  font-size: 10pt
+  font-family: sans
+  touch-action: manipulation
 
-.body2 {
-  display: flex;
-  -webkit-flex-flow: row;
-  flex-flow: row;
-  -webkit-align-items: stretch;
-  align-items: stretch;
+  > div
+    margin-right: 3px
+    margin-bottom: 1em
+    padding: 4px
+    outline: 1px solid #00000052
+    background: #879a8cc2
 
-  .col {
-    flex: 1 0 1%;
-    flex-grow: 1;
-    display: -webkit-flex;
-    display: flex;
-    flex-flow: column;
-  }
-}
+a
+  display: inline-flex
+  align-items: center
+  margin: 3px
+  padding: 9px
+  min-width: 70px
+  min-height: 60px
+  background: #94ca7985
+  text-shadow: 1px 1px 0px #848383
 
-.body2 > div {
-  outline: none;
-}
+form
+  display: inline-block
 
-/* for phone taps */
-a {
-  display: inline-block;
-  min-width: 50px;
-  padding: 9px;
-}
+button
+  margin: 3px
+  padding: 10px
+  min-width: 50px
+  min-height: 60px
+  border-radius: 7px
+  background-color: #ffffffa6
 
-button {
-  min-width: 50px;
-  min-height: 30px;
-  padding: 10px;
-  margin: 10px;
-}
+table
+  border-collapse: collapse
 
-.cell {
-  flex: 1 0 1%;
-  position: relative;
-}
+  tr:nth-child(odd)
+    background: #00000021
 
-.cell.flexFit {
-  flex: 0 0 auto;
-}
+  th
+    background: #00000017
+    text-align: left
+    font-weight: normal
 
-// --- only page layout above this line -----------------------
-a {
-  background: rgba(0, 0, 250, 0.15);
-  border: 1px outset #4c4c4c;
-}
+img 
+  height: 3em
 
-.body2 {
-  font-family: sans;
-  font-size: 10pt;
-  background: #cecece;
-  outline: 2px dashed red;
-  touch-action: manipulation;
-}
-
-.cell {
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.39) 100%);
-  margin: 4px;
-  border: 1px outset gray;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 1px 1px 8px rgba(39, 37, 104, 0.68);
-}
-
-.otherPage {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.28);
-  margin: 3px;
-  border: 2px outset rgba(165, 165, 165, 0.61);
-  border-radius: 6px;
-}
-
-.crammedFrame {
-  display: flex;
-  flex-direction: column;
-
-  > div {
-    flex: 0 0 auto;
-  }
-
-  > iframe {
-    background: rgba(255, 255, 255, 0.67);
-    flex: 1 1;
-  }
-}
-
-table {
-  border-collapse: collapse;
-
-  tr:nth-child(odd) {
-    background: #00000021;
-  }
-
-  th {
-    text-align: left;
-    font-weight: normal;
-    background: #00000017;
-  }
-}
-
-.who {
-  display: inline-block;
-  padding: 2px;
-  background: #eef;
-  margin: 2px;
-  border-radius: 5px;
-}
-
-.hidden {
-  display: none;
-}
