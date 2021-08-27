@@ -56,3 +56,18 @@ const setLivingTo = (level) => {
       });
     });
   });
+
+fetch("https://bigasterisk.com/prometheus/api/v1/query?query=air", {
+  "mode": "cors",
+  "credentials": "include"
+}).then((resp) => {
+  return resp.json();
+}).then((doc) => {
+  const el = document.querySelector('#sensors');
+  doc.data.result.forEach((row) => {
+    const rowEl = document.createElement('div');
+    const href = `/prometheus/graph?g0.expr=air%7Btype%3D%22${row.metric.type}%22%7D&g0.tab=0&g0.range_input=2h`
+    rowEl.innerHTML = `<a href="${href}">${row.metric.loc} ${row.metric.type} = ${row.value[1]}</a>`;
+    el.appendChild(rowEl);
+  })
+});
